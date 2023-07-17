@@ -1,0 +1,9 @@
+<xml>
+    <files id='haxe'>
+        <compilervalue name="-I" value="${this_dir}/includes/" />
+    </files>
+
+    <target id='haxe' tool='linker' toolid='exe'>
+        <lib name="${this_dir}/libs/OpenAL32.lib"/>
+    </target>
+</xml>
