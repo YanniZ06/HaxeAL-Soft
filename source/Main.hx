@@ -2,6 +2,7 @@
 class Main {
 	static function main() {
 		trace(ALFunctions.getError());
+		trace("eat my ass!");
 	}
 }
 
