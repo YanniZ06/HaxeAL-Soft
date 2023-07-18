@@ -1,0 +1,11 @@
+<xml>
+    <copy to="output" from="OpenAL32.dll" /> <!-- Move the compiled openal to the output folder when we're done -->
+
+    <files id='haxe'>
+        <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
+    </files>
+
+    <target id='haxe' tool='linker' toolid='exe'>
+        <lib name="${this_dir}/source/openal/libs/OpenAL32.lib"/>
+    </target>
+</xml>
