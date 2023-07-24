@@ -191,8 +191,7 @@ If you happen to find any issues while compiling builds, please set up an Issue 
 The information the issue should contain is given in the setup issue template.
 
 # Regarding Pull Requests
-Pull requests are *greatly* appreciated, so long as they follow a similar structure (however suggestions for different structuring are also welcome)
-as long as they're structurally similar to the rest of the project.
+Pull requests are *greatly* appreciated, so long as they follow a similar structure to the rest of the project (however suggestions for different structuring are also welcome).
 
 Please mark your PR's appropiately to keep management easy.
 
