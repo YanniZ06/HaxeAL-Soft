@@ -5,6 +5,10 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
+	<files id="__main__">
+		<compilerflag value="-I${this_dir}/source/openal/includes" />
+	</files>
+
     <target id='haxe' tool='linker' toolid='exe'>
         <lib name="${this_dir}/source/openal/libs/OpenAL32.lib"/>
     </target>
