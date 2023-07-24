@@ -25,7 +25,7 @@ This segment will define the intended code structure for this library.
 ## File Placement
 Having good folder and file management is certainly not unimportant while making a nice and easy to work with library.
 
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 **C(++) to Haxe Native Binding Files** all go into the `haxeal/bindings` folder.
 
@@ -35,7 +35,7 @@ Having good folder and file management is certainly not unimportant while making
 
 **Testing and everything else** can go into Main.hx, doesn't matter how really, go nuts!
 
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
+| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 ## Differentiating between Native Binding and Regular Std-Type Hx Files
 
