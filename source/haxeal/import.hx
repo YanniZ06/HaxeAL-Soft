@@ -5,5 +5,7 @@ import cpp.ConstStar;
 import cpp.Char;
 import cpp.UInt8;
 import cpp.Star;
+import cpp.Pointer;
+import cpp.Stdlib;
 
 using cpp.Native;
