@@ -29,6 +29,8 @@ class Main { //0x1005
 		}
 
 		trace("eat my ass!");
+		trace(context);
+		trace(ALC.getCurrentContext());
 		//trace(ALFunctions.getError());
 	}
 }
@@ -53,10 +55,10 @@ extern class ALC {
 	@:native("alcDestroyContext")
 	static function destroyContext(context:Star<ALContext>):Void;
 
-	@:native("alcProcessContext")
+	@:native("alcProcessContext") //! UNTESTED
 	static function processContext(context:Star<ALContext>):Void;
 
-	@:native("alcSuspendContext")
+	@:native("alcSuspendContext") //! UNTESTED
 	static function suspendContext(context:Star<ALContext>):Void;
 
 	@:native("alcGetCurrentContext")
@@ -66,7 +68,7 @@ extern class ALC {
 	@:native("alcGetContextsDevice")
 	static function getDeviceFromContext(context:Star<ALContext>):Star<ALDevice>;
 
-    @:native("alcGetError")
+    @:native("alcGetError") // ? Probably works, requires further testing
     static function getError(device:Star<ALDevice>):Int;
 
 	@:native("alcOpenDevice")
@@ -79,7 +81,7 @@ extern class ALC {
 	@:native("alcGetString")
 	static function getString(device:Star<ALDevice>, param:Int):ConstCharStar;
 
-	@:native("alcGetIntegerv")
+	@:native("alcGetIntegerv") // TODO
 	static function getIntegers(device:Star<ALDevice>, param:Int, size:Int, values:Star<Int>):Void;
 }
 @:unreflective @:keep
