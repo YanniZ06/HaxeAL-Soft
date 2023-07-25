@@ -1,15 +1,5 @@
 package haxeal.bindings;
 
-// Context related objects
-@:unreflective @:keep
-@:include("alc.h") @:structAccess @:native('ALCdevice')
-extern class ALDevice {}
-
-@:unreflective @:keep
-@:include("alc.h") @:structAccess @:native('ALCcontext')
-extern class ALContext {}
-// -
-
 @:unreflective @:keep
 @:include("alc.h")
 extern class ALC {
@@ -52,3 +42,13 @@ extern class ALC {
 	@:native("alcGetIntegerv") // TODO
 	static function getIntegers(device:Star<ALDevice>, param:Int, size:Int, values:Star<Int>):Void;
 }
+
+// Context related objects
+@:unreflective @:keep
+@:include("alc.h") @:structAccess @:native('ALCdevice')
+extern class ALDevice {}
+
+@:unreflective @:keep
+@:include("alc.h") @:structAccess @:native('ALCcontext')
+extern class ALContext {}
+// -

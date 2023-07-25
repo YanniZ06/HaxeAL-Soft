@@ -1,10 +1,10 @@
 package haxeal.bindings;
 
 class BinderHelper {
-    public static inline function arrayToConstStar<T>(objOfType:T, array:Array<T>):ConstStar<T> {
-        final asStar:Null<Star<T>> = Pointer.ofArray(array).ptr;
+    public static inline function arrayInt_ToConstStar(array:Array<Int>):ConstStar<Int> {
+        final asStar:Null<Star<Int>> = Pointer.ofArray(array).ptr;
         return cast asStar;
     }
 
-    public static inline function arrayToStar<T>(objOfType:T, array:Array<T>):Star<T> return Pointer.ofArray(array).ptr;
+    public static inline function arrayInt_ToStar(array:Array<Int>):Star<Int> return Pointer.ofArray(array).ptr;
 }

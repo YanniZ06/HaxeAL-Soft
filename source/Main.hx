@@ -1,7 +1,9 @@
 package;
 
-import haxeal.bindings.*;
+//import haxeal.bindings.*;
 //import haxeal.bindings.ALC.*;
+import haxeal.ALObjects.ALContext;
+import haxeal.ALObjects.ALDevice;
 
 // These will be removed when the bindings are re-translated, for now they are necessary
 import cpp.ConstCharStar;
@@ -14,27 +16,25 @@ using cpp.Native;
 
 @:buildXml('<include name="../builder.xml" />')
 class Main {
-	static var device:Star<ALC.ALDevice>;
-	static var context:Star<ALC.ALContext>;
+	static var device:ALDevice;
+	static var context:ALContext;
 
 	static function main() {
-		var name:String = ALC.getString(null, 0x1005);
-		device = ALC.openDevice(name);
+		var name:String = haxeal.bindings.ALC.getString(null, 0x1005);
+		haxeal.AL.getErrorString(haxeal.AL.getError());
+		device = haxeal.bindings.ALC.openDevice(name);
 		if(device != null) {
-			context = ALC.createContext(device, null);
+			context = haxeal.ALC.createContext(device, null); //! USE haxeal.bindings.ALC.createContext to make it NOT error :)
 
-			if(context != null) ALC.makeContextCurrent(context);
-			trace(ALC.getError(device));
+			if(context != null) haxeal.bindings.ALC.makeContextCurrent(context);
+			haxeal.AL.getErrorString(haxeal.bindings.ALC.getError(device));
 
 			// ? EXPERIMENTAL
-			/*var array:Star<Int> = 0; 
-			ALC.getIntegers(device, 0x1001, cpp.Stdlib.sizeof(Int), array);
-			final arrayTrue:Array<Int> = cpp.Pointer.fromStar(array).toUnmanagedArray(1);
-			trace(arrayTrue);*/
+			//trace(haxeal.ALC.getIntegers(device, 0x1001));
 		}
 
 		trace(context);
-		trace(ALC.getCurrentContext());
+		//trace(haxeal.bindings.ALC.getCurrentContext());
 		//trace(AL.getError());
 	}
 }
