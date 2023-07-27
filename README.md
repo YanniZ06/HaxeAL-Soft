@@ -25,17 +25,15 @@ This segment will define the intended code structure for this library.
 ## File Placement
 Having good folder and file management is certainly not unimportant while making a nice and easy to work with library.
 
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
-**C(++) to Haxe Native Binding Files** all go into the `haxeal/bindings` folder.
+**C(++) to Haxe Native Binding Files** all go into the `haxeal/bindings` folder, under the name of the header file they are creating bindings for.
 
 
-**Native Hx to regular std-type Hx Files** all go into the `haxeal` folder, under the same name of their `bindings` folder counterparts.
+**Native Hx to regular std-type Hx Files** all go into the `haxeal` folder, under the same name of their `bindings` folder counterparts with a "Haxe" prefix.
+Example: Context -> HaxeContext
 
 
 **Testing and everything else** can go into Main.hx, doesn't matter how really, go nuts!
-
-| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
 
 ## Differentiating between Native Binding and Regular Std-Type Hx Files
 
@@ -146,7 +144,9 @@ The binding with all our correct haxe types should now look like this:
 
 These are the files that users of the library will use to make interacting with our binds easier.
 
-These are regular classes that contain the same functions and have the same names as their extern counterparts.
+These are regular classes that contain the same functions as their extern counterparts, however their class name (and the file name aswell) have "Haxe" appended before,
+which is crucial to keeping compatibility with the extern generated file by the same name (it doesnt matter what package it is in, it will try to replace it nonetheless and will throw a
+dozen of cpp errors at you about wrong syntax despite everything being right).
 
 The arguments and return types for these functions should not contain any cpp package objects, and instead make use of easy to use non cpp objects.
 
@@ -163,7 +163,7 @@ extern class IntExamp {
 //...
 
 import bindings.IntExamp as IntImp;
-class IntExamp {
+class HaxeIntExamp {
  /**
  * Returns the proper Integer value of ´myInt´
  * @param myInt The Int you want to get the proper value of.
