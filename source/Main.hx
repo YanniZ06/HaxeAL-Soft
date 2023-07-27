@@ -28,8 +28,8 @@ class Main {
 		if(device != null) {
 			context = HaxeALC.createContext(device); //! USE ALC.createContext to make it NOT error :)
 
-			if(context != null) ALC.makeContextCurrent(context);
-			HaxeAL.getErrorString(ALC.getError(device));
+			if(context != null) trace(HaxeALC.makeContextCurrent(context));
+			HaxeAL.getErrorString(HaxeALC.getError(device));
 
 			// ? EXPERIMENTAL
 			//trace(haxeal.ALC.getIntegers(device, 0x1001));
