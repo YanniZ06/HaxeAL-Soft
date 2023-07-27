@@ -1,6 +1,6 @@
 package haxeal;
-import haxeal.bindings.AL as AL_B;
-class AL {
+import haxeal.bindings.AL;
+class HaxeAL {
     //Error Getting Functions
 
     /**
@@ -8,7 +8,7 @@ class AL {
      * 
      * The definition can be logged to the console using `getErrorString` or obtained as a variable using `getErrorDefinition`.
      */
-    public static function getError():Int { return AL_B.getError(); }
+    public static function getError():Int { return AL.getError(); }
     
     /**
      * Logs the definition of an error code to the console.

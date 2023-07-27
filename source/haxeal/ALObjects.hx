@@ -1,4 +1,4 @@
 package haxeal;
 
-typedef ALContext = cpp.Star<haxeal.bindings.ALC.ALContext>;
-typedef ALDevice = cpp.Star<haxeal.bindings.ALC.ALDevice>;
+typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
+typedef ALContext = Star<haxeal.bindings.ALC.ALCcontext>;
