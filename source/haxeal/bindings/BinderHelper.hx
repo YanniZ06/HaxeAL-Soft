@@ -9,6 +9,12 @@ class BinderHelper {
         return cast asStar;
     }
 
+    public static inline function constStar_ToArrayInt(str:ConstStar<Int>):Array<Int> {
+        final length:Float = untyped __cpp__('sizeof({0}) / sizeof(*{0})', str);
+        trace(length);
+        return Pointer.fromStar(cpp.ConstPointer.fromPointer(str).ptr).toUnmanagedArray(Std.int(length)); //   .toUnmanagedArray(Std.int(length));
+    }
+
     /**
      * Turns an array of integers into an integer pointer (Star<Int>)
      */
