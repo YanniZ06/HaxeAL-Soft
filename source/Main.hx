@@ -38,7 +38,7 @@ class Main {
 			//trace(haxeal.ALC.getIntegers(device, 0x1001));
 		}
 		
-		var arrayFunny:Array<Int> = [0,1,2];
+		var arrayFunny:Array<Int> = [0,5,2,3,4,1,6,7,8];
 		var starArray = BinderHelper.arrayInt_ToStar(arrayFunny);
 		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray);
 		trace(dereferencedArray);

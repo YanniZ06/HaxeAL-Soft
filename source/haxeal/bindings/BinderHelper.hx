@@ -9,6 +9,8 @@ class BinderHelper {
 
     public static inline function star_ToArrayInt(str:Star<Int>):Array<Int> {
         final length:Float = untyped __cpp__('sizeof({0}) / sizeof(*{0})', str);
+        trace(length);
+        trace(Std.int(length));
         return Pointer.fromStar(str).toUnmanagedArray(Std.int(length)); //   .toUnmanagedArray(Std.int(length));
     }
 
