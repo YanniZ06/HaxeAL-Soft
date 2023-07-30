@@ -26,6 +26,7 @@ class Main {
 	static function main() {
 		var name:String = ALC.getString(null, 0x1005);
 		HaxeAL.getErrorString(HaxeAL.getError());
+		trace(name);
 		device = ALC.openDevice(name);
 		if(device != null) {
 			context = HaxeALC.createContext(device); //! USE ALC.createContext to make it NOT error :)
@@ -38,8 +39,8 @@ class Main {
 		}
 		
 		var arrayFunny:Array<Int> = [0,1,2];
-		var starArray = BinderHelper.arrayInt_ToConstStar(arrayFunny);
-		var dereferencedArray = BinderHelper.constStar_ToArrayInt(starArray);
+		var starArray = BinderHelper.arrayInt_ToStar(arrayFunny);
+		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray);
 		trace(dereferencedArray);
 
 		trace(context);

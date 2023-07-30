@@ -4,15 +4,12 @@ class BinderHelper {
     /**
      * Turns an array of integers into a const integer pointer (ConstStar<Int>)
      */
-    public static inline function arrayInt_ToConstStar(array:Array<Int>):ConstStar<Int> {
-        final asStar:Null<Star<Int>> = Pointer.ofArray(array).ptr;
-        return cast asStar;
-    }
+    public static inline function arrayInt_ToConstStar(array:Array<Int>):ConstStar<Int> 
+        return (cast Pointer.ofArray(array).ptr : ConstStar<Int>);
 
-    public static inline function constStar_ToArrayInt(str:ConstStar<Int>):Array<Int> {
+    public static inline function star_ToArrayInt(str:Star<Int>):Array<Int> {
         final length:Float = untyped __cpp__('sizeof({0}) / sizeof(*{0})', str);
-        trace(length);
-        return Pointer.fromStar(cpp.ConstPointer.fromPointer(str).ptr).toUnmanagedArray(Std.int(length)); //   .toUnmanagedArray(Std.int(length));
+        return Pointer.fromStar(str).toUnmanagedArray(Std.int(length)); //   .toUnmanagedArray(Std.int(length));
     }
 
     /**
