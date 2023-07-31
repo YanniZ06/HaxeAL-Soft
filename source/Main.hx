@@ -11,7 +11,7 @@ import haxeal.bindings.BinderHelper;
 
 // These will be removed when the bindings are re-translated, for now they are necessary
 import cpp.ConstCharStar;
-import cpp.ConstStar;
+//import cpp.ConstStar;
 import cpp.Char;
 import cpp.UInt8;
 import cpp.Star;
@@ -38,9 +38,9 @@ class Main {
 			//trace(haxeal.ALC.getIntegers(device, 0x1001));
 		}
 		
-		var arrayFunny:Array<Int> = [0,5,2,3,4,1,6,7,8];
+		var arrayFunny:Array<Int> = [0,1,2,3,4,5,6,7,8];
 		var starArray = BinderHelper.arrayInt_ToStar(arrayFunny);
-		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray);
+		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray, arrayFunny.length );
 		trace(dereferencedArray);
 
 		trace(context);
@@ -49,6 +49,6 @@ class Main {
 	}
 
 	public static function createContext(device:ALDevice, ?attributes:Array<Int>):ALContext {
-		return ALC.createContext(device, attributes != null ? haxeal.bindings.BinderHelper.arrayInt_ToConstStar(attributes) : null);
+		return ALC.createContext(device, attributes != null ? haxeal.bindings.BinderHelper.arrayInt_ToPtr(attributes) : null);
 	}
 }

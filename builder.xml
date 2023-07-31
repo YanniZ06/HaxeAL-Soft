@@ -1,5 +1,11 @@
 <xml>
-    <copy to="output" from="OpenAL32.dll" /> <!-- Move the compiled openal to the output folder when we're done -->
+    <!-- XML LAYOUT MOSTLY COPIED FROM @LEATHER128'S HXOPENAL PROJECT: https://github.com/Leather128/hxopenal/blob/main/include.xml -->
+    <!-- SHOULD WORK BETTER CROSS PLATFORM, THANKS LEATHER!! -->
+
+    <!--copy to="output" from="OpenAL32.dll" unless="windows"/--> <!-- Move the compiled openal to the output folder when we're done (old resolution) -->
+
+    <copyFile name="OpenAL32.dll" from="${this_dir}/source/openal/libs" toolId="exe"
+		overwrite="true" if="windows" />
 
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
@@ -9,7 +15,23 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
-    <target id='haxe' tool='linker' toolid='exe'>
+    <!-- It appears linker is a little bitch on some PCs, so we're using a different technique -->
+    <!--target id='haxe' tool='linker' toolid='exe'>
         <lib name="${this_dir}/source/openal/libs/OpenAL32.lib"/>
-    </target>
+    </target-->
+
+    <target id="haxe">
+		<section if="windows">
+			<libpath name="${this_dir}/source/openal/libs" if="windows" />
+			<lib name="OpenAL32.lib" />
+		</section>
+
+		<section if="macos || iphoneos || iphonesim">
+			<vflag name="-framework" value="OpenAL" />
+		</section>
+
+		<section if="linux">
+			<lib name="-lopenal" />
+		</section>
+	</target>
 </xml>

@@ -66,6 +66,14 @@ class HaxeAL {
 	public static inline final EXPONENT_DISTANCE:Int = 0xD005;
 	public static inline final EXPONENT_DISTANCE_CLAMPED:Int = 0xD006;
 
+    public static var arrayVConstMappings:Map<Null<Int>, Int> = [
+        null => 1,
+        POSITION => 3,
+        VELOCITY => 3,
+        DIRECTION => 3,
+        ORIENTATION => 2
+    ];
+
     // Renderer State Management
     /**
      * Enables the given capability.

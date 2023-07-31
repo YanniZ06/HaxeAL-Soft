@@ -6,7 +6,7 @@ package haxeal.bindings;
 extern class ALC {
 	// Context creation and configuration
 	@:native("alcCreateContext")
-	static function createContext(device:Star<ALCdevice>, attributes:ConstStar<Int>):Star<ALCcontext>;
+	static function createContext(device:Star<ALCdevice>, attributes:Pointer<Int>):Star<ALCcontext>;
 
 	@:native("alcMakeContextCurrent")
 	static function makeContextCurrent(context:Star<ALCcontext>):Char;

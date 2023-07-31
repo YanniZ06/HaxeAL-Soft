@@ -11,7 +11,7 @@ import haxeal.ALObjects.FunctionAddress;
 class HaxeALC {
     // Context creation and configuration
 	public static function createContext(device:ALDevice, ?attributes:Array<Int>):ALContext {
-		return ALC.createContext(device, attributes != null ? arrayInt_ToConstStar(attributes) : null);
+		return ALC.createContext(device, attributes != null ? arrayInt_ToPtr(attributes) : null);
 	}
 
 	public static function makeContextCurrent(context:ALContext):Bool { return al_bool(ALC.makeContextCurrent(context)); }
