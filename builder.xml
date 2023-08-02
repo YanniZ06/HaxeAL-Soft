@@ -2,7 +2,7 @@
     <!-- XML LAYOUT HAS SOME STUFF FROM @LEATHER128'S HXOPENAL PROJECT: https://github.com/Leather128/hxopenal/blob/main/include.xml -->
     <!-- THANKS LEATHER!! -->
 
-    <copy to="output" from="OpenAL32.dll" unless="windows"/> <!-- Move the compiled openal to the output folder when we're done -->
+    <copy to="output" from="OpenAL32.dll"/> <!-- Move the compiled openal to the output folder when we're done -->
 
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
@@ -12,8 +12,8 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
-    <!-- It appears linker is a little bitch on some PCs, so we're using a different technique -->
 	<!-- Nevermind it still uses linker oops, might go back to this again as its less messy shrug-->
+    <!-- if="HXCPP_M32" || USE TO CHECK IF PC IS 32 BIT TO COMPILE TO 32BIT, OTHERWISE COMPILE CURRENT 64 BIT -->
     <target id='haxe' tool='linker' toolid='exe'>
         <lib name="${this_dir}/source/openal/libs/OpenAL32.lib"/>
     </target>
