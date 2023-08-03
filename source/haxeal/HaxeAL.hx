@@ -2,6 +2,7 @@ package haxeal;
 
 import haxeal.bindings.AL;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
+import haxeal.ALObjects.FunctionAddress;
 
 class HaxeAL {
     public static inline final NONE:Int = 0;
@@ -71,7 +72,7 @@ class HaxeAL {
         POSITION => 3,
         VELOCITY => 3,
         DIRECTION => 3,
-        ORIENTATION => 2
+        ORIENTATION => 2 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with
     ];
 
     // Renderer State Management
@@ -177,6 +178,7 @@ class HaxeAL {
      */
     public static function getDouble(param:Int):Float { return AL.getDouble(param); }
 
+    // I don't think these are necessary, at all, ever, I found 0 use for them, I'm not gonna do them right now.
     /**
      * Returns an array of boolean values from the given AL parameter.
      * @param param Parameter to get values of.
@@ -200,6 +202,37 @@ class HaxeAL {
      * @param param Parameter to get values of.
      */
     //public static function getDoublev(param:Int, values:Star<cpp.Float64>):Void;
+
+    // Extensions
+	/**
+	 * Returns true if an extension by the given name is available on this context.
+	 * @param extName Name of the extension to check for.
+	 */
+	public static function isExtensionPresent(extName:String):Bool { return AL.isExtensionPresent(extName); }
+
+	/**
+	 * Advanced usage function, gets the pointer to a function by name and returns it.
+	 * 
+	 * The returned function address can be casted to a defined function.
+	 * 
+	 * The defined function then acts as a caller for the pointed to function.
+	 * 
+	 * This function hasn't been tested and might not work as expected.
+	 * @param funcName Name of the function you want to get. The function might be context specific.
+	 */
+	public static function getProcAddress(funcName:String):FunctionAddress {
+		return AL.getProcAddress(funcName);
+	}
+
+    /**
+     * Retrieves an AL enum value (Integer) from the given name.
+     * @param enumName The enum value to get.
+     */
+    public static function getEnumValue(enumName:String):Int return AL.getEnumValue(enumName);
+
+    // Listener Parameter Setting
+
+    // put them here
 
     //Error Getting Functions
 

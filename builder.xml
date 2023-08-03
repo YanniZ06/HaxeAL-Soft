@@ -5,6 +5,7 @@
     <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32" />
     <set name="PROCESSOR_TYPE" value="x64" if="HXCPP_M64" />
     <set name="openal_dir" value="source/openal/libs/${PROCESSOR_TYPE}" />
+    
     <copy to="output" from="${openal_dir}/OpenAL32.dll"/> <!-- Move the compiled openal to the output folder when we're done -->
 
 	<files id="__main__">

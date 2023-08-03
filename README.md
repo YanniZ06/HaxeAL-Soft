@@ -201,6 +201,7 @@ In short its only really important to differentiate between issue/bugfixes, impr
 Current estimated progress will be tracked here, [on the Haxe Discord](https://discord.gg/Pfx78swKzz)'s projects tab post for HaxeAL Soft, and on [my twitter](https://twitter.com/YanniZ06) (occasionally).
 
 ## Finished Features
-* The binding of most Context and Device related functions is done and tested (however ALC still has a lot left to be bound).
-* The general file structure is set up
-* Yeah err thats about it right now
+* The binding of AL.h and ALC.h is completely done.
+* Proper File structure.
+* Windows support on x86 (32 Bit) AND x64 (64 Bit) processors (compiles different libraries
+* A bunch of the Hx Std-type files are being worked on (HaxeAL, HaxeALC)

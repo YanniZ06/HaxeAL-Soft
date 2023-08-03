@@ -48,6 +48,11 @@ class HaxeALC {
 
 	// Extensions
 
+	/**
+	 * Returns true if an extension by the given name is available on the given device.
+	 * @param device Extension related device, can be left as null if the extension isnt device specific.
+	 * @param extName Name of the extension to check for.
+	 */
 	public static function isExtensionPresent(?device:ALDevice, extName:String):Bool { return ALC.isExtensionPresent(device, extName); }
 
 	/**
@@ -65,6 +70,13 @@ class HaxeALC {
 	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress {
 		return ALC.getProcAddress(device, funcName);
 	}
+
+	/**
+     * Retrieves an AL enum value (Integer) from the given name.
+	 * @param device Enum related device, can be left as null if the enum isnt device specific.
+     * @param enumName The enum value to get.
+     */
+	public static function getEnumValue(?device:ALDevice, enumName:String):Int return ALC.getEnumValue(device, enumName);
 
 	// Other
 	/**
