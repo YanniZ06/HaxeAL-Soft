@@ -124,20 +124,20 @@ If we search `ALCint` in alc.h, we can find it defined as a regular Int:
 
 Hence, the representative type is also an Int.
 
-The haxe Type representing a star const argument is `cpp.ConstStar<T>`.
+The haxe Type representing a star const argument is `cpp.ConstStar<T>`, however as that has remained hard to work with we will use cpp.Pointer<T> instead.
 
 ---
 
 Now we finally have all our types figured out.
 
-The first argument is of type `Star<ALDevice>` (we define ALCdevice as ALDevice for ease of use), the second of type `ConstStar<Int>`, and the return value is of type `Star<ALContext>`.
+The first argument is of type `Star<ALDevice>` (we define ALCdevice as ALDevice for ease of use), the second of type `Pointer<Int>`, and the return value is of type `Star<ALContext>`.
 
 This process can be repeated for every other function in every other header aswell and always work in the same way, minus few exceptions like a const argument with a star of type Char being a standalone `cpp.ConstCharStar`.
 
 The binding with all our correct haxe types should now look like this:
 ```hx
 	@:native("alcCreateContext")
-	static function createContext(device:Star<ALDevice>, attributes:ConstStar<Int>):Star<ALContext>;
+	static function createContext(device:Star<ALDevice>, attributes:Pointer<Int>):Star<ALContext>;
 ```
 
 ### Regular Std-Type Hx Files
