@@ -11,14 +11,18 @@ class BinderHelper {
 
     public static inline function arrayInt_ToPtr(array:Array<Int>):Pointer<Int> return Pointer.ofArray(array);
 
-    public static inline function star_ToArrayInt(str:Star<Int>, len:Int):Array<Int> {
-        return Pointer.fromStar(str).toUnmanagedArray(Std.int(len)); //   .toUnmanagedArray(Std.int(length));
-    }
-
     /**
      * Turns an array of integers into an integer pointer (Star<Int>)
      */
     public static inline function arrayInt_ToStar(array:Array<Int>):Star<Int> return Pointer.ofArray(array).ptr;
+
+    public static inline function float_ToPtr(f:Float):Pointer<Float> return Pointer.addressOf(f);
+
+    public static inline function arrayFloat_ToPtr(array:Array<Float>):Pointer<Float> return Pointer.ofArray(array);
+
+    public static inline function star_ToArrayInt(str:Star<Int>, len:Int):Array<Int> {
+        return Pointer.fromStar(str).toUnmanagedArray(Std.int(len)); //   .toUnmanagedArray(Std.int(length));
+    }
 
     /**
      * Turns an integer into a boolean value.

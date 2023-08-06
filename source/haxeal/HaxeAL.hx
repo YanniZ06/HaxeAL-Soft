@@ -3,6 +3,8 @@ package haxeal;
 import haxeal.bindings.AL;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.FunctionAddress;
+import haxeal.ALObjects.ALSource;
+import haxeal.ALObjects.ALBuffer;
 
 class HaxeAL {
     public static inline final NONE:Int = 0;
@@ -231,8 +233,63 @@ class HaxeAL {
     public static function getEnumValue(enumName:String):Int return AL.getEnumValue(enumName);
 
     // Listener Parameter Setting
+    public static function listenerf(param:Int, value:Float):Void { AL.listenerf(param, value); }
 
-    // put them here
+    public static function listener3f(param:Int, value1:Float, value2:Float, value3:Float):Void { AL.listener3f(param, value1, value2, value3); }
+
+    public static function listenerfv(param:Int, values:Array<Float>):Void { AL.listenerfv(param, cast arrayFloat_ToPtr(values)); }
+
+    public static function listeneri(param:Int, value:Int):Void { AL.listeneri(param, value); }
+
+    public static function listener3i(param:Int, value1:Int, value2:Int, value3:Int):Void { AL.listener3i(param, value1, value2, value3); }
+
+    public static function listeneriv(param:Int, values:Array<Int>):Void { AL.listeneriv(param, arrayInt_ToPtr(values)); }
+
+    // Listener Parameter Getting
+    static function getListenerf(param:Int):Float {
+        var cntr:Star<cpp.Float32> = 5.addressOf();
+        AL.getListenerf(param, cntr);
+        return cntr.get();
+    }
+
+    /*
+    static function getListener3f(param:Int, value1:Star<cpp.Float32>, value2:Star<cpp.Float32>, value3:Star<cpp.Float32>):Void;
+
+    static function getListenerfv(param:Int, values:Star<cpp.Float32>):Void;
+
+    static function getListeneri(param:Int, value:Star<Int>):Void;
+
+    static function getListener3i(param:Int, value1:Star<Int>, value2:Star<Int>, value3:Star<Int>):Void;
+
+    static function getListeneriv(param:Int, values:Star<Int>):Void;
+    */
+
+
+    // Source Parameter Setting
+    public static function sourcef(source:ALSource, param:Int, value:Float):Void { AL.sourcef(source, param, value); }
+
+    public static function source3f(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.source3f(source, param, value1, value2, value3); }
+
+    public static function sourcefv(source:ALSource, param:Int, values:Array<Float>):Void { AL.sourcefv(source, param, cast arrayFloat_ToPtr(values)); }
+
+    public static function sourcei(source:ALSource, param:Int, value:Int):Void {AL.sourcei(source, param, value); }
+
+    public static function source3i(source:ALSource, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.source3i(source, param, value1, value2, value3); }
+
+    public static function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
+
+    // Buffer Parameter Setting
+    public static function bufferf(buffer:ALBuffer, param:Int, value:Float):Void {AL.bufferf(buffer, param, value); }
+        
+    public static function buffer3f(buffer:ALBuffer, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.buffer3f(buffer, param, value1, value2, value3); }
+    
+    public static function bufferfv(buffer:ALBuffer, param:Int, values:Array<Float>):Void {AL.bufferfv(buffer, param, cast arrayFloat_ToPtr(values)); }
+    
+    public static function bufferi(buffer:ALBuffer, param:Int, value:Int):Void {AL.bufferi(buffer, param, value); }
+
+    public static function buffer3i(buffer:ALBuffer, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.buffer3i(buffer, param, value1, value2, value3); }
+
+    public static function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {AL.bufferiv(buffer, param, arrayInt_ToPtr(values)); }
 
     //Error Getting Functions
 
