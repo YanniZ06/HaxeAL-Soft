@@ -20,8 +20,10 @@ class BinderHelper {
 
     public static inline function arrayFloat_ToPtr(array:Array<Float>):Pointer<Float> return Pointer.ofArray(array);
 
+    public static inline function star_ToArrayFloat(str:Star<Float>, len:Int):Array<Float> return Pointer.fromStar(str).toUnmanagedArray(len);
+
     public static inline function star_ToArrayInt(str:Star<Int>, len:Int):Array<Int> {
-        return Pointer.fromStar(str).toUnmanagedArray(Std.int(len)); //   .toUnmanagedArray(Std.int(length));
+        return Pointer.fromStar(str).toUnmanagedArray(len); //   .toUnmanagedArray(Std.int(length));
     }
 
     /**

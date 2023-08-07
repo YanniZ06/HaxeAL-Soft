@@ -6,6 +6,11 @@ import haxeal.ALObjects.FunctionAddress;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
+@:structInit
+private class FloatH {
+    public var f:Float;
+}
+
 class HaxeAL {
     public static inline final NONE:Int = 0;
 	public static inline final FALSE:Int = 0;
@@ -181,6 +186,7 @@ class HaxeAL {
     public static function getDouble(param:Int):Float { return AL.getDouble(param); }
 
     // I don't think these are necessary, at all, ever, I found 0 use for them, I'm not gonna do them right now.
+    // If you really need them add them yourself, I already documented them. (or someone can make a pr idrc lol)
     /**
      * Returns an array of boolean values from the given AL parameter.
      * @param param Parameter to get values of.
@@ -233,49 +239,187 @@ class HaxeAL {
     public static function getEnumValue(enumName:String):Int return AL.getEnumValue(enumName);
 
     // Listener Parameter Setting
+    /**
+     * Sets a float value for the given parameter of the current listener object.
+     * @param param Parameter to set value of.
+     * @param value New float value for the parameter.
+     */
     public static function listenerf(param:Int, value:Float):Void { AL.listenerf(param, value); }
 
+    /**
+     * Sets three float values for the given parameter of the current listener object.
+     * @param param Parameter to set values of.
+     * @param value1 First float value for the parameter.
+     * @param value2 Second float value for the parameter.
+     * @param value3 Third float value for the parameter.
+     */
     public static function listener3f(param:Int, value1:Float, value2:Float, value3:Float):Void { AL.listener3f(param, value1, value2, value3); }
 
+    /**
+     * Sets an array of float values for the given parameter of the current listener object.
+     * @param param Parameter to set values of.
+     * @param values New float values for the parameter as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function listenerfv(param:Int, values:Array<Float>):Void { AL.listenerfv(param, cast arrayFloat_ToPtr(values)); }
 
+    /**
+     * Sets an integer value for the given parameter of the current listener object.
+     * @param param Parameter to set value of.
+     * @param value New integer value for the parameter.
+     */
     public static function listeneri(param:Int, value:Int):Void { AL.listeneri(param, value); }
 
+    /**
+     * Sets three integer values for the given parameter of the current listener object.
+     * @param param Parameter to set values of.
+     * @param value1 First integer value for the parameter.
+     * @param value2 Second integer value for the parameter.
+     * @param value3 Third integer value for the parameter.
+     */
     public static function listener3i(param:Int, value1:Int, value2:Int, value3:Int):Void { AL.listener3i(param, value1, value2, value3); }
 
+    /**
+     * Sets an array of integer values for the given parameter of the current listener object.
+     * @param param Parameter to set values of.
+     * @param values New integer values for the parameter as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function listeneriv(param:Int, values:Array<Int>):Void { AL.listeneriv(param, arrayInt_ToPtr(values)); }
 
     // Listener Parameter Getting
-    static function getListenerf(param:Int):Float {
-        var cntr:Star<cpp.Float32> = 5.addressOf();
-        AL.getListenerf(param, cntr);
-        return cntr.get();
+    /**
+     * Returns the current float value of the given param.
+     * @param param Param to get value of.
+     */
+    public static function getListenerf(param:Int):Float {
+        var n = -0.012345678;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getListenerf(param, fstr);
+        return fstr.get();
     }
 
-    /*
-    static function getListener3f(param:Int, value1:Star<cpp.Float32>, value2:Star<cpp.Float32>, value3:Star<cpp.Float32>):Void;
+    /**
+     * Returns an array of three float values from the given param.
+     * @param param Param to get value of.
+     */
+    public static function getListener3f(param:Int):Array<Float> {
+        var n1, n2, n3:FloatH; // I am so sorry
+        n1 = n2 = n3 = {f: -0.012345678};
 
-    static function getListenerfv(param:Int, values:Star<cpp.Float32>):Void;
+        var fstr, fstr2, fstr3:Star<cpp.Float32>;
+        fstr = fstr2 = fstr3 = n1.f.addressOf();
 
-    static function getListeneri(param:Int, value:Star<Int>):Void;
 
-    static function getListener3i(param:Int, value1:Star<Int>, value2:Star<Int>, value3:Star<Int>):Void;
+        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = v.f.addressOf();
+        AL.getListener3f(param, fstr, fstr2, fstr3);
+        return [fstr.get(), fstr2.get(), fstr3.get()];
+    }
 
-    static function getListeneriv(param:Int, values:Star<Int>):Void;
-    */
+    /**
+     * Returns an array of multiple float values from the given param.
+     * 
+     * The array size depends on the given param.
+     * @param param Param to get values of.
+     */
+    public static function getListenerfv(param:Int):Array<Float> {
+        var n = -0.012345678;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getListenerfv(param, fstr);
 
+        return star_ToArrayFloat(fstr, arrayVConstMappings[param]);
+    }
+
+    /**
+     * Returns the current integer value of the given param.
+     * @param param Param to get value of.
+     */
+    public static function getListeneri(param:Int):Int {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getListeneri(param, istr);
+        return istr.get();
+    }
+
+    /**
+     * Returns an array of three integer values from the given param.
+     * @param param Param to get value of.
+     */
+    public static function getListener3i(param:Int):Array<Int> {
+        var n1, n2, n3:Int; // I really am
+        n1 = n2 = n3 = 123456789;
+
+        var istr, istr2, istr3:Star<Int>;
+        istr = istr2 = istr3 = n1.addressOf();
+
+        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = v.addressOf();
+        AL.getListener3i(param, istr, istr2, istr3);
+        return [istr.get(), istr2.get(), istr3.get()];
+    }
+
+    /**
+     * Returns an array of multiple integer values from the given param.
+     * 
+     * The array size depends on the given param.
+     * @param param Param to get values of.
+     */
+    public static function getListeneriv(param:Int, values:Star<Int>):Array<Int> {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getListenerf(param, istr);
+
+        return star_ToArrayInt(istr, arrayVConstMappings[param]);
+    }
 
     // Source Parameter Setting
+    /**
+     * Sets the float value for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set value of.
+     * @param value New float value of the param.
+     */
     public static function sourcef(source:ALSource, param:Int, value:Float):Void { AL.sourcef(source, param, value); }
 
+    /**
+     * Sets three float values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new float value of the param.
+     * @param value2 Second new float value of the param.
+     * @param value3 Third new float value of the param.
+     */
     public static function source3f(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.source3f(source, param, value1, value2, value3); }
 
+    /**
+     * Sets an array of float values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function sourcefv(source:ALSource, param:Int, values:Array<Float>):Void { AL.sourcefv(source, param, cast arrayFloat_ToPtr(values)); }
 
+    /**
+     * Sets the integer value for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set value of.
+     * @param value New integer value of the param.
+     */
     public static function sourcei(source:ALSource, param:Int, value:Int):Void {AL.sourcei(source, param, value); }
 
+    /**
+     * Sets three integer values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new integer value of the param.
+     * @param value2 Second new integer value of the param.
+     * @param value3 Third new integer value of the param.
+     */
     public static function source3i(source:ALSource, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.source3i(source, param, value1, value2, value3); }
 
+    /**
+     * Sets an array of integer values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
 
     // Buffer Parameter Setting
