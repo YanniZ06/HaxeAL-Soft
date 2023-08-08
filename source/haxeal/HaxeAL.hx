@@ -82,6 +82,8 @@ class HaxeAL {
         ORIENTATION => 2 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with
     ];
 
+    static inline function getParamMapping(param:Int) return arrayVConstMappings[param] ?? 1;
+
     // Renderer State Management
     /**
      * Enables the given capability.
@@ -291,7 +293,7 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static function getListenerf(param:Int):Float {
-        var n = -0.012345678;
+        var n = 0.0123456789;
         var fstr:Star<cpp.Float32> = n.addressOf();
         AL.getListenerf(param, fstr);
         return fstr.get();
@@ -303,7 +305,7 @@ class HaxeAL {
      */
     public static function getListener3f(param:Int):Array<Float> {
         var n1, n2, n3:FloatH; // I am so sorry
-        n1 = n2 = n3 = {f: -0.012345678};
+        n1 = n2 = n3 = {f: 0.0123456789};
 
         var fstr, fstr2, fstr3:Star<cpp.Float32>;
         fstr = fstr2 = fstr3 = n1.f.addressOf();
@@ -321,11 +323,11 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static function getListenerfv(param:Int):Array<Float> {
-        var n = -0.012345678;
+        var n = 0.0123456789;
         var fstr:Star<cpp.Float32> = n.addressOf();
         AL.getListenerfv(param, fstr);
 
-        return star_ToArrayFloat(fstr, arrayVConstMappings[param]);
+        return star_ToArrayFloat(fstr, getParamMapping(param));
     }
 
     /**
@@ -366,7 +368,7 @@ class HaxeAL {
         var istr:Star<Int> = n.addressOf();
         AL.getListenerf(param, istr);
 
-        return star_ToArrayInt(istr, arrayVConstMappings[param]);
+        return star_ToArrayInt(istr, getParamMapping(param));
     }
 
     // Source Parameter Setting
@@ -422,18 +424,238 @@ class HaxeAL {
      */
     public static function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
 
+
+    /**
+     * Gets the float value for the target parameter of the given source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getSourcef(source:ALSource, param:Int):Float {
+        var n = 0.0123456789;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getSourcef(source, param, fstr);
+        return fstr.get();
+    }
+
+    /**
+     * Returns an array of three float values for the target parameter of the given source.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getSource3f(source:ALSource, param:Int):Array<Float> {
+        var n1, n2, n3:FloatH; // The sludge consumes all
+        n1 = n2 = n3 = {f: 0.0123456789};
+
+        var fstr, fstr2, fstr3:Star<cpp.Float32>;
+        fstr = fstr2 = fstr3 = n1.f.addressOf();
+
+
+        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = v.f.addressOf();
+        AL.getSource3f(source, param, fstr, fstr2, fstr3);
+        return [fstr.get(), fstr2.get(), fstr3.get()];
+    }
+
+     /**
+     * Returns an array of multiple float values for the target parameter of the given source.
+     * 
+     * The array size depends on the given param.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getSourcefv(source:ALSource, param:Int):Array<Float> {
+        var n = 0.0123456789;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getSourcefv(source, param, fstr);
+
+        return star_ToArrayFloat(fstr, getParamMapping(param));
+    }
+
+    /**
+     * Gets the integer value for the target parameter of the given source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getSourcei(source:ALSource, param:Int):Int {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getSourcei(source, param, istr);
+        return istr.get();
+    }
+
+    /**
+     * Returns an array of three integer values for the target parameter of the given source.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getSource3i(source:ALSource, param:Int):Array<Int> {
+        var n1, n2, n3:Int; // I really am
+        n1 = n2 = n3 = 123456789;
+    
+        var istr, istr2, istr3:Star<Int>;
+        istr = istr2 = istr3 = n1.addressOf();
+    
+        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = v.addressOf();
+        AL.getSource3i(source, param, istr, istr2, istr3);
+        return [istr.get(), istr2.get(), istr3.get()];
+    }
+
+    /**
+     * Returns an array of multiple integer values for the target parameter of the given source.
+     * 
+     * The array size depends on the given param.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getSourceiv(source:ALSource, param:Int):Array<Int> {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getSourceiv(source, param, istr);
+    
+        return star_ToArrayInt(istr, getParamMapping(param));
+    }
+
     // Buffer Parameter Setting
+    /**
+     * Sets the float value for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set value of.
+     * @param value New float value of the param.
+     */
     public static function bufferf(buffer:ALBuffer, param:Int, value:Float):Void {AL.bufferf(buffer, param, value); }
-        
+    
+    /**
+     * Sets three float values for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new float value of the param.
+     * @param value2 Second new float value of the param.
+     * @param value3 Third new float value of the param.
+     */
     public static function buffer3f(buffer:ALBuffer, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.buffer3f(buffer, param, value1, value2, value3); }
     
+    /**
+     * Sets an array of float values for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set values of.
+     * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function bufferfv(buffer:ALBuffer, param:Int, values:Array<Float>):Void {AL.bufferfv(buffer, param, cast arrayFloat_ToPtr(values)); }
     
+    /**
+     * Sets the integer value for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set value of.
+     * @param value New integer value of the param.
+     */
     public static function bufferi(buffer:ALBuffer, param:Int, value:Int):Void {AL.bufferi(buffer, param, value); }
 
+    /**
+     * Sets three integer values for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new integer value of the param.
+     * @param value2 Second new integer value of the param.
+     * @param value3 Third new integer value of the param.
+     */
     public static function buffer3i(buffer:ALBuffer, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.buffer3i(buffer, param, value1, value2, value3); }
 
+    /**
+     * Sets an array of integer values for the target parameter of the given buffer.
+     * @param buffer Buffer to change parameter of.
+     * @param param Param to set values of.
+     * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {AL.bufferiv(buffer, param, arrayInt_ToPtr(values)); }
+
+    // Buffer Parameter Getting
+    /**
+     * Gets the float value for the target parameter of the given buffer.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getBufferf(buffer:ALBuffer, param:Int):Float {
+        var n = 0.0123456789;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getBufferf(buffer, param, fstr);
+        return fstr.get();
+    }
+
+    /**
+     * Returns an array of three float values for the target parameter of the given buffer.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
+        var n1, n2, n3:FloatH; // The sludge consumes all
+        n1 = n2 = n3 = {f: 0.0123456789};
+
+        var fstr, fstr2, fstr3:Star<cpp.Float32>;
+        fstr = fstr2 = fstr3 = n1.f.addressOf();
+
+
+        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = v.f.addressOf();
+        AL.getBuffer3f(buffer, param, fstr, fstr2, fstr3);
+        return [fstr.get(), fstr2.get(), fstr3.get()];
+    }
+
+     /**
+     * Returns an array of multiple float values for the target parameter of the given buffer.
+     * 
+     * The array size depends on the given param.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getBufferfv(buffer:ALBuffer, param:Int):Array<Float> {
+        var n = 0.0123456789;
+        var fstr:Star<cpp.Float32> = n.addressOf();
+        AL.getBufferfv(buffer, param, fstr);
+
+        return star_ToArrayFloat(fstr, getParamMapping(param));
+    }
+
+    /**
+     * Gets the integer value for the target parameter of the given buffer.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getBufferi(buffer:ALBuffer, param:Int):Int {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getBufferi(buffer, param, istr);
+        return istr.get();
+    }
+
+    /**
+     * Returns an array of three integer values for the target parameter of the given buffer.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getBuffer3i(buffer:ALBuffer, param:Int):Array<Int> {
+        var n1, n2, n3:Int; // I really am
+        n1 = n2 = n3 = 123456789;
+    
+        var istr, istr2, istr3:Star<Int>;
+        istr = istr2 = istr3 = n1.addressOf();
+    
+        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = v.addressOf();
+        AL.getBuffer3i(buffer, param, istr, istr2, istr3);
+        return [istr.get(), istr2.get(), istr3.get()];
+    }
+
+    /**
+     * Returns an array of multiple integer values for the target parameter of the given buffer.
+     * 
+     * The array size depends on the given param.
+     * @param buffer Buffer to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getBufferiv(buffer:ALBuffer, param:Int):Array<Int> {
+        var n = 123456789;
+        var istr:Star<Int> = n.addressOf();
+        AL.getBufferiv(buffer, param, istr);
+    
+        return star_ToArrayInt(istr, getParamMapping(param));
+    }
 
     //Error Getting Functions
 
