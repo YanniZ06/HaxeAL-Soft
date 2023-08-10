@@ -25,7 +25,6 @@ class Main {
 
 	static function main() {
 		var name:String = ALC.getString(null, 0x1005);
-		HaxeAL.getErrorString(HaxeAL.getError());
 		trace(name);
 		device = ALC.openDevice(name);
 		if(device != null) {
@@ -38,10 +37,29 @@ class Main {
 			//trace(haxeal.ALC.getIntegers(device, 0x1001));
 		}
 		
+		trace(HaxeAL.getListener3f(HaxeAL.POSITION));
+		HaxeAL.getErrorString(HaxeAL.getError());
+		var src = HaxeAL.createSource();
+		var src2 = HaxeAL.createSource();
+		HaxeAL.getErrorString(HaxeAL.getError());
+		trace(src);
+		trace(src2);
+		trace(HaxeAL.isSource(src));
+		trace(HaxeAL.isSource(src2));
+		HaxeAL.deleteSources([src, src2]);
+
+		trace(HaxeAL.getListenerf(HaxeAL.GAIN));
+		HaxeAL.listenerf(HaxeAL.GAIN, 0.7);
+		trace(HaxeAL.getListenerf(HaxeAL.GAIN));
+		HaxeAL.getErrorString(HaxeAL.getError());
+
+
+		//trace(HaxeAL.createSource());
+		/*
 		var arrayFunny:Array<Int> = [0,1,2,3,4,5,6,7,8];
 		var starArray = BinderHelper.arrayInt_ToStar(arrayFunny);
 		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray, arrayFunny.length );
-		trace(dereferencedArray);
+		trace(dereferencedArray);*/
 
 		trace(context);
 		//trace(ALC.getCurrentContext());

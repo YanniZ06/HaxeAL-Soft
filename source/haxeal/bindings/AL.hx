@@ -7,7 +7,7 @@ import haxeal.ALObjects.ALBuffer;
 @:unreflective @:keep
 @:include("al.h")
 extern class AL {
-    // Renderer State Management
+    // Renderer State Management (Ported!)
     @:native("alEnable")
     static function enable(capability:Int):Void;
 
@@ -17,7 +17,7 @@ extern class AL {
     @:native("alIsEnabled")
     static function isEnabled(capability:Int):Char;
 
-    // Context State Setting
+    // Context State Setting (Ported!)
     @:native("alDopplerFactor")
     static function dopplerFactor(value:cpp.Float32):Void;
 
@@ -30,7 +30,7 @@ extern class AL {
     @:native("alDistanceModel")
     static function distanceModel(distanceModel:Int):Void;
 
-    // Context State Retrieval
+    // Context State Retrieval (Ported!)
     @:native("alGetString")
     static function getString(param:Int):ConstCharStar;
 
@@ -46,6 +46,7 @@ extern class AL {
     @:native("alGetDouble")
     static function getDouble(param:Int):cpp.Float64;
 
+    // Context State Retrieval as Arrays (Won't port, pr if you need it)
     @:native("alGetBooleanv")
     static function getBooleanv(param:Int, values:Star<Char>):Void;
 
@@ -58,7 +59,7 @@ extern class AL {
     @:native("alGetDoublev")
     static function getDoublev(param:Int, values:Star<cpp.Float64>):Void;
 
-    // Extensions
+    // Extensions (Ported!)
     @:native("alIsExtensionPresent")
 	static function isExtensionPresent(extName:ConstCharStar):Bool;
 
@@ -68,7 +69,7 @@ extern class AL {
 	@:native("alGetEnumValue")
 	static function getEnumValue(enumName:ConstCharStar):Int;
 
-    // Listener Parameter Setting
+    // Listener Parameter Setting (Ported!)
     @:native("alListenerf")
     static function listenerf(param:Int, value:cpp.Float32):Void;
 
@@ -86,7 +87,7 @@ extern class AL {
 
     @:native("alListeneriv")
     static function listeneriv(param:Int, values:Pointer<Int>):Void;
-    // Listener Parameter Getting
+    // Listener Parameter Getting (Ported!)
     @:native("alGetListenerf")
     static function getListenerf(param:Int, value:Star<cpp.Float32>):Void;
 
@@ -105,7 +106,7 @@ extern class AL {
     @:native("alGetListeneriv")
     static function getListeneriv(param:Int, values:Star<Int>):Void;
 
-    // Source Handling
+    // Todo: Source Handling (In Progress)
     @:native("alGenSources")
     static function createSources(num:Int, sources:Star<ALSource>):Void;
 
@@ -115,7 +116,7 @@ extern class AL {
     @:native("alIsSource")
     static function isSource(source:ALSource):Char;
 
-    // Source Parameter Setting
+    // Source Parameter Setting (Ported!)
     @:native("alSourcef")
     static function sourcef(source:ALSource, param:Int, value:cpp.Float32):Void;
 
@@ -133,7 +134,7 @@ extern class AL {
 
     @:native("alSourceiv")
     static function sourceiv(source:ALSource, param:Int, values:Pointer<Int>):Void;
-    // Source Parameter Getting
+    // Source Parameter Getting (Ported!)
     @:native("alGetSourcef")
     static function getSourcef(source:ALSource, param:Int, value:Star<cpp.Float32>):Void;
 
@@ -153,7 +154,6 @@ extern class AL {
     static function getSourceiv(source:ALSource, param:Int, values:Star<Int>):Void;
 
     // Source Usage
-
     @:native("alSourcePlay")
     static function sourcePlay(source:ALSource):Void;
 
@@ -197,7 +197,7 @@ extern class AL {
     @:native("alBufferData")
     static function bufferData(buffer:ALBuffer, format:Int, data:Star<cpp.UInt8>, size:Int, sampleRate:Int):Void;
 
-    // Buffer Parameter Setting
+    // Buffer Parameter Setting (Ported!)
     @:native("alBufferf")
     static function bufferf(buffer:ALBuffer, param:Int, value:cpp.Float32):Void;
 
@@ -215,7 +215,7 @@ extern class AL {
 
     @:native("alBufferiv")
     static function bufferiv(buffer:ALBuffer, param:Int, values:Pointer<Int>):Void;
-    // Buffer Parameter Getting
+    // Buffer Parameter Getting (Ported!)
     @:native("alGetBufferf")
     static function getBufferf(buffer:ALBuffer, param:Int, value:Star<cpp.Float32>):Void;
 
@@ -234,7 +234,7 @@ extern class AL {
     @:native("alGetBufferiv")
     static function getBufferiv(buffer:ALBuffer, param:Int, values:Star<Int>):Void;
 
-    // Other
+    // Other (Ported!)
     @:native("alGetError")
     static function getError():Int;
 }

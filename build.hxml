@@ -1,4 +1,5 @@
 -cp source
 --main Main
+-D HAXEAL_DEBUG
 
 --cpp output

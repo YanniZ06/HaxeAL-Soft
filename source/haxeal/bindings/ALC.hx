@@ -4,7 +4,7 @@ package haxeal.bindings;
 @:unreflective @:keep
 @:include("alc.h")
 extern class ALC {
-	// Context creation and configuration
+	// Context creation and configuration (Ported!)
 	@:native("alcCreateContext")
 	static function createContext(device:Star<ALCdevice>, attributes:Pointer<Int>):Star<ALCcontext>;
 
@@ -23,7 +23,7 @@ extern class ALC {
 	@:native("alcGetCurrentContext")
 	static function getCurrentContext():Star<ALCcontext>;
 
-	// Device creation and configuration
+	// Device creation and configuration (Ported!)
 	@:native("alcGetContextsDevice")
 	static function getDeviceFromContext(context:Star<ALCcontext>):Star<ALCdevice>;
 
@@ -36,7 +36,7 @@ extern class ALC {
 	@:native("alcCloseDevice")
 	static function closeDevice(device:Star<ALCdevice>):Char;
 
-	// Capture Device (Audio Recording)
+	// ? Capture Device (Audio Recording) (Awaits porting)
 	@:native("alcCaptureOpenDevice")
 	static function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:cpp.UInt32, captureFormat:Int, bufferSize:Int):Star<ALCdevice>;
 
@@ -52,7 +52,7 @@ extern class ALC {
 	@:native("alcCaptureSamples")
 	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.Void>, samples:Int):Void;
 
-	// Extensions
+	// Extensions (Ported!)
 	@:native("alcIsExtensionPresent")
 	static function isExtensionPresent(device:Star<ALCdevice>, extName:ConstCharStar):Bool;
 
@@ -62,7 +62,7 @@ extern class ALC {
 	@:native("alcGetEnumValue")
 	static function getEnumValue(device:Star<ALCdevice>, enumName:ConstCharStar):Int;
 
-	// Other
+	// Other (Ported?)
 	@:native("alcGetString")
 	static function getString(device:Star<ALCdevice>, param:Int):ConstCharStar;
 
