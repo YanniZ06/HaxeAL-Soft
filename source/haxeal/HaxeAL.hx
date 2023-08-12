@@ -417,6 +417,28 @@ class HaxeAL {
      */
     public static function isSource(source:ALSource):Bool { return al_bool(AL.isSource(source)); }
 
+    // Source Usage
+    
+    public static function sourcePlay(source:ALSource):Void;
+
+    public static function sourceStop(source:ALSource):Void;
+    
+    public static function sourceRewind(source:ALSource):Void;
+    
+    public static function sourcePause(source:ALSource):Void;
+
+    public static function sourcePlayv(num:Int, sources:Pointer<ALSource>):Void;
+
+    public static function sourceStopv(num:Int, sources:Pointer<ALSource>):Void;
+    
+    public static function sourceRewindv(num:Int, sources:Pointer<ALSource>):Void;
+    
+    public static function sourcePausev(num:Int, sources:Pointer<ALSource>):Void;
+
+    public static function sourceQueueBuffers(source:ALSource, numBuffers:Int, buffers:Pointer<ALBuffer>):Void;
+
+    public static function sourceUnqueueBuffers(source:ALSource, numBuffers:Int, buffers:Star<ALBuffer>):Void;
+
     // Source Parameter Setting
     /**
      * Sets the float value for the target parameter of the given source.
@@ -559,6 +581,47 @@ class HaxeAL {
     
         return star_ToArrayInt(istr.ptr, getParamMapping(param));
     }
+
+    // Buffer Handling
+    /**
+     * Returns an array of ALBuffers.
+     * @param num Amount of buffers to return.
+     */
+    public static function createBuffers(num:Int):Array<ALBuffer> {
+        var empty_buffers:Array<ALBuffer> = [];
+        var s_str:Pointer<ALBuffer> = Pointer.ofArray(empty_buffers);
+        AL.createBuffers(num, s_str.ptr);
+
+        var buffers:Array<ALBuffer> = star_ToArrayBuffer(s_str.ptr, num);
+        #if HAXEAL_DEBUG if(isBuffer(buffers[0])) #end return buffers;
+        #if HAXEAL_DEBUG 
+        trace("Warning: Buffers may not have generated properly, returning array of potentially disfunctional buffers");
+        return buffers;
+        #end
+    }
+
+    /**
+     * Creates a buffer and returns it.
+     */
+    public static function createBuffer():ALBuffer { return createBuffers(1)[0]; }
+
+    /**
+     * Deletes an array of ALBuffers.
+     * @param buffers Buffers to delete.
+     */
+    public static function deleteBuffers(buffers:Array<ALBuffer>):Void {
+        AL.deleteBuffers(buffers.length, arrayBuffer_ToPtr(buffers));
+        #if HAXEAL_DEBUG trace('Deleted ${buffers.length} buffers properly: ${!isBuffer(buffers[0])}'); #end
+    }
+
+    public static function deleteBuffer(buffer:ALBuffer) { deleteBuffers([buffer]); }
+
+    /**
+     * Checks if the given buffer is a valid ALBuffer object.
+     * @param buffer 
+     * @return Bool
+     */
+    public static function isBuffer(buffer:ALBuffer):Bool { return al_bool(AL.isBuffer(buffer)); }
 
     // Buffer Parameter Setting
     /**

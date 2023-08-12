@@ -50,6 +50,12 @@ class BinderHelper {
 
     public static inline function star_ToArraySource(str:Star<ALSource>, len:Int):Array<ALSource> return Pointer.fromStar(str).toUnmanagedArray(len);
 
+    public static inline function arrayBuffer_ToPtr(array:Array<ALBuffer>):Pointer<ALBuffer> return Pointer.ofArray(array);
+
+    public static inline function arrayBuffer_ToStar(array:Array<ALBuffer>):Star<ALBuffer> return Pointer.ofArray(array).ptr;
+
+    public static inline function star_ToArrayBuffer(str:Star<ALBuffer>, len:Int):Array<ALBuffer> return Pointer.fromStar(str).toUnmanagedArray(len);
+
 
     public static inline function star_ToArrayFloat32(str:Star<cpp.Float32>, len:Int):Array<Float> {
         var c_arr:Array<cpp.Float32> = Pointer.fromStar(str).toUnmanagedArray(len);

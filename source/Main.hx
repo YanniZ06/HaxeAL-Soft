@@ -28,7 +28,7 @@ class Main {
 		trace(name);
 		device = ALC.openDevice(name);
 		if(device != null) {
-			context = HaxeALC.createContext(device); //! USE ALC.createContext to make it NOT error :)
+			context = HaxeALC.createContext(device);
 
 			if(context != null) trace(HaxeALC.makeContextCurrent(context));
 			HaxeAL.getErrorString(HaxeALC.getError(device));
