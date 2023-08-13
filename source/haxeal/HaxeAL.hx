@@ -408,36 +408,80 @@ class HaxeAL {
         #if HAXEAL_DEBUG trace('Deleted ${sources.length} sources properly: ${!isSource(sources[0])}'); #end
     }
 
+    /**
+     * Deletes a singular ALSource
+     * @param source Source to delete.
+     */
     public static function deleteSource(source:ALSource) { deleteSources([source]); }
 
     /**
      * Checks if the given source is a valid ALSource object.
-     * @param source 
-     * @return Bool
+     * @param source Source to check validity of.
      */
     public static function isSource(source:ALSource):Bool { return al_bool(AL.isSource(source)); }
 
     // Source Usage
-    
-    public static function sourcePlay(source:ALSource):Void;
+    /**
+     * Plays back audio from the sources buffer.
+     * @param source Source to play audio from.
+     */
+    public static function sourcePlay(source:ALSource):Void { AL.sourcePlay(source); }
 
-    public static function sourceStop(source:ALSource):Void;
+    /**
+     * Completely stops audio-playback for the source and sets the sound position back to 0.
+     * @param source Source to stop playback of.
+     */
+    public static function sourceStop(source:ALSource):Void { AL.sourceStop(source); }
     
-    public static function sourceRewind(source:ALSource):Void;
+    /**
+     * Stops audio-playback for the source and sets its state to `HaxeAL.INITIAL`.
+     * @param source Source to be rewound.
+     */
+    public static function sourceRewind(source:ALSource):Void { AL.sourceRewind(source); }
     
-    public static function sourcePause(source:ALSource):Void;
+    /**
+     * Pauses audio-playback for the source, keeping the sound position unchanged.
+     * @param source Source to pause playback of.
+     */
+    public static function sourcePause(source:ALSource):Void { AL.sourcePause(source); }
 
-    public static function sourcePlayv(num:Int, sources:Pointer<ALSource>):Void;
+    /**
+     * Plays back audio from the sources' buffers.
+     * @param sources Sources to play audio from.
+     */
+    public static function sourcePlayv(sources:Array<ALSource>):Void { AL.sourcePlayv(sources.length, Pointer.ofArray(sources)); }
 
-    public static function sourceStopv(num:Int, sources:Pointer<ALSource>):Void;
+    /**
+     * Completely stops audio-playback for the sources and sets their sound position back to 0.
+     * @param sources Sources to stop playback of.
+     */
+    public static function sourceStopv(sources:Array<ALSource>):Void { AL.sourceStopv(sources.length, Pointer.ofArray(sources)); }
     
-    public static function sourceRewindv(num:Int, sources:Pointer<ALSource>):Void;
+    /**
+     * Stops audio-playback for the sources and sets their state to `HaxeAL.INITIAL`.
+     * @param sources Sources to be rewound.
+     */
+    public static function sourceRewindv(sources:Array<ALSource>):Void { AL.sourceRewindv(sources.length, Pointer.ofArray(sources)); }
     
-    public static function sourcePausev(num:Int, sources:Pointer<ALSource>):Void;
+    /**
+     * Pauses audio-playback for the sources, keeping their sound position unchanged.
+     * @param sources Sources to pause playback of.
+     */
+    public static function sourcePausev(sources:Array<ALSource>):Void { AL.sourcePausev(sources.length, Pointer.ofArray(sources)); }
 
-    public static function sourceQueueBuffers(source:ALSource, numBuffers:Int, buffers:Pointer<ALBuffer>):Void;
+    /**
+     * Queues the buffers' data to be played chronologically once the data for the current buffer has finished playing back.
+     * @param source Source to queue buffers for.
+     * @param buffers Buffers to be played back chronologically.
+     */
+    public static function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceQueueBuffers(source, buffers.length, Pointer.ofArray(buffers)); }
 
-    public static function sourceUnqueueBuffers(source:ALSource, numBuffers:Int, buffers:Star<ALBuffer>):Void;
+    /**
+     * Unqueues the given buffers and removes them from the sources buffer queue.
+     * @param source Source to unqueue buffers of.
+     * @param buffers Buffers to be unqueued.
+     */
+    public static function sourceUnqueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceUnqueueBuffers(source, buffers.length, arrayBuffer_ToStar(buffers)); }
 
     // Source Parameter Setting
     /**
@@ -614,12 +658,15 @@ class HaxeAL {
         #if HAXEAL_DEBUG trace('Deleted ${buffers.length} buffers properly: ${!isBuffer(buffers[0])}'); #end
     }
 
+    /**
+     * Deletes a singular ALBuffer
+     * @param buffer Buffer to delete.
+     */
     public static function deleteBuffer(buffer:ALBuffer) { deleteBuffers([buffer]); }
 
     /**
      * Checks if the given buffer is a valid ALBuffer object.
-     * @param buffer 
-     * @return Bool
+     * @param buffer Buffer to check validity of.
      */
     public static function isBuffer(buffer:ALBuffer):Bool { return al_bool(AL.isBuffer(buffer)); }
 
@@ -700,7 +747,6 @@ class HaxeAL {
 
         var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
         fstr = fstr2 = fstr3 = Pointer.addressOf(n1.f);
-
 
         for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = Pointer.addressOf(v.f);
         AL.getBuffer3f(buffer, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
