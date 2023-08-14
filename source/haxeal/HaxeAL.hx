@@ -670,6 +670,19 @@ class HaxeAL {
      */
     public static function isBuffer(buffer:ALBuffer):Bool { return al_bool(AL.isBuffer(buffer)); }
 
+    /**
+     * Fills the given buffer with all information necessary for playback.
+     * @param buffer The ALBuffer to fill with information.
+     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
+     * @param data The data to be fed as bytes.
+     * @param size Size of the data to be fed.
+     * @param sampleRate The samplerate the data should be played back at.
+     */
+    public static function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
+        final bytesData:haxe.io.BytesData = data.getData();
+        AL.bufferData(buffer, format, cpp.Pointer.arrayElem(bytesData, 0).ptr, size, sampleRate); // ! FIX INVALID VALUE GIVEN
+    }
+
     // Buffer Parameter Setting
     /**
      * Sets the float value for the target parameter of the given buffer.

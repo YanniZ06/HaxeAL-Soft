@@ -16,8 +16,6 @@ import cpp.Char;
 import cpp.UInt8;
 import cpp.Star;
 
-using cpp.Native;
-
 @:buildXml('<include name="../builder.xml" />')
 class Main {
 	static var device:ALDevice;
@@ -39,20 +37,35 @@ class Main {
 		
 		trace(HaxeAL.getListener3f(HaxeAL.POSITION));
 		HaxeAL.getErrorString(HaxeAL.getError());
+
 		var src = HaxeAL.createSource();
-		var src2 = HaxeAL.createSource();
-		HaxeAL.getErrorString(HaxeAL.getError());
-		trace(src);
-		trace(src2);
 		trace(HaxeAL.isSource(src));
-		trace(HaxeAL.isSource(src2));
-		HaxeAL.deleteSources([src, src2]);
 
-		trace(HaxeAL.getListenerf(HaxeAL.GAIN));
-		HaxeAL.listenerf(HaxeAL.GAIN, 0.7);
-		trace(HaxeAL.getListenerf(HaxeAL.GAIN));
+		var buf = HaxeAL.createBuffer();
+		trace(HaxeAL.isBuffer(buf));
 		HaxeAL.getErrorString(HaxeAL.getError());
 
+		sound_test.DataLoader.loadWav(sys.io.File.getBytes('assets/test.wav'), buf);
+		HaxeAL.getErrorString(HaxeAL.getError());
+
+		HaxeAL.sourcePlay(src);
+		HaxeAL.getErrorString(HaxeAL.getError());
+
+
+		var curTime = Sys.cpuTime();
+		var stepper:Float = 0;
+		var decayTime = curTime + 7;
+		while(Sys.cpuTime() < decayTime) {
+			//if(stepper > 5000) trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
+			stepper += 0.01;
+		}
+
+		HaxeAL.sourceStop(src);
+
+		HaxeAL.deleteBuffer(buf);
+		HaxeAL.deleteSource(src);
+
+		trace("ENDED!");
 
 		//trace(HaxeAL.createSource());
 		/*
