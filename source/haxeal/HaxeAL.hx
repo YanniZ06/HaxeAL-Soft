@@ -79,7 +79,7 @@ class HaxeAL {
         POSITION => 3,
         VELOCITY => 3,
         DIRECTION => 3,
-        ORIENTATION => 2 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with (pr with fix if you found out)
+        ORIENTATION => 6 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with (pr with fix if you found out)
     ];
 
     /**
@@ -309,14 +309,18 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static function getListener3f(param:Int):Array<Float> {
-        var n1, n2, n3:FloatH; // I am so sorry
-        n1 = n2 = n3 = {f: 0.0123456789};
+        var n1:cpp.Float32; // I am so sorry
+        var n2:cpp.Float32; 
+        var n3:cpp.Float32; 
+        n1 = 0.0123456789;
+        n2 = 0.0123456789;
+        n3 = 0.0123456789;
 
         var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = fstr2 = fstr3 = Pointer.addressOf(n1.f);
+        fstr = Pointer.addressOf(n1);
+        fstr2 = Pointer.addressOf(n2);
+        fstr3 = Pointer.addressOf(n3);
 
-
-        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = Pointer.addressOf(v.f);
         AL.getListener3f(param, fstr.ptr, fstr2.ptr, fstr3.ptr);
         return [fstr.ref, fstr2.ref, fstr3.ref];
     }

@@ -8,6 +8,8 @@
     
     <copy to="output" from="${openal_dir}/OpenAL32.dll"/> <!-- Move the compiled openal to the output folder when we're done -->
 
+    <!--copy to="output" from="assets/testMono.wav" --> <!-- Properly compile test assets-->
+
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
 	</files>

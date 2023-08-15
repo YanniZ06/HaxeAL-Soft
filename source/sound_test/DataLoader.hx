@@ -4,7 +4,7 @@ import haxeal.ALObjects.ALBuffer;
 import haxeal.HaxeAL;
 
 class DataLoader {
-    public static function loadWav(bytes:haxe.io.Bytes, buffer:ALBuffer):ALBuffer {
+    /*public static function loadWav(bytes:haxe.io.Bytes, buffer:ALBuffer):ALBuffer {
         var input = new haxe.io.BytesInput(bytes);
 		// Get all our infos from the WAV file
 		// All position skips are skipping over values we dont need, refer to this site as to what we're reading (and skipping): https://docs.fileformat.com/audio/wav/
@@ -21,10 +21,78 @@ class DataLoader {
 		final rawData = input.read(len);
 
         final format = resolveFormat(bitsPerSample, channels);
-        HaxeAL.bufferData(buffer, format, bytes, bytes.length, samplingRate);
+		trace(format);
+        HaxeAL.bufferData(buffer, format, rawData, rawData.length, samplingRate);
 
         return buffer;
-    }
+    }*/
+
+	public static function parseWAV(file:String, buf:ALBuffer):ALBuffer {
+        var fileBytes:sys.io.FileInput = sys.io.File.read(file);
+        try {
+            final chunkID:String = fileBytes.readString(4);
+            //chunkSize
+            fileBytes.readInt32();
+            final format:String = fileBytes.readString(4);
+            if (chunkID != "RIFF" || format != "WAVE")
+                throw "Invalid RIFF or WAVE Header.";
+
+            var subChunkID:String = fileBytes.readString(4);
+            while(subChunkID != "fmt "){
+                switch(subChunkID){
+                    case "JUNK" | "bext":
+                        var len:Int = fileBytes.readInt32();
+                        fileBytes.read(len);
+                        subChunkID = fileBytes.readString(4);
+                    default: break;
+                }
+            }
+
+            final subChunkSize = fileBytes.readInt32();
+            //audioformat
+            fileBytes.readUInt16();
+            final numChannels:Int = fileBytes.readUInt16();
+            final frequency:Int = fileBytes.readInt32();
+            final bitRate:Int = fileBytes.readInt32();
+            //blockalign
+            fileBytes.readUInt16();
+            final bitsPerSample:Int = fileBytes.readUInt16();
+
+            if (subChunkID != "fmt ")
+                throw "Invalid Wave format.";
+
+            if (subChunkSize > 16)
+                fileBytes.seek(cpp.Stdlib.sizeof(Int), sys.io.FileSeek.SeekCur);
+
+            var subChunkID2:String = fileBytes.readString(4);
+            /**read past other chunks**/
+            while(subChunkID2 != "data"){
+                fileBytes.read(fileBytes.readInt32());
+                subChunkID2 = fileBytes.readString(4);
+            }
+            final size:Int = fileBytes.readInt32();
+
+            if(subChunkID2 != "data")
+                throw "Invalid Wave data.";
+
+            final format:Int = resolveFormat(bitsPerSample, 1);//numChannels);
+
+            final bytes:haxe.io.Bytes = fileBytes.readAll();
+            fileBytes.close();
+            fileBytes = null;
+			cpp.vm.Gc.run(true);
+			cpp.vm.Gc.compact();
+
+			HaxeAL.bufferData(buf, format, bytes, bytes.length, Std.int(frequency * 2));
+        } catch(e) {
+			trace("Failed to load buffer data!");
+            trace(e.details());
+            fileBytes.close();
+            fileBytes = null;
+        }
+
+		return buf;
+	}
 
     static final formats8 = [HaxeAL.FORMAT_MONO8, HaxeAL.FORMAT_STEREO8];
 	static final formats16 = [HaxeAL.FORMAT_MONO16, HaxeAL.FORMAT_STEREO16];

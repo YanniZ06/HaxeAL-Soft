@@ -1,5 +1,6 @@
 -cp source
 --main Main
 -D HAXEAL_DEBUG
+--macro TestCompile.importAssets()
 
 --cpp output

@@ -35,8 +35,15 @@ class Main {
 			//trace(haxeal.ALC.getIntegers(device, 0x1001));
 		}
 		
+		/*HaxeAL.listenerfv(HaxeAL.ORIENTATION, [
+			1, 0, 0,
+			0, 1, 0
+		]);*/
+		HaxeAL.listener3f(HaxeAL.POSITION, 0, 0, 2);
+		trace(HaxeAL.getListenerfv(HaxeAL.POSITION));
 		trace(HaxeAL.getListener3f(HaxeAL.POSITION));
 		HaxeAL.getErrorString(HaxeAL.getError());
+		HaxeAL.listenerf(HaxeAL.GAIN, 1);
 
 		var src = HaxeAL.createSource();
 		trace(HaxeAL.isSource(src));
@@ -45,22 +52,32 @@ class Main {
 		trace(HaxeAL.isBuffer(buf));
 		HaxeAL.getErrorString(HaxeAL.getError());
 
-		sound_test.DataLoader.loadWav(sys.io.File.getBytes('assets/test.wav'), buf);
+		sound_test.DataLoader.parseWAV('assets/testStereo.wav', buf);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
+		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
+		HaxeAL.sourcefv(src, HaxeAL.POSITION, [8, 0, 0]);
 		HaxeAL.sourcePlay(src);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
-
 		var curTime = Sys.cpuTime();
-		var stepper:Float = 0;
-		var decayTime = curTime + 7;
-		while(Sys.cpuTime() < decayTime) {
-			//if(stepper > 5000) trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
-			stepper += 0.01;
+		var stepper:Float = 8;
+		//var decayTime = curTime + 7;
+		var decayTime = 7;
+		var timeStep:Float = 0;
+		trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
+		while(true) {
+			HaxeAL.sourcefv(src, HaxeAL.POSITION, [stepper, 0, 0]);
+			stepper -= 0.1;
+			timeStep += 0.1;
+			Sys.sleep(0.075);
+			if(timeStep > decayTime) break;
 		}
+		trace(stepper);
+		trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
 
 		HaxeAL.sourceStop(src);
+		HaxeAL.sourcei(src, HaxeAL.BUFFER, HaxeAL.NONE);
 
 		HaxeAL.deleteBuffer(buf);
 		HaxeAL.deleteSource(src);
