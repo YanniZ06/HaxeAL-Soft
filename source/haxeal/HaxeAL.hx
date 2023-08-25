@@ -310,8 +310,8 @@ class HaxeAL {
      */
     public static function getListener3f(param:Int):Array<Float> {
         var n1:cpp.Float32; // I am so sorry
-        var n2:cpp.Float32; 
-        var n3:cpp.Float32; 
+        var n2:cpp.Float32;
+        var n3:cpp.Float32;
         n1 = 0.0123456789;
         n2 = 0.0123456789;
         n3 = 0.0123456789;
@@ -355,13 +355,16 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static function getListener3i(param:Int):Array<Int> {
-        var n1, n2, n3:Int; // I really am
-        n1 = n2 = n3 = 123456789;
+        var n1, n2, n3:Int;
+        n1 = 123456789;
+        n2 = 123456789;
+        n3 = 123456789;
     
         var istr, istr2, istr3:Pointer<Int>;
-        istr = istr2 = istr3 = Pointer.addressOf(n1);
+        istr = Pointer.addressOf(n1);
+        istr2 = Pointer.addressOf(n2);
+        istr3 = Pointer.addressOf(n3);
     
-        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = Pointer.addressOf(v);
         AL.getListener3i(param, istr.ptr, istr2.ptr, istr3.ptr);
         return [istr.ref, istr2.ref, istr3.ref];
     }
@@ -559,14 +562,18 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static function getSource3f(source:ALSource, param:Int):Array<Float> {
-        var n1, n2, n3:FloatH; // The sludge consumes all
-        n1 = n2 = n3 = {f: 0.0123456789};
+        var n1:cpp.Float32;
+        var n2:cpp.Float32;
+        var n3:cpp.Float32; // The sludge consumes all
+        n1 = 0.0123456789;
+        n2 = 0.0123456789;
+        n3 = 0.0123456789;
 
         var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = fstr2 = fstr3 = Pointer.addressOf(n1.f);
+        fstr = Pointer.addressOf(n1);
+        fstr2 = Pointer.addressOf(n2);
+        fstr3 = Pointer.addressOf(n3);
 
-
-        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = Pointer.addressOf(v.f);
         AL.getSource3f(source, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
         return [fstr.ref, fstr2.ref, fstr3.ref];
     }
@@ -605,12 +612,15 @@ class HaxeAL {
      */
     public static function getSource3i(source:ALSource, param:Int):Array<Int> {
         var n1, n2, n3:Int;
-        n1 = n2 = n3 = 123456789;
+        n1 = 123456789;
+        n2 = 123456789;
+        n3 = 123456789;
     
         var istr, istr2, istr3:Pointer<Int>;
-        istr = istr2 = istr3 = Pointer.addressOf(n1);
+        istr = Pointer.addressOf(n1);
+        istr2 = Pointer.addressOf(n2);
+        istr3 = Pointer.addressOf(n3);
     
-        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = Pointer.addressOf(v);
         AL.getSource3i(source, param, istr.ptr, istr2.ptr, istr3.ptr);
         return [istr.ref, istr2.ref, istr3.ref];
     }
@@ -684,7 +694,7 @@ class HaxeAL {
      */
     public static function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
         final bytesData:haxe.io.BytesData = data.getData();
-        AL.bufferData(buffer, format, cpp.Pointer.arrayElem(bytesData, 0).ptr, size, sampleRate); // ! FIX INVALID VALUE GIVEN
+        AL.bufferData(buffer, format, cpp.Pointer.arrayElem(bytesData, 0).ptr, size, sampleRate);
     }
 
     // Buffer Parameter Setting
@@ -759,13 +769,18 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
-        var n1, n2, n3:FloatH; // The sludge consumes all
-        n1 = n2 = n3 = {f: 0.0123456789};
+        var n1:cpp.Float32;
+        var n2:cpp.Float32;
+        var n3:cpp.Float32;
+        n1 = 0.0123456789;
+        n2 = 0.0123456789;
+        n3 = 0.0123456789;
 
         var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = fstr2 = fstr3 = Pointer.addressOf(n1.f);
+        fstr = Pointer.addressOf(n1);
+        fstr2 = Pointer.addressOf(n2);
+        fstr3 = Pointer.addressOf(n3);
 
-        for(v=>p in [n1 => fstr, n2 => fstr2, n3 => fstr3]) p = Pointer.addressOf(v.f);
         AL.getBuffer3f(buffer, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
         return [fstr.ref, fstr2.ref, fstr3.ref];
     }
@@ -804,12 +819,15 @@ class HaxeAL {
      */
     public static function getBuffer3i(buffer:ALBuffer, param:Int):Array<Int> {
         var n1, n2, n3:Int;
-        n1 = n2 = n3 = 123456789;
+        n1 = 123456789;
+        n2 = 123456789;
+        n3 = 123456789;
     
         var istr, istr2, istr3:Pointer<Int>;
-        istr = istr2 = istr3 = Pointer.addressOf(n1);
+        istr = Pointer.addressOf(n1);
+        istr2 = Pointer.addressOf(n2);
+        istr3 = Pointer.addressOf(n3);
     
-        for(v=>p in [n1 => istr, n2 => istr2, n3 => istr3]) p = Pointer.addressOf(v);
         AL.getBuffer3i(buffer, param, istr.ptr, istr2.ptr, istr3.ptr);
         return [istr.ref, istr2.ref, istr3.ref];
     }

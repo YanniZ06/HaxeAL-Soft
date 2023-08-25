@@ -3,6 +3,11 @@ package sound_test;
 import haxeal.ALObjects.ALBuffer;
 import haxeal.HaxeAL;
 
+enum ForceMode {
+    NONE;
+    MONO;
+    STEREO;
+}
 class DataLoader {
     /*public static function loadWav(bytes:haxe.io.Bytes, buffer:ALBuffer):ALBuffer {
         var input = new haxe.io.BytesInput(bytes);
@@ -27,7 +32,7 @@ class DataLoader {
         return buffer;
     }*/
 
-	public static function parseWAV(file:String, buf:ALBuffer):ALBuffer {
+	public static function parseWAV(file:String, buf:ALBuffer, forceMode:ForceMode = NONE):ALBuffer {
         var fileBytes:sys.io.FileInput = sys.io.File.read(file);
         try {
             final chunkID:String = fileBytes.readString(4);
@@ -75,15 +80,28 @@ class DataLoader {
             if(subChunkID2 != "data")
                 throw "Invalid Wave data.";
 
-            final format:Int = resolveFormat(bitsPerSample, 1);//numChannels);
+            // Alright so picture this:
+            // Mono to Stereo works
+            // Mono to Mono works
+            // Stereo to Mono works
+            // But stereo to Stereo does not work
+            // Why? NO FUCKING IDEA!!! AL JUST ASSUMES THERES INVALID VALUES PASSED IN AND DOESNT PLAY THE SOUND
+            final targetChannelCount:Int = switch(forceMode) { case NONE: numChannels; case MONO: 1; case STEREO: 2; };
+            trace(targetChannelCount);
+            var modulator:Float = 1;
+            if(targetChannelCount != numChannels) modulator = targetChannelCount > numChannels ? 0.5 : 2; //if we need
+
+            final fixedFreq:Int = Std.int(frequency * modulator);
+            final format:Int = resolveFormat(bitsPerSample, targetChannelCount);
 
             final bytes:haxe.io.Bytes = fileBytes.readAll();
+
             fileBytes.close();
             fileBytes = null;
 			cpp.vm.Gc.run(true);
 			cpp.vm.Gc.compact();
 
-			HaxeAL.bufferData(buf, format, bytes, bytes.length, Std.int(frequency * 2));
+			HaxeAL.bufferData(buf, format, bytes, bytes.length, fixedFreq);
         } catch(e) {
 			trace("Failed to load buffer data!");
             trace(e.details());
