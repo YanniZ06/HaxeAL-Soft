@@ -50,14 +50,14 @@ extern class ALC {
 	static function stopCapture(device:Star<ALCdevice>):Void;
 
 	@:native("alcCaptureSamples")
-	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.Void>, samples:Int):Void;
+	static function captureSamples(device:Star<ALCdevice>, buffer:RawPointer<cpp.Void>, samples:Int):Void;
 
 	// Extensions (Ported!)
 	@:native("alcIsExtensionPresent")
 	static function isExtensionPresent(device:Star<ALCdevice>, extName:ConstCharStar):Bool;
 
 	@:native("alcGetProcAddress")
-	static function getProcAddress(device:Star<ALCdevice>, funcName:ConstCharStar):Star<cpp.Void>;
+	static function getProcAddress(device:Star<ALCdevice>, funcName:ConstCharStar):RawPointer<cpp.Void>;
 
 	@:native("alcGetEnumValue")
 	static function getEnumValue(device:Star<ALCdevice>, enumName:ConstCharStar):Int;

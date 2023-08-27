@@ -80,14 +80,7 @@ class DataLoader {
             if(subChunkID2 != "data")
                 throw "Invalid Wave data.";
 
-            // Alright so picture this:
-            // Mono to Stereo works
-            // Mono to Mono works
-            // Stereo to Mono works
-            // But stereo to Stereo does not work
-            // Why? NO FUCKING IDEA!!! AL JUST ASSUMES THERES INVALID VALUES PASSED IN AND DOESNT PLAY THE SOUND
             final targetChannelCount:Int = switch(forceMode) { case NONE: numChannels; case MONO: 1; case STEREO: 2; };
-            trace(targetChannelCount);
             var modulator:Float = 1;
             if(targetChannelCount != numChannels) modulator = targetChannelCount > numChannels ? 0.5 : 2; //if we need
 
@@ -101,6 +94,8 @@ class DataLoader {
 			cpp.vm.Gc.run(true);
 			cpp.vm.Gc.compact();
 
+            // var arr:Array<Dynamic> = ['numChannels: $numChannels, targetChannels: $targetChannelCount', format, bytes, bytes.length, fixedFreq];
+            // for(o in arr) trace(o);
 			HaxeAL.bufferData(buf, format, bytes, bytes.length, fixedFreq);
         } catch(e) {
 			trace("Failed to load buffer data!");

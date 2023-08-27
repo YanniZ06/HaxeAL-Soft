@@ -68,7 +68,7 @@ class HaxeALC {
 	 * @return FunctionAddress
 	 */
 	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress {
-		return ALC.getProcAddress(device, funcName);
+		return fromVoidPtr(ALC.getProcAddress(device, funcName));
 	}
 
 	/**

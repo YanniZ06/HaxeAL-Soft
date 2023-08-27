@@ -39,6 +39,10 @@ class Main {
 			1, 0, 0,
 			0, 1, 0
 		]);*/
+		trace("HELLO???");
+		var voidptr = BinderHelper.toVoidPtr("Hello from Void Pointer!");
+		trace(BinderHelper.fromVoidPtr(voidptr));
+
 		HaxeAL.listener3f(HaxeAL.POSITION, 0, 0, 2);
 		trace(HaxeAL.getListenerfv(HaxeAL.POSITION));
 		trace(HaxeAL.getListener3f(HaxeAL.POSITION));
@@ -52,7 +56,7 @@ class Main {
 		trace(HaxeAL.isBuffer(buf));
 		HaxeAL.getErrorString(HaxeAL.getError());
 
-		sound_test.DataLoader.parseWAV('assets/testStereo.wav', buf);
+		sound_test.DataLoader.parseWAV('assets/testMono.wav', buf);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
@@ -60,10 +64,9 @@ class Main {
 		HaxeAL.sourcePlay(src);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
-		var curTime = Sys.cpuTime();
 		var stepper:Float = 8;
 		//var decayTime = curTime + 7;
-		var decayTime = 7;
+		var decayTime = 9;
 		var timeStep:Float = 0;
 		trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
 		while(true) {
