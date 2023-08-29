@@ -2,6 +2,9 @@ package haxeal.bindings;
 
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
+import haxeal.ALObjects.ALAuxSlot;
+import haxeal.ALObjects.ALEffect;
+import haxeal.ALObjects.ALFilter;
 
 class BinderHelper {
     /**
@@ -44,11 +47,21 @@ class BinderHelper {
     public static inline function arrayFloat_ToStar(array:Array<Float>):Star<Float> return Pointer.ofArray(array).ptr;
 
 
+    // I wish i could just use <T> but quite frankly hxcpp shits itself and these functions are all inlined anyways so it really doesnt matter
+    
     public static inline function arraySource_ToPtr(array:Array<ALSource>):Pointer<ALSource> return Pointer.ofArray(array);
 
     public static inline function arraySource_ToStar(array:Array<ALSource>):Star<ALSource> return Pointer.ofArray(array).ptr;
 
     public static inline function star_ToArraySource(str:Star<ALSource>, len:Int):Array<ALSource> return Pointer.fromStar(str).toUnmanagedArray(len);
+
+
+    public static inline function arrayEffect_ToPtr(array:Array<ALEffect>):Pointer<ALEffect> return Pointer.ofArray(array);
+
+    public static inline function arrayEffect_ToStar(array:Array<ALEffect>):Star<ALEffect> return Pointer.ofArray(array).ptr;
+
+    public static inline function star_ToArrayEffect(str:Star<ALEffect>, len:Int):Array<ALEffect> return Pointer.fromStar(str).toUnmanagedArray(len);
+
 
     public static inline function arrayBuffer_ToPtr(array:Array<ALBuffer>):Pointer<ALBuffer> return Pointer.ofArray(array);
 

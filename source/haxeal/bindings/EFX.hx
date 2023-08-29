@@ -9,7 +9,7 @@ import haxeal.ALObjects.ALFilter;
 extern class EFX {
     // Effect Management
     @:native("alGenEffects")
-    static function genEffects(n:Int, effects:Star<ALEffect>):Void;
+    static function createEffects(n:Int, effects:Star<ALEffect>):Void;
 
     @:native("alDeleteEffects")
     static function deleteEffects(n:Int, effects:Pointer<ALEffect>):Void;
@@ -43,7 +43,7 @@ extern class EFX {
 
     // Filter Management
     @:native("alGenFilters")
-    static function genFilters(n:Int, filters:Star<ALFilter>):Void;
+    static function createFilters(n:Int, filters:Star<ALFilter>):Void;
 
     @:native("alDeleteFilters")
     static function deleteFilters(n:Int, filters:Pointer<ALFilter>):Void;
@@ -77,7 +77,7 @@ extern class EFX {
 
     // AuxSlot Management
     @:native("alGenAuxiliaryEffectSlots")
-    static function genAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxiliaryEffectSlot>):Void;
+    static function createAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxiliaryEffectSlot>):Void;
 
     @:native("alDeleteAuxiliaryEffectSlots")
     static function deleteAuxiliaryEffectSlots(n:Int, effectslots:Pointer<ALAuxiliaryEffectSlot>):Void;
