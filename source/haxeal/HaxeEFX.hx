@@ -59,6 +59,11 @@ class HaxeEFX {
     // EQUALIZER
     public static final EFFECT_EQUALIZER:Int = 0x000C;
 
+    // FILTERS
+    public static final FILTER_FIRST_PARAMETER:Int = 0x0000;
+    public static final FILTER_LAST_PARAMETER:Int = 0x8000;
+    public static final FILTER_TYPE:Int = 0x8001;
+
     // Utility
 
     static final fxMap:Map<Int, Map<Int, Int>> = [ // Effect Type -> Effect Param -> Array Length Value
@@ -145,7 +150,6 @@ class HaxeEFX {
      */
     public static function effectfv(effect:ALEffect, param:Int, values:Array<Float>):Void { EFX.effectfv(effect, param, arrayFloat32_ToPtr(values)); }
 
-    // TODO: FINISH GET..IV AND GET..FV LOL TOO TIRED TO DO THIS RIGHT NOW
     /**
      * Gets the integer value for the target parameter of the given effect.
      * @param effect Effect to get parameter of.
@@ -165,7 +169,7 @@ class HaxeEFX {
      * @param effect Effect to get parameter of.
      * @param param Param to get values of.
      */
-     public static function getEffectiv(effect:ALEffect, param:Int):Array<Int> {
+    public static function getEffectiv(effect:ALEffect, param:Int):Array<Int> {
         var n = 123456789;
         var istr:Pointer<Int> = Pointer.addressOf(n);
         EFX.getEffectiv(effect, param, istr.ptr);
@@ -198,5 +202,135 @@ class HaxeEFX {
         EFX.getEffectfv(effect, param, fstr.ptr);
 
         return star_ToArrayFloat32(fstr.ptr, getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param));
+    }
+
+    // Filter Management 
+    /**
+     * Returns an array of ALFilters.
+     * @param num Amount of filters to return.
+     */
+    public static function createFilters(num:Int):Array<ALFilter> {
+        var empty_filters:Array<ALFilter> = [];
+        var s_str:Pointer<ALFilter> = Pointer.ofArray(empty_filters);
+        EFX.createFilters(num, s_str.ptr);
+
+        var filters:Array<ALFilter> = star_ToArrayFilter(s_str.ptr, num);
+        #if HAXEAL_DEBUG if(isFilter(filters[0])) #end return filters;
+        #if HAXEAL_DEBUG 
+        trace("Warning: Filters may not have generated properly, returning array of potentially disfunctional filters");
+        return filters;
+        #end
+    }
+
+    /**
+     * Creates a filter and returns it.
+     */
+    public static function createFilter():ALFilter { return createFilters(1)[0]; }
+
+    /**
+     * Deletes an array of ALFilters.
+     * @param filters Filters to delete.
+     */
+    public static function deleteFilters(filters:Array<ALFilter>):Void {
+        EFX.deleteFilters(filters.length, arrayFilter_ToPtr(filters));
+        #if HAXEAL_DEBUG trace('Deleted ${filters.length} filters properly: ${!isFilter(filters[0])}'); #end
+    }
+
+    /**
+     * Deletes a singular ALFilter
+     * @param filter Filter to delete.
+     */
+    public static function deleteFilter(filter:ALFilter) { deleteFilters([filter]); }
+
+    /**
+     * Checks if the given filter is a valid ALFilter object.
+     * @param filter Filter to check validity of.
+     */
+    public static function isFilter(filter:ALFilter):Bool { return al_bool(EFX.isFilter(filter)); }
+    
+    /**
+     * Sets the integer value for the target parameter of the given filter.
+     * @param filter Filter to change parameter of.
+     * @param param Param to set value of.
+     * @param value New integer value of the param.
+     */
+    public static function filteri(filter:ALFilter, param:Int, value:Int):Void { EFX.filteri(filter, param, value); }
+
+    /**
+     * Sets an array of integer values for the target parameter of the given filter.
+     * @param filter Filter to change parameter of.
+     * @param param Param to set values of.
+     * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
+    public static function filteriv(filter:ALFilter, param:Int, values:Array<Int>):Void { EFX.filteriv(filter, param, arrayInt_ToPtr(values)); }
+
+    /**
+     * Sets the float value for the target parameter of the given filter.
+     * @param filter Filter to change parameter of.
+     * @param param Param to set value of.
+     * @param value New float value of the param.
+     */
+    public static function filterf(filter:ALFilter, param:Int, value:Float):Void { EFX.filterf(filter, param, value); }
+
+    /**
+     * Sets an array of float values for the target parameter of the given filter.
+     * @param filter Filter to change parameter of.
+     * @param param Param to set values of.
+     * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
+    public static function filterfv(filter:ALFilter, param:Int, values:Array<Float>):Void { EFX.filterfv(filter, param, arrayFloat32_ToPtr(values)); }
+
+    /**
+     * Gets the integer value for the target parameter of the given filter.
+     * @param filter Filter to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getFilteri(filter:ALFilter, param:Int):Int {
+        var n = 123456789;
+        var istr:Pointer<Int> = Pointer.addressOf(n);
+        EFX.getFilteri(param, param, istr.ptr);
+        return istr.ref;
+    }
+
+    /**
+     * Returns an array of multiple integer values for the target parameter of the given filter.
+     * 
+     * The array size depends on the given param.
+     * @param filter Filter to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getFilteriv(filter:ALFilter, param:Int):Array<Int> {
+        var n = 123456789;
+        var istr:Pointer<Int> = Pointer.addressOf(n);
+        EFX.getFilteriv(filter, param, istr.ptr);
+
+        return star_ToArrayInt(istr.ptr, getFXParamMapping(getFilteri(filter, FILTER_TYPE), param));
+    }
+
+    /**
+     * Gets the float value for the target parameter of the given filter.
+     * @param filter Filter to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getFilterf(filter:ALFilter, param:Int):Float {
+        var n:cpp.Float32 = 0.0123456789;
+        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
+        EFX.getFilterf(filter, param, fstr.ptr);
+        return fstr.ref;
+    }
+
+    /**
+     * Returns an array of multiple float values for the target parameter of the given filter.
+     * 
+     * The array size depends on the given param.
+     * @param filter Filter to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getFilterfv(filter:ALFilter, param:Int):Array<Float> {
+        var n:cpp.Float32 = 0.0123456789;
+        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
+        EFX.getFilterfv(filter, param, fstr.ptr);
+
+        return star_ToArrayFloat32(fstr.ptr, getFXParamMapping(getFilteri(filter, FILTER_TYPE), param));
     }
 }

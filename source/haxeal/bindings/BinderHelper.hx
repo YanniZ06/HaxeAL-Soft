@@ -63,6 +63,13 @@ class BinderHelper {
     public static inline function star_ToArrayEffect(str:Star<ALEffect>, len:Int):Array<ALEffect> return Pointer.fromStar(str).toUnmanagedArray(len);
 
 
+    public static inline function arrayFilter_ToPtr(array:Array<ALFilter>):Pointer<ALFilter> return Pointer.ofArray(array);
+
+    public static inline function arrayFilter_ToStar(array:Array<ALFilter>):Star<ALFilter> return Pointer.ofArray(array).ptr;
+
+    public static inline function star_ToArrayFilter(str:Star<ALFilter>, len:Int):Array<ALFilter> return Pointer.fromStar(str).toUnmanagedArray(len);
+
+
     public static inline function arrayBuffer_ToPtr(array:Array<ALBuffer>):Pointer<ALBuffer> return Pointer.ofArray(array);
 
     public static inline function arrayBuffer_ToStar(array:Array<ALBuffer>):Star<ALBuffer> return Pointer.ofArray(array).ptr;
