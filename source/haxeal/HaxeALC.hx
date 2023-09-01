@@ -3,6 +3,8 @@ package haxeal;
 import haxeal.bindings.ALC;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALDevice;
+import haxeal.ALObjects.ALBuffer;
+import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.FunctionAddress;
 

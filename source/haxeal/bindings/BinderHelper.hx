@@ -70,11 +70,11 @@ class BinderHelper {
     public static inline function star_ToArrayFilter(str:Star<ALFilter>, len:Int):Array<ALFilter> return Pointer.fromStar(str).toUnmanagedArray(len);
 
 
-    public static inline function arrayAuxiliaryEffectSlot_ToPtr(array:Array<ALAuxiliaryEffectSlot>):Pointer<ALAuxiliaryEffectSlot> return Pointer.ofArray(array);
+    public static inline function arrayAuxiliaryEffectSlot_ToPtr(array:Array<ALAuxSlot>):Pointer<ALAuxSlot> return Pointer.ofArray(array);
 
-    public static inline function arrayAuxiliaryEffectSlot_ToStar(array:Array<ALAuxiliaryEffectSlot>):Star<ALAuxiliaryEffectSlot> return Pointer.ofArray(array).ptr;
+    public static inline function arrayAuxiliaryEffectSlot_ToStar(array:Array<ALAuxSlot>):Star<ALAuxSlot> return Pointer.ofArray(array).ptr;
 
-    public static inline function star_ToArrayAuxiliaryEffectSlot(str:Star<ALAuxiliaryEffectSlot>, len:Int):Array<ALAuxiliaryEffectSlot> return Pointer.fromStar(str).toUnmanagedArray(len);
+    public static inline function star_ToArrayAuxiliaryEffectSlot(str:Star<ALAuxSlot>, len:Int):Array<ALAuxSlot> return Pointer.fromStar(str).toUnmanagedArray(len);
 
 
     public static inline function arrayBuffer_ToPtr(array:Array<ALBuffer>):Pointer<ALBuffer> return Pointer.ofArray(array);

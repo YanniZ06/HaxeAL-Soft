@@ -8,64 +8,244 @@ import haxeal.ALObjects.ALFilter;
 
 class HaxeEFX {
     // Constants
+
+    // EFX Settings & Info (ALC Specific)
+    public static final EXT_EFX_NAME:String = "EXT_EFX";
+    public static final EFX_MAJOR_VERSION:Int = 0x20001;
+    public static final EFX_MINOR_VERSION:Int = 0x20002;
+    public static final MAX_AUXILIARY_SENDS:Int = 0x20003;
+
+    // Extended Listener property
+    public static final METERS_PER_UNIT:Int = 0x20004;
+
+    // Extended Source properties
+    public static final DIRECT_FILTER:Int = 0x20005; 
+    public static final AUXILIARY_SEND_FILTER:Int = 0x20006;
+    public static final AIR_ABSORPTION_FACTOR:Int = 0x20007;
+    public static final ROOM_ROLLOFF_FACTOR:Int = 0x20008;
+    public static final CONE_OUTER_GAINHF:Int = 0x20009;
+    public static final DIRECT_FILTER_GAINHF_AUTO:Int = 0x2000A;
+    public static final AUXILIARY_SEND_FILTER_GAIN_AUTO:Int = 0x2000B;
+    public static final AUXILIARY_SEND_FILTER_GAINHF_AUTO:Int = 0x2000C;
+
     // Effects
     public static final EFFECT_FIRST_PARAMETER:Int = 0x0000;
     public static final EFFECT_LAST_PARAMETER:Int = 0x8000;
     public static final EFFECT_TYPE:Int = 0x8001;
 
     // Effect Types
-    // None
+    // NONE
     public static final EFFECT_NULL:Int = 0x0000;
 
     // EAXREVERB
     public static final EFFECT_EAXREVERB:Int = 0x8000;
 
+    public static final EAXREVERB_DIFFUSION:Int = 0x0002;
+    public static final EAXREVERB_GAIN:Int = 0x0003;
+    public static final EAXREVERB_DENSITY:Int = 0x0001;
+    public static final EAXREVERB_GAINHF:Int = 0x0004;
+    public static final EAXREVERB_GAINLF:Int = 0x0005;
+    public static final EAXREVERB_DECAY_TIME:Int = 0x0006;
+    public static final EAXREVERB_DECAY_HFRATIO:Int = 0x0007;
+    public static final EAXREVERB_DECAY_LFRATIO:Int = 0x0008;
+    public static final EAXREVERB_REFLECTIONS_GAIN:Int = 0x0009;
+    public static final EAXREVERB_REFLECTIONS_DELAY:Int = 0x000A;
     public static final EAXREVERB_REFLECTIONS_PAN:Int = 0x000B;
+    public static final EAXREVERB_LATE_REVERB_GAIN:Int = 0x000C;
+    public static final EAXREVERB_LATE_REVERB_DELAY:Int = 0x000D;
     public static final EAXREVERB_LATE_REVERB_PAN:Int = 0x000E;
+    public static final EAXREVERB_ECHO_TIME:Int = 0x000F;
+    public static final EAXREVERB_ECHO_DEPTH:Int = 0x0010;
+    public static final EAXREVERB_MODULATION_TIME:Int = 0x0011;
+    public static final EAXREVERB_MODULATION_DEPTH:Int = 0x0012;
+    public static final EAXREVERB_AIR_ABSORPTION_GAINHF:Int = 0x0013;
+    public static final EAXREVERB_HFREFERENCE:Int = 0x0014;
+    public static final EAXREVERB_LFREFERENCE:Int = 0x0015;
+    public static final EAXREVERB_ROOM_ROLLOFF_FACTOR:Int = 0x0016;
+    public static final EAXREVERB_DECAY_HFLIMIT:Int = 0x0017;
 
     // REVERB
     public static final EFFECT_REVERB:Int = 0x0001;
 
+    public static final REVERB_DENSITY:Int = 0x0001;
+    public static final REVERB_DIFFUSION:Int = 0x0002;
+    public static final REVERB_GAIN:Int = 0x0003;
+    public static final REVERB_GAINHF:Int = 0x0004;
+    public static final REVERB_DECAY_TIME:Int = 0x0005;
+    public static final REVERB_DECAY_HFRATIO:Int = 0x0006;
+    public static final REVERB_REFLECTIONS_GAIN:Int = 0x0007;
+    public static final REVERB_REFLECTIONS_DELAY:Int = 0x0008;
+    public static final REVERB_LATE_REVERB_GAIN:Int = 0x0009;
+    public static final REVERB_LATE_REVERB_DELAY:Int = 0x000A;
+    public static final REVERB_AIR_ABSORPTION_GAINHF:Int = 0x000B;
+    public static final REVERB_ROOM_ROLLOFF_FACTOR:Int = 0x000C;
+    public static final REVERB_DECAY_HFLIMIT:Int = 0x000D;
+
     // CHORUS
     public static final EFFECT_CHORUS:Int = 0x0002;
+
+    public static final CHORUS_WAVEFORM:Int = 0x0001;
+    public static final CHORUS_PHASE:Int = 0x0002;
+    public static final CHORUS_RATE:Int = 0x0003;
+    public static final CHORUS_DEPTH:Int = 0x0004;
+    public static final CHORUS_FEEDBACK:Int = 0x0005;
+    public static final CHORUS_DELAY:Int = 0x0006;
     
     // DISTORTION
     public static final EFFECT_DISTORTION:Int = 0x0003;
+
+    public static final DISTORTION_EDGE:Int = 0x0001;
+    public static final DISTORTION_GAIN:Int = 0x0002;
+    public static final DISTORTION_LOWPASS_CUTOFF:Int = 0x0003;
+    public static final DISTORTION_EQCENTER:Int = 0x0004;
+    public static final DISTORTION_EQBANDWIDTH:Int = 0x0005;
     
     // ECHO
     public static final EFFECT_ECHO:Int = 0x0004;
+
+    public static final ECHO_DELAY:Int = 0x0001;
+    public static final ECHO_LRDELAY:Int = 0x0002;
+    public static final ECHO_DAMPING:Int = 0x0003;
+    public static final ECHO_FEEDBACK:Int = 0x0004;
+    public static final ECHO_SPREAD:Int = 0x0005;
     
     // FLANGER
     public static final EFFECT_FLANGER:Int = 0x0005;
+
+    public static final FLANGER_WAVEFORM:Int = 0x0001;
+    public static final FLANGER_PHASE:Int = 0x0002;
+    public static final FLANGER_RATE:Int = 0x0003;
+    public static final FLANGER_DEPTH:Int = 0x0004;
+    public static final FLANGER_FEEDBACK:Int = 0x0005;
+    public static final FLANGER_DELAY:Int = 0x0006;
     
     // FREQUENCY SHIFTER
     public static final EFFECT_FREQUENCY_SHIFTER:Int = 0x0006;
+
+    public static final FREQUENCY_SHIFTER_FREQUENCY:Int = 0x0001;
+    public static final FREQUENCY_SHIFTER_LEFT_DIRECTION:Int = 0x0002;
+    public static final FREQUENCY_SHIFTER_RIGHT_DIRECTION:Int = 0x0003;
     
     // VOCAL MORPHER
     public static final EFFECT_VOCAL_MORPHER:Int = 0x0007;
+
+    public static final VOCAL_MORPHER_PHONEMEA:Int = 0x0001;
+    public static final VOCAL_MORPHER_PHONEMEA_COARSE_TUNING:Int = 0x0002;
+    public static final VOCAL_MORPHER_PHONEMEB:Int = 0x0003;
+    public static final VOCAL_MORPHER_PHONEMEB_COARSE_TUNING:Int = 0x0004;
+    public static final VOCAL_MORPHER_WAVEFORM:Int = 0x0005;
+    public static final VOCAL_MORPHER_RATE:Int = 0x0006;
+
+    // VOCAL MORPHER EXTRA CONSTANTS (?)
+    public static final VOCAL_MORPHER_PHONEME_A:Int = 0;
+    public static final VOCAL_MORPHER_PHONEME_E:Int = 1;
+    public static final VOCAL_MORPHER_PHONEME_I:Int = 2;
+    public static final VOCAL_MORPHER_PHONEME_O:Int = 3;
+    public static final VOCAL_MORPHER_PHONEME_U:Int = 4;
+    public static final VOCAL_MORPHER_PHONEME_AA:Int = 5;
+    public static final VOCAL_MORPHER_PHONEME_AE:Int = 6;
+    public static final VOCAL_MORPHER_PHONEME_AH:Int = 7;
+    public static final VOCAL_MORPHER_PHONEME_AO:Int = 8;
+    public static final VOCAL_MORPHER_PHONEME_EH:Int = 9;
+    public static final VOCAL_MORPHER_PHONEME_ER:Int = 10;
+    public static final VOCAL_MORPHER_PHONEME_IH:Int = 11;
+    public static final VOCAL_MORPHER_PHONEME_IY:Int = 12;
+    public static final VOCAL_MORPHER_PHONEME_UH:Int = 13;
+    public static final VOCAL_MORPHER_PHONEME_UW:Int = 14;
+    public static final VOCAL_MORPHER_PHONEME_B:Int = 15;
+    public static final VOCAL_MORPHER_PHONEME_D:Int = 16;
+    public static final VOCAL_MORPHER_PHONEME_F:Int = 17;
+    public static final VOCAL_MORPHER_PHONEME_G:Int = 18;
+    public static final VOCAL_MORPHER_PHONEME_J:Int = 19;
+    public static final VOCAL_MORPHER_PHONEME_K:Int = 20;
+    public static final VOCAL_MORPHER_PHONEME_L:Int = 21;
+    public static final VOCAL_MORPHER_PHONEME_M:Int = 22;
+    public static final VOCAL_MORPHER_PHONEME_N:Int = 23;
+    public static final VOCAL_MORPHER_PHONEME_P:Int = 24;
+    public static final VOCAL_MORPHER_PHONEME_R:Int = 25;
+    public static final VOCAL_MORPHER_PHONEME_S:Int = 26;
+    public static final VOCAL_MORPHER_PHONEME_T:Int = 27;
+    public static final VOCAL_MORPHER_PHONEME_V:Int = 28;
+    public static final VOCAL_MORPHER_PHONEME_Z:Int = 29;
+
+    public static final VOCAL_MORPHER_WAVEFORM_SINUSOID:Int = 0;
+    public static final VOCAL_MORPHER_WAVEFORM_TRIANGLE:Int = 1;
+    public static final VOCAL_MORPHER_WAVEFORM_SAWTOOTH:Int = 2;
     
     // PITCH SHIFTER
     public static final EFFECT_PITCH_SHIFTER:Int = 0x0008;
+
+    public static final PITCH_SHIFTER_COARSE_TUNE:Int = 0x0001;
+    public static final PITCH_SHIFTER_FINE_TUNE:Int = 0x0002;
     
     // RING MODULATOR
     public static final EFFECT_RING_MODULATOR:Int = 0x0009;
+
+    public static final RING_MODULATOR_FREQUENCY:Int = 0x0001;
+    public static final RING_MODULATOR_HIGHPASS_CUTOFF:Int = 0x0002;
+    public static final RING_MODULATOR_WAVEFORM:Int = 0x0003;
     
     // AUTOWAH
     public static final EFFECT_AUTOWAH:Int = 0x000A;
+
+    public static final AUTOWAH_ATTACK_TIME:Int = 0x0001;
+    public static final AUTOWAH_RELEASE_TIME:Int = 0x0002;
+    public static final AUTOWAH_RESONANCE:Int = 0x0003;
+    public static final AUTOWAH_PEAK_GAIN:Int = 0x0004;
     
     // COMPRESSOR
     public static final EFFECT_COMPRESSOR:Int = 0x000B;
+    public static final COMPRESSOR_ONOFF:Int = 0x0001;
     
     // EQUALIZER
     public static final EFFECT_EQUALIZER:Int = 0x000C;
 
-    // FILTERS
+    public static final EQUALIZER_LOW_GAIN:Int = 0x0001;
+    public static final EQUALIZER_LOW_CUTOFF:Int = 0x0002;
+    public static final EQUALIZER_MID1_GAIN:Int = 0x0003;
+    public static final EQUALIZER_MID1_CENTER:Int = 0x0004;
+    public static final EQUALIZER_MID1_WIDTH:Int = 0x0005;
+    public static final EQUALIZER_MID2_GAIN:Int = 0x0006;
+    public static final EQUALIZER_MID2_CENTER:Int = 0x0007;
+    public static final EQUALIZER_MID2_WIDTH:Int = 0x0008;
+    public static final EQUALIZER_HIGH_GAIN:Int = 0x0009;
+    public static final EQUALIZER_HIGH_CUTOFF:Int = 0x000A;
+
+    // Filters
     public static final FILTER_FIRST_PARAMETER:Int = 0x0000;
     public static final FILTER_LAST_PARAMETER:Int = 0x8000;
     public static final FILTER_TYPE:Int = 0x8001;
 
-    // Utility
+    // Filter Types
+    // NONE
+    public static final FILTER_NULL:Int = 0x0000;
 
+    // LOWPASS
+    public static final FILTER_LOWPASS:Int = 0x0001;
+    
+    public static final LOWPASS_GAIN:Int = 0x0001;
+    public static final LOWPASS_GAINHF:Int = 0x0002;
+    
+    // HIGHPASS
+    public static final FILTER_HIGHPASS:Int = 0x0002;
+    
+    public static final HIGHPASS_GAIN:Int = 0x0001;
+    public static final HIGHPASS_GAINLF:Int = 0x0002;
+    
+    // BANDPASS
+    public static final FILTER_BANDPASS:Int = 0x0003;
+    
+    public static final BANDPASS_GAIN:Int = 0x0001;
+    public static final BANDPASS_GAINLF:Int = 0x0002;
+    public static final BANDPASS_GAINHF:Int = 0x0003;
+
+    // Auxiliary Effect Slots
+    public static final EFFECTSLOT_EFFECT:Int = 0x0001;
+    public static final EFFECTSLOT_GAIN:Int = 0x0002;
+    public static final EFFECTSLOT_AUXILIARY_SEND_AUTO:Int = 0x0003;
+    public static final EFFECTSLOT_NULL:Int = 0x0000; // Used to disable source send
+
+    // Utility
     static final fxMap:Map<Int, Map<Int, Int>> = [ // Effect Type -> Effect Param -> Array Length Value
         EFFECT_EAXREVERB => [ // Only EAXREVERB has parameters that specifically give out vectors/arrays
             EAXREVERB_REFLECTIONS_PAN => 3,
@@ -73,8 +253,8 @@ class HaxeEFX {
         ]
     ];
     public static inline function getFXParamMapping(type:Int, param:Int):Int return fxMap[type][param] ?? 1;
-    // Effect Management
     
+    // Effect Management
     /**
      * Returns an array of ALEffects.
      * @param num Amount of effects to return.
