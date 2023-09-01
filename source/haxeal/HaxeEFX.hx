@@ -205,6 +205,7 @@ class HaxeEFX {
     }
 
     // Filter Management 
+
     /**
      * Returns an array of ALFilters.
      * @param num Amount of filters to return.
@@ -304,7 +305,7 @@ class HaxeEFX {
         var istr:Pointer<Int> = Pointer.addressOf(n);
         EFX.getFilteriv(filter, param, istr.ptr);
 
-        return star_ToArrayInt(istr.ptr, getFXParamMapping(getFilteri(filter, FILTER_TYPE), param));
+        return star_ToArrayInt(istr.ptr, 1);
     }
 
     /**
@@ -331,6 +332,137 @@ class HaxeEFX {
         var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
         EFX.getFilterfv(filter, param, fstr.ptr);
 
-        return star_ToArrayFloat32(fstr.ptr, getFXParamMapping(getFilteri(filter, FILTER_TYPE), param));
+        return star_ToArrayFloat32(fstr.ptr, 1);
+    }
+
+    // AuxSlot Management 
+    
+    /**
+     * Returns an array of Auxiliary Effect Slots.
+     * @param num Amount of slots to return.
+     */
+     public static function createAuxiliaryEffectSlots(num:Int):Array<ALAuxSlot> {
+        var empty_auxslots:Array<ALAuxSlot> = [];
+        var s_str:Pointer<ALAuxSlot> = Pointer.ofArray(empty_auxslots);
+        EFX.createAuxiliaryEffectSlots(num, s_str.ptr);
+
+        var auxslots:Array<ALAuxSlot> = star_ToArrayAuxiliaryEffectSlot(s_str.ptr, num);
+        #if HAXEAL_DEBUG if(isAuxiliaryEffectSlot(auxslots[0])) #end return auxslots;
+        #if HAXEAL_DEBUG 
+        trace("Warning: Auxiliary Effect Slots may not have generated properly, returning array of potentially disfunctional slots");
+        return auxslots;
+        #end
+    }
+
+    /**
+     * Creates an auxslot and returns it.
+     */
+    public static function createAuxiliaryEffectSlot():ALAuxSlot { return createAuxiliaryEffectSlots(1)[0]; }
+
+    /**
+     * Deletes an array of Auxiliary Effect Slots.
+     * @param auxslots Auxiliary Effect Slots to delete.
+     */
+    public static function deleteAuxiliaryEffectSlots(auxslots:Array<ALAuxSlot>):Void {
+        EFX.deleteAuxiliaryEffectSlots(auxslots.length, arrayAuxiliaryEffectSlot_ToPtr(auxslots));
+        #if HAXEAL_DEBUG trace('Deleted ${auxslots.length} slots properly: ${!isAuxiliaryEffectSlot(auxslots[0])}'); #end
+    }
+
+    /**
+     * Deletes a singular ALAuxSlot
+     * @param auxslot Auxiliary Effect Slot to delete.
+     */
+    public static function deleteAuxiliaryEffectSlot(auxslot:ALAuxSlot) { deleteAuxiliaryEffectSlots([auxslot]); }
+
+    /**
+     * Checks if the given slot is a valid ALAuxSlot object.
+     * @param auxslot Auxiliary Effect Slot to check validity of.
+     */
+    public static function isAuxiliaryEffectSlot(auxslot:ALAuxSlot):Bool { return al_bool(EFX.isAuxiliaryEffectSlot(auxslot)); }
+    
+    /**
+     * Sets the integer value for the target parameter of the given auxslot.
+     * @param auxslot Auxiliary Effect Slot to change parameter of.
+     * @param param Param to set value of.
+     * @param value New integer value of the param.
+     */
+    public static function auxiliaryEffectSloti(auxslot:ALAuxSlot, param:Int, value:Int):Void { EFX.auxiliaryEffectSloti(auxslot, param, value); }
+
+    /**
+     * Sets an array of integer values for the target parameter of the given Auxiliary Effect Slot.
+     * @param auxslot Auxiliary Effect Slot to change parameter of.
+     * @param param Param to set values of.
+     * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
+    public static function auxiliaryEffectSlotiv(auxslot:ALAuxSlot, param:Int, values:Array<Int>):Void { EFX.auxiliaryEffectSlotiv(auxslot, param, arrayInt_ToPtr(values)); }
+
+    /**
+     * Sets the float value for the target parameter of the given Auxiliary Effect Slot.
+     * @param auxslot Auxiliary Effect Slot to change parameter of.
+     * @param param Param to set value of.
+     * @param value New float value of the param.
+     */
+    public static function auxiliaryEffectSlotf(auxslot:ALAuxSlot, param:Int, value:Float):Void { EFX.auxiliaryEffectSlotf(auxslot, param, value); }
+
+    /**
+     * Sets an array of float values for the target parameter of the given Auxiliary Effect Slot.
+     * @param auxslot Auxiliary Effect Slot to change parameter of.
+     * @param param Param to set values of.
+     * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
+    public static function auxiliaryEffectSlotfv(auxslot:ALAuxSlot, param:Int, values:Array<Float>):Void { EFX.auxiliaryEffectSlotfv(auxslot, param, arrayFloat32_ToPtr(values)); }
+
+    /**
+     * Gets the integer value for the target parameter of the given Auxiliary Effect Slot.
+     * @param auxslot Auxiliary Effect Slot to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getAuxiliaryEffectSloti(auxslot:ALAuxSlot, param:Int):Int {
+        var n = 123456789;
+        var istr:Pointer<Int> = Pointer.addressOf(n);
+        EFX.getAuxiliaryEffectSloti(param, param, istr.ptr);
+        return istr.ref;
+    }
+
+    /**
+     * Returns an array of multiple integer values for the target parameter of the given Auxiliary Effect Slot.
+     * 
+     * The array size depends on the given param.
+     * @param auxslot Auxiliary Effect Slot to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getAuxiliaryEffectSlotiv(auxslot:ALAuxSlot, param:Int):Array<Int> {
+        var n = 123456789;
+        var istr:Pointer<Int> = Pointer.addressOf(n);
+        EFX.getAuxiliaryEffectSlotiv(auxslot, param, istr.ptr);
+
+        return star_ToArrayInt(istr.ptr, 1);
+    }
+
+    /**
+     * Gets the float value for the target parameter of the given Auxiliary Effect Slot.
+     * @param auxslot Auxiliary Effect Slot to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static function getAuxiliaryEffectSlotf(auxslot:ALAuxSlot, param:Int):Float {
+        var n:cpp.Float32 = 0.0123456789;
+        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
+        EFX.getAuxiliaryEffectSlotf(auxslot, param, fstr.ptr);
+        return fstr.ref;
+    }
+
+    /**
+     * Returns an array of multiple float values for the target parameter of the given Auxiliary Effect Slot.
+     * 
+     * The array size depends on the given param.
+     * @param auxslot Auxiliary Effect Slot to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static function getAuxiliaryEffectSlotfv(auxslot:ALAuxSlot, param:Int):Array<Float> {
+        var n:cpp.Float32 = 0.0123456789;
+        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
+        EFX.getAuxiliaryEffectSlotfv(auxslot, param, fstr.ptr);
+
+        return star_ToArrayFloat32(fstr.ptr, 1);
     }
 }

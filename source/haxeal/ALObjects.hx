@@ -1,6 +1,7 @@
 package haxeal;
 
 typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
+typedef ALCaptureDevice = ALDevice;
 typedef ALContext = Star<haxeal.bindings.ALC.ALCcontext>;
 typedef FunctionAddress = Dynamic;
 

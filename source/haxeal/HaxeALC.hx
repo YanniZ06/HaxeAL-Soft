@@ -67,9 +67,7 @@ class HaxeALC {
 	 * @param funcName Name of the function you want to get .
 	 * @return FunctionAddress
 	 */
-	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress {
-		return fromVoidPtr(ALC.getProcAddress(device, funcName));
-	}
+	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress { return fromVoidPtr(ALC.getProcAddress(device, funcName)); }
 
 	/**
      * Retrieves an AL enum value (Integer) from the given name.
@@ -77,6 +75,28 @@ class HaxeALC {
      * @param enumName The enum value to get.
      */
 	public static function getEnumValue(?device:ALDevice, enumName:String):Int return ALC.getEnumValue(device, enumName);
+
+	// Audio Record Extension
+
+	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, bufferSize:Int):ALCaptureDevice {
+		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
+	}
+
+	public static function closeCaptureDevice(device:ALCaptureDevice):Bool { return al_bool(ALC.closeCaptureDevice(device)); }
+
+	public static function startCapture(device:ALCaptureDevice):Void { ALC.startCapture(device); }
+
+	public static function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
+
+	/**
+	 * This function completes a capture operation started by `startCapture`, and does not block.
+	 * 
+	 * ! NOTE: TEST IF "ALBuffer" IS CORRECT TYPE TO USE IN FAVOR OF THE DYNAMIC SPACE
+	 * @param device The device that is capturing the samples (must be specific capture device).
+	 * @param buffer Buffer large enough to accommodate for `samples` number of samples.
+	 * @param samples Samples to load into the given buffer.
+	 */
+	public static function captureSamples(device:ALCaptureDevice, buffer:ALBuffer, samples:Int):Void { ALC.captureSamples(device, toVoidPtr(buffer), samples); }
 
 	// Other
 	/**

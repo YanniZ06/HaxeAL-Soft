@@ -235,9 +235,7 @@ class HaxeAL {
 	 * This function hasn't been tested and might not work as expected.
 	 * @param funcName Name of the function you want to get. The function might be context specific.
 	 */
-	public static function getProcAddress(funcName:String):FunctionAddress {
-		return AL.getProcAddress(funcName);
-	}
+	public static function getProcAddress(funcName:String):FunctionAddress { return fromVoidPtr(AL.getProcAddress(funcName)); }
 
     /**
      * Retrieves an AL enum value (Integer) from the given name.
