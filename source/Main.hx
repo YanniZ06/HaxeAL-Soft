@@ -5,6 +5,7 @@ import haxeal.bindings.ALC;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.ALDevice;
 import haxeal.HaxeALC;
+import haxeal.HaxeEFX;
 import haxeal.HaxeAL;
 
 import haxeal.bindings.BinderHelper;
@@ -26,13 +27,19 @@ class Main {
 		trace(name);
 		device = ALC.openDevice(name);
 		if(device != null) {
-			context = HaxeALC.createContext(device);
+			var efx_available = HaxeAL.isExtensionPresent("ALC_EXT_EFX");
+			final attributes:Null<Array<Int>> = efx_available ? [HaxeEFX.MAX_AUXILIARY_SENDS, 15] : null; 
 
+			context = HaxeALC.createContext(device, attributes);
 			if(context != null) trace(HaxeALC.makeContextCurrent(context));
+			final max_efx_per_sound = efx_available ? HaxeALC.getIntegers(device, HaxeEFX.MAX_AUXILIARY_SENDS, 1)[0] : 0;
+			trace(max_efx_per_sound);
+
 			HaxeAL.getErrorString(HaxeALC.getError(device));
 
 			// ? EXPERIMENTAL
-			//trace(haxeal.ALC.getIntegers(device, 0x1001));
+			trace(haxeal.HaxeALC.getIntegers(device, HaxeALC.MINOR_VERSION, 3));
+	
 		}
 		
 		/*HaxeAL.listenerfv(HaxeAL.ORIENTATION, [

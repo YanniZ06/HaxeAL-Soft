@@ -6,11 +6,6 @@ import haxeal.ALObjects.FunctionAddress;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
-@:structInit
-private class FloatH {
-    public var f:cpp.Float32;
-}
-
 class HaxeAL {
     public static inline final NONE:Int = 0;
 	public static inline final FALSE:Int = 0;

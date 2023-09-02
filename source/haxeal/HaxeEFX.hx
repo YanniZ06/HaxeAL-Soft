@@ -385,7 +385,6 @@ class HaxeEFX {
     }
 
     // Filter Management 
-
     /**
      * Returns an array of ALFilters.
      * @param num Amount of filters to return.
@@ -516,12 +515,11 @@ class HaxeEFX {
     }
 
     // AuxSlot Management 
-    
     /**
      * Returns an array of Auxiliary Effect Slots.
      * @param num Amount of slots to return.
      */
-     public static function createAuxiliaryEffectSlots(num:Int):Array<ALAuxSlot> {
+    public static function createAuxiliaryEffectSlots(num:Int):Array<ALAuxSlot> {
         var empty_auxslots:Array<ALAuxSlot> = [];
         var s_str:Pointer<ALAuxSlot> = Pointer.ofArray(empty_auxslots);
         EFX.createAuxiliaryEffectSlots(num, s_str.ptr);

@@ -36,7 +36,7 @@ extern class ALC {
 	@:native("alcCloseDevice")
 	static function closeDevice(device:Star<ALCdevice>):Char;
 
-	// ? Capture Device (Audio Recording) (Ported!)
+	// Capture Device (Audio Recording) (Ported!)
 	@:native("alcCaptureOpenDevice")
 	static function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:cpp.UInt32, captureFormat:Int, bufferSize:Int):Star<ALCdevice>;
 
@@ -62,7 +62,7 @@ extern class ALC {
 	@:native("alcGetEnumValue")
 	static function getEnumValue(device:Star<ALCdevice>, enumName:ConstCharStar):Int;
 
-	// Other (Ported?)
+	// Other (Ported)
 	@:native("alcGetString")
 	static function getString(device:Star<ALCdevice>, param:Int):ConstCharStar;
 

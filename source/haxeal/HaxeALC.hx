@@ -8,10 +8,35 @@ import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.FunctionAddress;
 
-/*@:buildXml('<include name="../builder.xml" />')
-@:include('alc.h')*/
 class HaxeALC {
+	// Constants
+	public static final FREQUENCY:Int = 0x1007;
+	public static final REFRESH:Int = 0x1008;
+	public static final SYNC:Int = 0x1009;
+	public static final MONO_SOURCES:Int = 0x1010;
+	public static final STEREO_SOURCES:Int = 0x1011;
+	public static final MAJOR_VERSION:Int = 0x1000;
+	public static final MINOR_VERSION:Int = 0x1001;
+	public static final ATTRIBUTES_SIZE:Int = 0x1002;
+	public static final ALL_ATTRIBUTES:Int = 0x1003;
+	public static final DEFAULT_DEVICE_SPECIFIER:Int = 0x1004;
+	public static final DEVICE_SPECIFIER:Int = 0x1005;
+	public static final EXTENSIONS:Int = 0x1006;
+	public static final EXT_CAPTURE:Int = 1;
+	public static final CAPTURE_DEVICE_SPECIFIER:Int = 0x310;
+	public static final CAPTURE_DEFAULT_DEVICE_SPECIFIER:Int = 0x311;
+	public static final CAPTURE_SAMPLES:Int = 0x312;
+	public static final ENUMERATE_ALL_EXT:Int = 1;
+	public static final DEFAULT_ALL_DEVICES_SPECIFIER:Int = 0x1012;
+	public static final ALL_DEVICES_SPECIFIER:Int = 0x1013;
+
+
     // Context creation and configuration
+	/**
+	 * Creates a context on the given device with the given attributes and returns it.
+	 * @param device Device to create context on.
+	 * @param attributes Attributes to set for the context (format: [ATTRIBUTE_PARAM, VALUE, ATTRIBUTE_PARAM2, VALUE2...])
+	 */
 	public static function createContext(device:ALDevice, ?attributes:Array<Int>):ALContext {
 		return ALC.createContext(device, attributes != null ? arrayInt_ToPtr(attributes) : null);
 	}
@@ -20,10 +45,8 @@ class HaxeALC {
 
 	public static function getCurrentContext():ALContext { return ALC.getCurrentContext(); }
 
-	//! UNTESTED
 	public static function processContext(context:ALContext):Void { ALC.processContext(context); }
 
-	//! UNTESTED
 	public static function suspendContext(context:ALContext):Void { ALC.suspendContext(context); }
 
 	public static function destroyContext(context:ALContext):Void { ALC.destroyContext(context); }
@@ -113,10 +136,10 @@ class HaxeALC {
 	// ? Probably works, requires further testing
     public static function getError(?device:ALDevice):Int { return ALC.getError(device); }
 
-	// TODO
-	public static function getIntegers(device:ALDevice, param:Int):Array<Int> {
-        var array:Array<Int> = [];
-        ALC.getIntegers(device, param, cpp.Stdlib.sizeof(Int), arrayInt_ToStar(array));
-        return array;
+	public static function getIntegers(device:ALDevice, param:Int, argumentCount):Array<Int> {
+        var n = 123456789;
+		var istr:Pointer<Int> = Pointer.addressOf(n);
+        ALC.getIntegers(device, param, argumentCount, istr.ptr);
+        return star_ToArrayInt(istr.ptr, argumentCount);
     };
 }

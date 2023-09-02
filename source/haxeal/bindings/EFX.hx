@@ -7,6 +7,16 @@ import haxeal.ALObjects.ALFilter;
 @:unreflective @:keep
 @:include("efx.h")
 extern class EFX {
+    /*
+    fuck it im replacing all the @:native with @efxFunc and then just making a macro to define the functions as the ones gotten using getProcAddress
+    as in:
+
+    i generate seperate variables with the same function name on compile time and force the functions with the annotated @efxFunc expression to call 
+    said variables that then act as function callers
+
+    make sure to force inline all of these aswell and replace the ; with {} (since a function body is necessary)
+    */
+
     // Effect Management
     @:native("alGenEffects")
     static function createEffects(n:Int, effects:Star<ALEffect>):Void;
