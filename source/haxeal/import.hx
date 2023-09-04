@@ -1,5 +1,6 @@
 package haxeal;
 
+#if !macro
 import cpp.ConstCharStar;
 //import cpp.ConstStar;
 import cpp.Char;
@@ -10,3 +11,4 @@ import cpp.RawPointer;
 import cpp.Stdlib;
 
 using cpp.Native;
+#end
