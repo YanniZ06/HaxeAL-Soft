@@ -4,7 +4,7 @@ import haxe.macro.Compiler;
 import haxe.macro.Context;
 import haxe.macro.Expr;
 
-using haxe.macro.ExprTools;
+using haxe.macro.Tools;
 using StringTools;
 
 class EFXBuilder {
@@ -19,14 +19,37 @@ class EFXBuilder {
 				if (data.name != 'efxFunc')
 					continue;
 
-				ignoreField = false; // Hooray, our field has the fxParam annotation
+				ignoreField = false; // Hooray, our field has the efxFunc annotation
                 alFuncName = data.params[0].getValue();
 			}
 
-			if (ignoreField)
-				continue;
+			if (ignoreField) continue;
+			
+			var args:Array<ComplexType> = [];
+			var retType:ComplexType;
+			switch(field.kind) {
+				case FFun(f):
+					for(arg in f.args) args.push(arg.type); // Get original function arguments
 
-            trace(alFuncName);
+					retType = f.ret ?? macro : Void; // Get original function return type
+				default:
+			}
+
+			fields.remove(field); // Remove old function field, now replace with a variable function
+
+			// Create fake variable function that will host our efx function address
+			var funField:Field = {
+				name: field.name,
+				access: [AStatic, APublic],
+				kind: FVar(TFunction(args, retType), null), // Insert original function args and ret, expr doesnt need to be set
+				pos: Context.currentPos()
+			};
+
+			// !! IDEA:
+			/*
+			Setup a function that uses the ${i} identifier reification and try and call it in the same context?? i dont know this is destroying my brain
+			*/
+
 
             /*
 			final fName:String = 'set_${field.name}';
@@ -67,4 +90,13 @@ class EFXBuilder {
         }
         return fields;
     }
+
+	public static macro function setupEFX() {
+		/*var variables = Context.getLocalVars();
+		for (name=>type in variables) {
+			$i{name} = cast $i{'HaxeAL.getProcAddress'};
+		}
+
+		return macro function _();*/
+	}
 }

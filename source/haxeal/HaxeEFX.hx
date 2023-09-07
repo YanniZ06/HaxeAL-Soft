@@ -252,7 +252,7 @@ class HaxeEFX {
             EAXREVERB_LATE_REVERB_PAN => 3
         ]
     ];
-    public static inline function getFXParamMapping(type:Int, param:Int):Int return fxMap[type][param] ?? 1;
+    static inline function getFXParamMapping(type:Int, param:Int):Int return fxMap[type][param] ?? 1;
     
     // Effect Management
     /**

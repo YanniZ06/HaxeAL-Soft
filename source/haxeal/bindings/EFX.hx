@@ -17,6 +17,8 @@ class EFX {
     make sure to force inline all of these aswell and replace the ; with {} (since a function body is necessary)
     */
 
+
+    public static function initEFX():Void { EFXBuilder.setupEFX(); }
     // Effect Management
     @efxFunc("alGenEffects")
     static function createEffects(n:Int, effects:Star<ALEffect>):Void {}
