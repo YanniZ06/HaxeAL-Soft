@@ -8,13 +8,16 @@ using haxe.macro.Tools;
 using StringTools;
 
 class EFXBuilder {
-    public static macro function buildFunctions():Array<haxe.macro.Field> {
+    public static macro function buildFunctions():Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();
+		var newFields:Array<Field> = [];
         
+		var efxFuncs:Map<String, String> = [];
         for(field in fields) {
             var ignoreField:Bool = true;
             var alFuncName:String = '';
 
+			newFields.push(field);
             for (data in field.meta) {
 				if (data.name != 'efxFunc')
 					continue;
@@ -35,68 +38,55 @@ class EFXBuilder {
 				default:
 			}
 
-			fields.remove(field); // Remove old function field, now replace with a variable function
+			newFields.remove(field); // Remove old function field, now replace with a variable function
 
 			// Create fake variable function that will host our efx function address
+			//var expr = macro $i{field.name} = cast $p{["HaxeAL", "getProcAddress"]}($v{alFuncName});
 			var funField:Field = {
 				name: field.name,
 				access: [AStatic, APublic],
-				kind: FVar(TFunction(args, retType), null), // Insert original function args and ret, expr doesnt need to be set
+				kind: FVar(TFunction(args, retType), null), // Insert original function args and ret, we leave out the expr
 				pos: Context.currentPos()
 			};
+
+			efxFuncs.set(field.name, alFuncName);
+			newFields.push(funField);
 
 			// !! IDEA:
 			/*
 			Setup a function that uses the ${i} identifier reification and try and call it in the same context?? i dont know this is destroying my brain
 			*/
-
-
-            /*
-			final fName:String = 'set_${field.name}';
-			final type = cast(field.kind.getParameters()[0], ComplexType).getParameters()[0].name;
-			var func = macro function $fName(val : Dynamic):Dynamic {
-				$i{field.name} = val;
-                $i{'changeParam'}($v{fxID}, val); //Very trippy
-				return val;
-			};
-
-			// I happened to switch to patterns here just to spare me the constant parameter getting.
-			var rawFunction:Function = func.expr.getParameters()[1];
-			switch (rawFunction.ret) { // Turn return type to proper type
-				case TPath(pth):
-					pth.name = type;
-				default:
-			}
-			switch (rawFunction.args[0].type) { // Turn setter argument type to proper type
-				case TPath(pth):
-					pth.name = type;
-				default:
-			}
-
-            var setAccess = field.access.copy();
-            if(setAccess != null) setAccess.remove(APublic); //Avoid it showing up on vsCode completion
-			final funcField:Field = {
-				name: fName,
-				kind: FFun(rawFunction),
-				pos: Context.currentPos(), // This will do
-				access: setAccess
-			};
-
-			fields.push(funcField);
-
-			final oldkind = field.kind;
-			field.kind = FProp('default', 'set', oldkind.getParameters()[0], oldkind.getParameters()[1]);
-            */
         }
-        return fields;
+
+		// THIS ONLY WORKS BECAUSE THE MACRO IS INVOKED SEPERATELY OUTSIDE OF THE FOR LOOP!! OTHERWISE THE VARIABLES WOULDNT BE RECOGNIZED!!
+		var casts = [ for(name=>alAddress in efxFuncs) macro $i{name} = cast $p{["HaxeAL", "getProcAddress"]}($v{alAddress}) ];
+		var initFun = macro function setupEfx() {
+			$b{casts}; // Create a block out of the different cast expressions
+			trace('Set up EFX properly!');
+		};
+
+		var rawFunc = switch (initFun.expr) {
+			case EFunction(kind, fun): fun;
+			default: throw '';
+		};
+
+		final funcField:Field = {
+			name: 'setupEFX',
+			kind: FFun(rawFunc),
+			pos: Context.currentPos(), // This will do
+			access: [AStatic, APublic]
+		};
+		newFields.push(funcField);
+
+        return newFields;
     }
 
-	public static macro function setupEFX() {
+	//public static macro function setupEFX() {
 		/*var variables = Context.getLocalVars();
 		for (name=>type in variables) {
 			$i{name} = cast $i{'HaxeAL.getProcAddress'};
 		}
 
 		return macro function _();*/
-	}
+	//}
 }

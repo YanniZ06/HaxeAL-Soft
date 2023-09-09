@@ -2,8 +2,7 @@ package;
 
 //import haxeal.bindings.*;
 import haxeal.bindings.ALC;
-import haxeal.ALObjects.ALContext;
-import haxeal.ALObjects.ALDevice;
+import haxeal.ALObjects;
 import haxeal.HaxeALC;
 import haxeal.HaxeEFX;
 import haxeal.HaxeAL;
@@ -38,7 +37,7 @@ class Main {
 			HaxeAL.getErrorString(HaxeALC.getError(device));
 
 			// ? EXPERIMENTAL
-			trace(haxeal.HaxeALC.getIntegers(device, HaxeALC.MINOR_VERSION, 3));
+			//trace(haxeal.HaxeALC.getIntegers(device, HaxeALC.MINOR_VERSION, 2));
 	
 		}
 		
@@ -46,9 +45,20 @@ class Main {
 			1, 0, 0,
 			0, 1, 0
 		]);*/
-		trace("HELLO???");
 		var voidptr = BinderHelper.toVoidPtr("Hello from Void Pointer!");
 		trace(BinderHelper.fromVoidPtr(voidptr));
+
+		trace('EFFECT TESTING!');
+		try { var effect = HaxeEFX.createEffect(); } catch(e) { trace('Intentional Test Error: $e'); }
+		HaxeEFX.initEFX();
+		//var isEffect:Int -> cpp.Char = cast HaxeAL.getProcAddress('alIsEffect');
+		//trace(isEffect(1));
+		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX'));
+		var effect = 20;
+		trace(effect);
+		effect = HaxeEFX.createEffect();
+		trace(effect);
+		trace('Generated effect is valid? ${HaxeEFX.isEffect(effect)}');
 
 		HaxeAL.listener3f(HaxeAL.POSITION, 0, 0, 2);
 		trace(HaxeAL.getListenerfv(HaxeAL.POSITION));

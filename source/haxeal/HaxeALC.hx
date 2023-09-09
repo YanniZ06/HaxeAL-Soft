@@ -92,7 +92,7 @@ class HaxeALC {
 	 * @param funcName Name of the function you want to get .
 	 * @return FunctionAddress
 	 */
-	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress { return fromVoidPtr(ALC.getProcAddress(device, funcName)); }
+	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress { return untyped __cpp__('(intptr_t)alcGetProcAddress ({1}, {0})', funcName, null); }
 
 	/**
      * Retrieves an AL enum value (Integer) from the given name.

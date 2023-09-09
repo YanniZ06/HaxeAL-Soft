@@ -253,6 +253,13 @@ class HaxeEFX {
         ]
     ];
     static inline function getFXParamMapping(type:Int, param:Int):Int return fxMap[type][param] ?? 1;
+
+    /**
+     * Initializes all the EFX functions.
+     * 
+     * Using any of the EFX functions before calling this function throws an error!
+     */
+    public static function initEFX():Void { EFX.setupEFX(); }
     
     // Effect Management
     /**
@@ -273,7 +280,7 @@ class HaxeEFX {
     }
 
     /**
-     * Creates a effect and returns it.
+     * Creates an effect and returns it.
      */
     public static function createEffect():ALEffect { return createEffects(1)[0]; }
 

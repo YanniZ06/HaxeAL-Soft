@@ -18,7 +18,6 @@ class EFX {
     */
 
 
-    public static function initEFX():Void { EFXBuilder.setupEFX(); }
     // Effect Management
     @efxFunc("alGenEffects")
     static function createEffects(n:Int, effects:Star<ALEffect>):Void {}
