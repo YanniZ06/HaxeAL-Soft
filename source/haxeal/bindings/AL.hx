@@ -64,7 +64,7 @@ extern class AL {
 	static function isExtensionPresent(extName:ConstCharStar):Bool;
 
 	@:native("alGetProcAddress")
-	static function getProcAddress(funcName:ConstCharStar):RawPointer<cpp.Void>;
+	static function getProcAddress(funcName:ConstCharStar):Star<cpp.Void>;
 
 	@:native("alGetEnumValue")
 	static function getEnumValue(enumName:ConstCharStar):Int;

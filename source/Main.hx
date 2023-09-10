@@ -49,10 +49,6 @@ class Main {
 		trace(BinderHelper.fromVoidPtr(voidptr));
 
 		trace('EFFECT TESTING!');
-		try { var effect = HaxeEFX.createEffect(); } catch(e) { trace('Intentional Test Error: $e'); }
-		HaxeEFX.initEFX();
-		//var isEffect:Int -> cpp.Char = cast HaxeAL.getProcAddress('alIsEffect');
-		//trace(isEffect(1));
 		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX'));
 		var effect = 20;
 		trace(effect);   

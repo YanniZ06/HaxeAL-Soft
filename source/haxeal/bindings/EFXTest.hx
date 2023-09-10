@@ -2,7 +2,7 @@ package haxeal.bindings;
 
 import haxeal.ALObjects;
 
-/*@:unreflective @:keep
+/* @:unreflective @:keep
 @:include("efx.h") 
 extern class EFT {
     @:native('LPALGENEFFECTS')
@@ -12,10 +12,20 @@ extern class EFT {
     static function isEffect(effect:ALEffect):Char;
 }*/
 
-@:unreflective @:keep
-@:include("efx.h") @:structAccess @:native('LPALGENEFFECTS')
-extern class GenEffectsPtr {}
+/*
+@:headerCode('
+    #include <efx.h>
+')
+class EFXT {
+    @:functionCode('
+        LPALGENEFFECTS alGenEffects = (LPALGENEFFECTS) alGetProcAddress("alGenEffects");
+        alGenEffects(n, effects);
+    ')
+    public static function createEffects(n:Int, effects:Star<ALEffect>) {}
 
-@:unreflective @:keep
-@:include("efx.h") @:structAccess @:native('LPALISEFFECT')
-extern class IsEffectPtr {}
+    @:functionCode('
+        LPALISEFFECT alIsEffect = (LPALISEFFECT) alGetProcAddress("alIsEffect");
+        return alIsEffect(effect);
+    ')
+    public static function isEffect(effect:ALEffect):cpp.Char { throw 'INVALID'; }
+}*/

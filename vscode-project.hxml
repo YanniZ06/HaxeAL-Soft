@@ -1,9 +1,10 @@
 #automatically generated do not edit
-#@date Sun Sep 10 2023 14:58:46 GMT+0200 (Central European Summer Time)
+#@date Sun Sep 10 2023 20:23:29 GMT+0200 (Central European Summer Time)
 -cp c:\users\yanni\desktop\the coding corner (my beloved)\projects\haxeal-soft\source\
 --main Main
 -D HAXEAL_DEBUG
 --macro TestCompile.importAssets()
+--dce no
 
 
 --cpp output

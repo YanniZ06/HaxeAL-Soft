@@ -231,7 +231,7 @@ class HaxeAL {
 	 * @param funcName Name of the function you want to get. The function might be context specific.
 	 */
 	public static function getProcAddress(funcName:String):FunctionAddress { 
-        return untyped __cpp__('(intptr_t)alGetProcAddress ({0})', funcName);
+        return untyped __cpp__('alGetProcAddress ({0})', funcName);
         //return fromVoidPtr(AL.getProcAddress(funcName)); 
     }
 

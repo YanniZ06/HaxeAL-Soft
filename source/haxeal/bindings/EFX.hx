@@ -6,6 +6,9 @@ import haxeal.ALObjects.ALFilter;
 
 
 @:build(haxeal.bindings.EFXBuilder.buildFunctions())
+@:headerCode('
+    #include <efx.h>
+')
 class EFX {
     /*
     fuck it im replacing all the @:native with @efxFunc and then just making a macro to define the functions as the ones gotten using getProcAddress
@@ -26,7 +29,7 @@ class EFX {
     static function deleteEffects(n:Int, effects:Pointer<ALEffect>):Void {}
 
     @efxFunc("alIsEffect")
-    static function isEffect(effect:ALEffect):Char {}
+    static function isEffect(effect:ALEffect):Char { throw 'INVALID'; }
 
     @efxFunc("alEffecti")
     static function effecti(effect:ALEffect, param:Int, value:Int):Void {}
@@ -60,7 +63,7 @@ class EFX {
     static function deleteFilters(n:Int, filters:Pointer<ALFilter>):Void {}
 
     @efxFunc("alIsFilter")
-    static function isFilter(filter:ALFilter):Char {}
+    static function isFilter(filter:ALFilter):Char { throw 'INVALID'; }
 
     @efxFunc("alFilteri")
     static function filteri(filter:ALFilter, param:Int, value:Int):Void {}
@@ -94,7 +97,7 @@ class EFX {
     static function deleteAuxiliaryEffectSlots(n:Int, effectslots:Pointer<ALAuxiliaryEffectSlot>):Void {}
 
     @efxFunc("alIsAuxiliaryEffectSlot")
-    static function isAuxiliaryEffectSlot(effectslot:ALAuxiliaryEffectSlot):Char {}
+    static function isAuxiliaryEffectSlot(effectslot:ALAuxiliaryEffectSlot):Char { throw 'INVALID'; }
 
     @efxFunc("alAuxiliaryEffectSloti")
     static function auxiliaryEffectSloti(effectslot:ALAuxiliaryEffectSlot, param:Int, value:Int):Void {}
