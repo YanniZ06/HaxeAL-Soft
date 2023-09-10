@@ -55,7 +55,8 @@ class Main {
 		//trace(isEffect(1));
 		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX'));
 		var effect = 20;
-		trace(effect);
+		trace(effect);   
+
 		effect = HaxeEFX.createEffect();
 		trace(effect);
 		trace('Generated effect is valid? ${HaxeEFX.isEffect(effect)}');

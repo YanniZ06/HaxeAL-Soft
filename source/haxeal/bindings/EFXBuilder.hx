@@ -11,6 +11,7 @@ class EFXBuilder {
     public static macro function buildFunctions():Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();
 		var newFields:Array<Field> = [];
+		trace(macro untyped __cpp__('({1})alGetProcAddress ({0})', 'swag', 'int'));
         
 		var efxFuncs:Map<String, String> = [];
         for(field in fields) {

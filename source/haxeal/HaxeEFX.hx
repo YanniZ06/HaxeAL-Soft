@@ -269,7 +269,11 @@ class HaxeEFX {
     public static function createEffects(num:Int):Array<ALEffect> {
         var empty_effects:Array<ALEffect> = [];
         var s_str:Pointer<ALEffect> = Pointer.ofArray(empty_effects);
-        EFX.createEffects(num, s_str.ptr);
+
+        var funADR:haxeal.bindings.EFXTest.GenEffectsPtr = untyped __cpp__('alGetProcAddress("alGenEffects")'); //HaxeAL.getProcAddress('alGenEffects');
+        var fun:Int -> Star<ALEffect> -> Void = cast funADR;
+        fun(num, s_str.ptr);
+        //haxeal.bindings.EFXTest.EFT.genEffects(num, s_str.ptr);
 
         var effects:Array<ALEffect> = star_ToArrayEffect(s_str.ptr, num);
         #if HAXEAL_DEBUG if(isEffect(effects[0])) #end return effects;
@@ -303,7 +307,12 @@ class HaxeEFX {
      * Checks if the given effect is a valid ALEffect object.
      * @param effect Effect to check validity of.
      */
-    public static function isEffect(effect:ALEffect):Bool { return al_bool(EFX.isEffect(effect)); }
+    public static function isEffect(effect:ALEffect):Bool { 
+        var funADR:haxeal.bindings.EFXTest.IsEffectPtr = untyped __cpp__('alGetProcAddress("alIsEffect")');//untyped __cpp__('({1})alGetProcAddress ("alisEffect")', "alisEffect", haxeal.bindings.EFXTest.IsEffectPtr);
+        var fun:ALEffect -> Char = cast funADR;
+        return al_bool(fun(effect));
+    //    return al_bool(haxeal.bindings.EFXTest.EFT.isEffect(effect)); 
+    }
     
     /**
      * Sets the integer value for the target parameter of the given effect.
