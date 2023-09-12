@@ -48,15 +48,6 @@ class Main {
 		var voidptr = BinderHelper.toVoidPtr("Hello from Void Pointer!");
 		trace(BinderHelper.fromVoidPtr(voidptr));
 
-		trace('EFFECT TESTING!');
-		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX'));
-		var effect = 20;
-		trace(effect);   
-
-		effect = HaxeEFX.createEffect();
-		trace(effect);
-		trace('Generated effect is valid? ${HaxeEFX.isEffect(effect)}');
-
 		HaxeAL.listener3f(HaxeAL.POSITION, 0, 0, 2);
 		trace(HaxeAL.getListenerfv(HaxeAL.POSITION));
 		trace(HaxeAL.getListener3f(HaxeAL.POSITION));
@@ -70,6 +61,20 @@ class Main {
 		trace(HaxeAL.isBuffer(buf));
 		HaxeAL.getErrorString(HaxeAL.getError());
 
+		trace('EFFECT TESTING!');
+		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX')); 
+
+		var effect = HaxeEFX.createEffect();
+		HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_REVERB);
+		HaxeEFX.effectf(effect, HaxeEFX.REVERB_DECAY_TIME, 10); // 10 second decay time reverb is a good idea - nobody ever
+		trace(effect);
+
+		var aux = HaxeEFX.createAuxiliaryEffectSlot();
+		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect); // Apply effect to the aux
+		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
+		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
+
+		// Sound Playback
 		sound_test.DataLoader.parseWAV('assets/testMono.wav', buf);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
@@ -101,16 +106,7 @@ class Main {
 
 		trace("ENDED!");
 
-		//trace(HaxeAL.createSource());
-		/*
-		var arrayFunny:Array<Int> = [0,1,2,3,4,5,6,7,8];
-		var starArray = BinderHelper.arrayInt_ToStar(arrayFunny);
-		var dereferencedArray = BinderHelper.star_ToArrayInt(starArray, arrayFunny.length );
-		trace(dereferencedArray);*/
-
 		trace(context);
-		//trace(ALC.getCurrentContext());
-		//trace(AL.getError());
 	}
 
 	public static function createContext(device:ALDevice, ?attributes:Array<Int>):ALContext {
