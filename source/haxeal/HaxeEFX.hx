@@ -253,6 +253,13 @@ class HaxeEFX {
         ]
     ];
     static inline function getFXParamMapping(type:Int, param:Int):Int return fxMap[type][param] ?? 1;
+
+    /**
+     * Initializes the EFX extension.
+     * 
+     * The EFX extension will not work before this function is called once.
+     */
+    public static function initEFX() { EFX.initEFX(); }
     
     // Effect Management
     /**

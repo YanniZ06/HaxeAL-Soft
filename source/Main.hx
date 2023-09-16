@@ -64,15 +64,9 @@ class Main {
 		trace('EFFECT TESTING!');
 		trace(HaxeALC.isExtensionPresent(null, 'ALC_EXT_EFX')); 
 
-		var effect2 = HaxeEFX.createEffect();
-		HaxeEFX.effecti(effect2, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_PITCH_SHIFTER);
-		HaxeEFX.effecti(effect2, HaxeEFX.PITCH_SHIFTER_COARSE_TUNE, -12); // 10 second decay time reverb is a good idea - nobody ever
+		HaxeEFX.initEFX();
 
-
-		var aux2 = HaxeEFX.createAuxiliaryEffectSlot();
-		HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_EFFECT, effect2); // Apply effect2 to the aux
-		HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
-		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux2, 0, HaxeEFX.FILTER_NULL);
+		trace("effects have been initialized");
 
 		var effect = HaxeEFX.createEffect();
 		HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_REVERB);
@@ -95,7 +89,7 @@ class Main {
 
 		var stepper:Float = 8;
 		//var decayTime = curTime + 7;
-		var decayTime = 18;
+		var decayTime = 9; // 18 for reverb ig
 		var timeStep:Float = 0;
 		trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
 		while(true) {

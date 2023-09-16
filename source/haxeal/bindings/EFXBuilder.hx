@@ -11,6 +11,8 @@ class EFXBuilder {
     public static macro function buildFunctions():Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();
 		var newFields:Array<Field> = [];
+
+		var initFunContent:String = ''; // This is bad but return doesnt work properly sooo!!!
         
         for(field in fields) {
             var ignoreField:Bool = true;
@@ -40,9 +42,6 @@ class EFXBuilder {
 			}
 
 			newFields.remove(field); // Remove old function field, now replace with a variable function
-			
-			// Setup our functionCode content
-			final longPointerName = 'LP${alFuncName.toUpperCase()}';
 
 			var returnKey:String = '';
 			switch(retType) {
@@ -50,14 +49,11 @@ class EFXBuilder {
 				default:
 			}
 
-			final functionCodeContent:String = 
-			'$longPointerName $alFuncName = ($longPointerName) alGetProcAddress("$alFuncName");
-			${returnKey}$alFuncName(${argNames.join(', ')});
-			';
+			final functionCodeContentExec:String = '${returnKey}$alFuncName(${argNames.join(', ')});';
 
-			// Get functionCode metadata expr
+			// Get functionCode metadata expr with our code executor string
 			final baseExpr = macro
-				@:functionCode($v{functionCodeContent})
+				@:functionCode($v{functionCodeContentExec})
 				function placeholder() {};
 			
 			var functionCodeMeta:MetadataEntry = null;
@@ -75,7 +71,39 @@ class EFXBuilder {
 				meta: [functionCodeMeta] // Import our metadata, this does the important shit c++ shit!
 			};
 			newFields.push(funcField);
+
+			// Push this to the init functionCode
+			final longPointerName = 'LP${alFuncName.toUpperCase()}';
+			initFunContent += ' 	$alFuncName = ($longPointerName) alGetProcAddress("$alFuncName");\n'; 
         }
+
+		// Set up our initializer function data
+		final metaExpr = macro 
+			@:functionCode($v{initFunContent})
+			function placeholder() {};
+
+		var initFunctionCodeMeta:MetadataEntry = null;
+		switch(metaExpr.expr) {
+			case EMeta(s, e): initFunctionCodeMeta = s; // Get our metadata so we can pass it to the new field later
+			default:
+			}
+
+		final emptyFuncMacro = macro function empty() {};
+		var emptyFunc:Function;
+		switch(emptyFuncMacro.expr) {
+			case EFunction(kind, f): emptyFunc = f;
+			default:
+		}
+
+		// Initializer Function Declaration
+		final initField:Field = {
+			name: 'initEFX',
+			kind: FFun(emptyFunc),
+			pos: Context.currentPos(),
+			access: [AStatic, APublic],
+			meta: [initFunctionCodeMeta]
+		};
+		newFields.push(initField);
 
         return newFields;
     }

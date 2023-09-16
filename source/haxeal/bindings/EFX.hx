@@ -8,19 +8,42 @@ import haxeal.ALObjects.ALFilter;
 @:build(haxeal.bindings.EFXBuilder.buildFunctions())
 @:headerCode('
     #include <efx.h>
-')
+
+    static LPALGENEFFECTS alGenEffects;
+    static LPALDELETEEFFECTS alDeleteEffects;
+    static LPALISEFFECT alIsEffect;
+    static LPALEFFECTI alEffecti;
+    static LPALEFFECTIV alEffectiv;
+    static LPALEFFECTF alEffectf;
+    static LPALEFFECTFV alEffectfv;
+    static LPALGETEFFECTI alGetEffecti;
+    static LPALGETEFFECTIV alGetEffectiv;
+    static LPALGETEFFECTF alGetEffectf;
+    static LPALGETEFFECTFV alGetEffectfv;
+    static LPALGENFILTERS alGenFilters;
+    static LPALDELETEFILTERS alDeleteFilters;
+    static LPALISFILTER alIsFilter;
+    static LPALFILTERI alFilteri;
+    static LPALFILTERIV alFilteriv;
+    static LPALFILTERF alFilterf;
+    static LPALFILTERFV alFilterfv;
+    static LPALGETFILTERI alGetFilteri;
+    static LPALGETFILTERIV alGetFilteriv;
+    static LPALGETFILTERF alGetFilterf;
+    static LPALGETFILTERFV alGetFilterfv;
+    static LPALGENAUXILIARYEFFECTSLOTS alGenAuxiliaryEffectSlots;
+    static LPALDELETEAUXILIARYEFFECTSLOTS alDeleteAuxiliaryEffectSlots;
+    static LPALISAUXILIARYEFFECTSLOT alIsAuxiliaryEffectSlot;
+    static LPALAUXILIARYEFFECTSLOTI alAuxiliaryEffectSloti;
+    static LPALAUXILIARYEFFECTSLOTIV alAuxiliaryEffectSlotiv;
+    static LPALAUXILIARYEFFECTSLOTF alAuxiliaryEffectSlotf;
+    static LPALAUXILIARYEFFECTSLOTFV alAuxiliaryEffectSlotfv;
+    static LPALGETAUXILIARYEFFECTSLOTI alGetAuxiliaryEffectSloti;
+    static LPALGETAUXILIARYEFFECTSLOTIV alGetAuxiliaryEffectSlotiv;
+    static LPALGETAUXILIARYEFFECTSLOTF alGetAuxiliaryEffectSlotf;
+    static LPALGETAUXILIARYEFFECTSLOTFV alGetAuxiliaryEffectSlotfv;
+') // Defining these in the header for our new EFX init method
 class EFX {
-    /*
-    fuck it im replacing all the @:native with @efxFunc and then just making a macro to define the functions as the ones gotten using getProcAddress
-    as in:
-
-    i generate seperate variables with the same function name on compile time and force the functions with the annotated @efxFunc expression to call 
-    said variables that then act as function callers
-
-    make sure to force inline all of these aswell and replace the ; with {} (since a function body is necessary)
-    */
-
-
     // Effect Management
     @efxFunc("alGenEffects")
     static function createEffects(n:Int, effects:Star<ALEffect>):Void {}
