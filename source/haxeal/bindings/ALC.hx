@@ -49,7 +49,7 @@ extern class ALC {
 	static function stopCapture(device:Star<ALCdevice>):Void;
 
 	@:native("alcCaptureSamples")
-	static function captureSamples(device:Star<ALCdevice>, buffer:RawPointer<cpp.Void>, samples:Int):Void;
+	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.UInt8>, samples:Int):Void;
 
 	// Extensions (Ported!)
 	@:native("alcIsExtensionPresent")

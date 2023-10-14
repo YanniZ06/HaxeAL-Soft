@@ -103,14 +103,19 @@ class Main {
 
 		trace("Recording audio for 5 seconds..");
 		while(sampleSum < reqData) {
-			Sys.sleep(0.24);
+			Sys.sleep(0.2);
 			final samples = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
+			trace(samples);
 			if(samples < 1024) continue;
 			trace("Captured samples!");
 			sampleSum += 1024;
+			trace('Sample sum is $sampleSum');
 
-			var bytesToWrite = haxe.io.Bytes.ofData(HaxeALC.captureSamples(mic, 1024));
+			var samples = HaxeALC.captureSamples(mic, 1024);
+			trace(samples);
+			var bytesToWrite = haxe.io.Bytes.ofData(samples);
 			byteOutput.write(bytesToWrite); //.write(bytesToWrite);
+			trace(byteOutput.getBytes());
 		}
 		trace("Audio recorded!");
 		//});

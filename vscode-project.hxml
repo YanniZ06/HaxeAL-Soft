@@ -1,6 +1,6 @@
 #automatically generated do not edit
-#@date Sat Sep 30 2023 19:10:15 GMT+0200 (Central European Summer Time)
--cp c:\users\yanni\desktop\the coding corner (my beloved)\projects\haxeal-soft\source\
+#@date Sat Oct 14 2023 16:43:57 GMT+0200 (Central European Summer Time)
+-cp c:\users\privat\desktop\fnf\z engine\haxeal-soft\source\
 --main Main
 -D HAXEAL_DEBUG
 --macro TestCompile.importAssets()
@@ -8,4 +8,4 @@
 
 
 --cpp output
--cp c:\users\yanni\appdata\local\temp\ab0cb7bf4c230b9d957683d45fb080082195369a
+-cp c:\users\privat\appdata\local\temp\82332658446f04ec941bac31541d6fad9d4550fe

@@ -14,6 +14,9 @@ import haxeal.ALObjects.FunctionAddress;
 	#include <hx/CFFI.h>
 	#include <hx/CFFIPrime.h>
 	#include <Array.h>
+
+	#include <iostream>
+	using namespace std;
 ')
 class HaxeALC {
 	// Constants
@@ -146,15 +149,28 @@ class HaxeALC {
 	 * @param device The device that is capturing the samples (must be specific capture device).
 	 * @param samples Samples to load into the given buffer, check the CAPTURE_SAMPLES property of your capture device to check how many samples are up for capture. Max Amount is 1024
 	 */
-	public static function captureSamples(device:ALCaptureDevice, samples:Int):haxe.io.BytesData { return captureSampleExec(device, Std.int(Math.min(1024, samples))); }
+	public static function captureSamples(device:ALCaptureDevice, samples:Int):haxe.io.BytesData {
+		final realsamples = Std.int(Math.min(1024, samples));
 
+		var n:cpp.UInt8 = 123456789;
+        var istr:Pointer<cpp.UInt8> = Pointer.addressOf(n);
+        ALC.captureSamples(device, istr.ptr, realsamples);
+        return star_ToArrayUInt8(istr.ptr, realsamples); //! Mess with sample length
+	}
+
+	/*
 	@:functionCode('
-		ALubyte buffer[1024];
-		alcCaptureSamples(dev, (ALCvoid *)buffer, samples);
+		ALubyte* buf;
+		alcCaptureSamples(dev, buf, samples);
+		cout << "we live ";
+		arr->setData(buf, samples);
+		cout << "we love ";
 
-		return buffer;
+		return arr;
 	')
-	private static inline function captureSampleExec(dev:ALCaptureDevice, samples:Int):haxe.io.BytesData { throw 'INVALID'; }
+	private static function captureSampleExec(dev:ALCaptureDevice, samples:Int, arr:Array<cpp.UInt8>):haxe.io.BytesData {
+		throw 'INVALID FUNCTIONCODE?';
+	}*/
 
 	// Other
 	/**
