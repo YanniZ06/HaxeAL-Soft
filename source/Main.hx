@@ -11,6 +11,7 @@ import haxeal.bindings.BinderHelper;
 
 // These will be removed when the bindings are re-translated, for now they are necessary
 import cpp.ConstCharStar;
+import haxe.io.BytesData;
 //import cpp.ConstStar;
 import cpp.Char;
 import cpp.UInt8;
@@ -79,17 +80,55 @@ class Main {
 		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 1, HaxeEFX.FILTER_NULL);
 
 		// Sound Playback
-		sound_test.DataLoader.parseWAV('assets/testMono.wav', buf);
+		/* sound_test.DataLoader.parseWAV('assets/testMono.wav', buf);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
 		HaxeAL.sourcefv(src, HaxeAL.POSITION, [8, 0, 0]);
 		HaxeAL.sourcePlay(src);
+		*/
+
+
+		// Audio Recording
+		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 44100);
+		trace("Setup Mic: " + HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
+		HaxeALC.startCapture(mic);
+		var byteData:BytesData;
+
+		//sys.thread.Thread.create(() -> {
+		var sampleSum:Int = 0;
+		final reqData:Int = 44100 * 5; // 5 Seconds of audio
+
+		var byteOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+
+		trace("Recording audio for 5 seconds..");
+		while(sampleSum < reqData) {
+			Sys.sleep(0.24);
+			final samples = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
+			if(samples < 1024) continue;
+			trace("Captured samples!");
+			sampleSum += 1024;
+
+			var bytesToWrite = haxe.io.Bytes.ofData(HaxeALC.captureSamples(mic, 1024));
+			byteOutput.write(bytesToWrite); //.write(bytesToWrite);
+		}
+		trace("Audio recorded!");
+		//});
+
+		// Mic Audio Playback
+		var bytes = byteOutput.getBytes();
+		HaxeAL.bufferData(buf, HaxeAL.FORMAT_STEREO16, bytes, bytes.length, 44100);
 		HaxeAL.getErrorString(HaxeAL.getError());
+
+		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
+		HaxeAL.sourcefv(src, HaxeAL.POSITION, [8, 0, 0]);
+		HaxeAL.sourcePlay(src);
+		trace("Playing back recorded audio!");
+
 
 		var stepper:Float = 8;
 		//var decayTime = curTime + 7;
-		var decayTime = 9; // 18 for reverb ig
+		var decayTime = 6; // 18 for reverb ig
 		var timeStep:Float = 0;
 		trace(HaxeAL.getSourcef(src, HaxeAL.BYTE_OFFSET));
 		while(true) {

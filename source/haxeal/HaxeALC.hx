@@ -8,6 +8,13 @@ import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.FunctionAddress;
 
+@:headerCode('
+    #include <al.h>
+	#include <hxcpp.h>
+	#include <hx/CFFI.h>
+	#include <hx/CFFIPrime.h>
+	#include <Array.h>
+')
 class HaxeALC {
 	// Constants
 	public static final FREQUENCY:Int = 0x1007;
@@ -87,12 +94,11 @@ class HaxeALC {
 	 * 
 	 * The defined function then acts as a caller for the pointed to function.
 	 * 
-	 * This function hasn't been tested and might not work as expected.
+	 * This function only works if called in raw cpp code (using `untyped __cpp__('alcGetProcAddress(device, "funcName")')` or `@:functionCode`)
 	 * @param device Function related device, can be left as null if the extension isnt device specific.
 	 * @param funcName Name of the function you want to get .
-	 * @return FunctionAddress
 	 */
-	public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress { return untyped __cpp__('(intptr_t)alcGetProcAddress ({1}, {0})', funcName, null); }
+	//public static function getProcAddress(?device:ALDevice, funcName:String):FunctionAddress { return null; }
 
 	/**
      * Retrieves an AL enum value (Integer) from the given name.
@@ -103,25 +109,52 @@ class HaxeALC {
 
 	// Audio Record Extension
 
-	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, bufferSize:Int):ALCaptureDevice {
-		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
+	/**
+	 * Opens a device for OpenAL Audio Capture by name and returns the created device.
+	 * @param deviceName Name of the device you want to open (default device name can be gotten using `getString`)
+	 * @param captureFrequency Frequency you want your captured audio to be in. (44100 is recommended)
+	 * @param captureFormat Format you want your captured audio to be in. (AL.FORMAT_MONO/STEREO8/16)
+	 * @param sampleRate The sample rate you wanna capture in (Alternatively: Buffer size) 
+	 */
+	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, sampleRate:Int):ALCaptureDevice {
+		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, sampleRate);
 	}
 
+	/**
+	 * Closes an OpenAL Audio Capture device and returns true if the action was successful.
+	 * @param device The device to close.
+	 */
 	public static function closeCaptureDevice(device:ALCaptureDevice):Bool { return al_bool(ALC.closeCaptureDevice(device)); }
 
+	/**
+	 * Starts a capture operation on the given device.
+	 * @param device Device to start capturing audio on.
+	 */
 	public static function startCapture(device:ALCaptureDevice):Void { ALC.startCapture(device); }
 
+	/**
+	 * Stops a capture operation on the given device.
+	 * @param device Device to stop capturing audio on.
+	 */
 	public static function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
 
 	/**
 	 * This function completes a capture operation started by `startCapture`, and does not block.
 	 * 
-	 * ! NOTE: TEST IF "ALBuffer" IS CORRECT TYPE TO USE IN FAVOR OF THE DYNAMIC SPACE
+	 * Returns a buffer with `samples` amount of samples in the form of `haxe.io.BytesData`, which using `haxe.io.Bytes.ofData()` can be turned to listenable data.
+	 * 
 	 * @param device The device that is capturing the samples (must be specific capture device).
-	 * @param buffer Buffer large enough to accommodate for `samples` number of samples.
-	 * @param samples Samples to load into the given buffer.
+	 * @param samples Samples to load into the given buffer, check the CAPTURE_SAMPLES property of your capture device to check how many samples are up for capture. Max Amount is 1024
 	 */
-	public static function captureSamples(device:ALCaptureDevice, buffer:ALBuffer, samples:Int):Void { ALC.captureSamples(device, toVoidPtr(buffer), samples); }
+	public static function captureSamples(device:ALCaptureDevice, samples:Int):haxe.io.BytesData { return captureSampleExec(device, Std.int(Math.min(1024, samples))); }
+
+	@:functionCode('
+		ALubyte buffer[1024];
+		alcCaptureSamples(dev, (ALCvoid *)buffer, samples);
+
+		return buffer;
+	')
+	private static inline function captureSampleExec(dev:ALCaptureDevice, samples:Int):haxe.io.BytesData { throw 'INVALID'; }
 
 	// Other
 	/**
@@ -136,7 +169,7 @@ class HaxeALC {
 	// ? Probably works, requires further testing
     public static function getError(?device:ALDevice):Int { return ALC.getError(device); }
 
-	public static function getIntegers(device:ALDevice, param:Int, argumentCount):Array<Int> {
+	public static function getIntegers(device:ALDevice, param:Int, argumentCount:Int):Array<Int> {
         var n = 123456789;
 		var istr:Pointer<Int> = Pointer.addressOf(n);
         ALC.getIntegers(device, param, argumentCount, istr.ptr);

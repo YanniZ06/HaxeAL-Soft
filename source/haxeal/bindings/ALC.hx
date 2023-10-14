@@ -1,6 +1,5 @@
 package haxeal.bindings;
 
-//@:buildXml('<include name="../builder.xml" />')
 @:unreflective @:keep
 @:include("alc.h")
 extern class ALC {
@@ -66,7 +65,7 @@ extern class ALC {
 	@:native("alcGetString")
 	static function getString(device:Star<ALCdevice>, param:Int):ConstCharStar;
 
-	@:native("alcGetIntegerv") // TODO ????
+	@:native("alcGetIntegerv")
 	static function getIntegers(device:Star<ALCdevice>, param:Int, size:Int, values:Star<Int>):Void;
 }
 
