@@ -117,10 +117,10 @@ class HaxeALC {
 	 * @param deviceName Name of the device you want to open (default device name can be gotten using `getString`)
 	 * @param captureFrequency Frequency you want your captured audio to be in. (44100 is recommended)
 	 * @param captureFormat Format you want your captured audio to be in. (AL.FORMAT_MONO/STEREO8/16)
-	 * @param sampleRate The sample rate you wanna capture in (Alternatively: Buffer size) 
+	 * @param bufferSize The size the capture buffer should have (1024 is recommended)
 	 */
-	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, sampleRate:Int):ALCaptureDevice {
-		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, sampleRate);
+	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, bufferSize:Int):ALCaptureDevice {
+		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
 	}
 
 	/**
@@ -158,13 +158,11 @@ class HaxeALC {
         return star_ToArrayUInt8(istr.ptr, realsamples); //! Mess with sample length
 	}
 
-	/*
-	@:functionCode('
+	
+	/*@:functionCode('
 		ALubyte* buf;
 		alcCaptureSamples(dev, buf, samples);
-		cout << "we live ";
 		arr->setData(buf, samples);
-		cout << "we love ";
 
 		return arr;
 	')

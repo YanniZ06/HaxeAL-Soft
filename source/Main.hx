@@ -90,7 +90,7 @@ class Main {
 
 
 		// Audio Recording
-		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 44100);
+		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 1024);
 		trace("Setup Mic: " + HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
 		HaxeALC.startCapture(mic);
 		var byteData:BytesData;
@@ -103,21 +103,24 @@ class Main {
 
 		trace("Recording audio for 5 seconds..");
 		while(sampleSum < reqData) {
-			Sys.sleep(0.2);
-			final samples = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
-			trace(samples);
-			if(samples < 1024) continue;
+			final samplesNum = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
+			trace(samplesNum);
 			trace("Captured samples!");
-			sampleSum += 1024;
+			sampleSum += samplesNum;
 			trace('Sample sum is $sampleSum');
 
-			var samples = HaxeALC.captureSamples(mic, 1024);
+			var samples = HaxeALC.captureSamples(mic, samplesNum);
 			trace(samples);
 			var bytesToWrite = haxe.io.Bytes.ofData(samples);
-			byteOutput.write(bytesToWrite); //.write(bytesToWrite);
+			trace("SI?");
+			if(samplesNum > 0) byteOutput.write(bytesToWrite); //.write(bytesToWrite);
+			trace("SI");
 			trace(byteOutput.getBytes());
 		}
 		trace("Audio recorded!");
+
+		HaxeALC.stopCapture(mic);
+		HaxeALC.closeCaptureDevice(mic);
 		//});
 
 		// Mic Audio Playback

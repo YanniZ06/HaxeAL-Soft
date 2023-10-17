@@ -92,8 +92,7 @@ class BinderHelper {
         return array;
     }
     public static inline function star_ToArrayUInt8(str:Star<cpp.UInt8>, len:Int):Array<cpp.UInt8> {
-        var c_arr:Array<cpp.UInt8> = Pointer.fromStar(str).toUnmanagedArray(len);
-        return c_arr;
+        return Pointer.fromStar(str).toUnmanagedArray(len);
     }
 
     public static inline function star_ToArrayInt(str:Star<Int>, len:Int):Array<Int> {
