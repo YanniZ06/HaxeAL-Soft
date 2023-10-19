@@ -1,6 +1,11 @@
 package;
 
 //import haxeal.bindings.*;
+import haxe.io.Bytes;
+import cpp.Pointer;
+import haxe.io.BytesBuffer;
+import sys.io.FileOutput;
+import haxe.Int32;
 import haxeal.bindings.ALC;
 import haxeal.ALObjects;
 import haxeal.HaxeALC;
@@ -16,6 +21,20 @@ import haxe.io.BytesData;
 import cpp.Char;
 import cpp.UInt8;
 import cpp.Star;
+
+typedef Recorder = {
+	var device:ALCaptureDevice;
+	var fileBytes:FileOutput;
+	var dataSizeOffset:Int;
+	var dataSize:Int;
+	var rectime:Float;
+	var channels:cpp.UInt32;
+	var bits:cpp.UInt32;
+	var sampleRate:cpp.UInt32;
+	var frameSize:cpp.UInt32;
+	var buffer:Array<cpp.UInt8>;
+	var bufferSize:Int32;
+};
 
 @:buildXml('<include name="../builder.xml" />')
 class Main {
@@ -90,7 +109,7 @@ class Main {
 
 
 		// Audio Recording
-		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 1024);
+		/*var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 32768);
 		trace("Setup Mic: " + HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
 		HaxeALC.startCapture(mic);
 		var byteData:BytesData;
@@ -110,12 +129,15 @@ class Main {
 			trace('Sample sum is $sampleSum');
 
 			var samples = HaxeALC.captureSamples(mic, samplesNum);
+			samples.resize(100);
 			trace(samples);
 			var bytesToWrite = haxe.io.Bytes.ofData(samples);
 			trace("SI?");
+			trace(bytesToWrite);
 			if(samplesNum > 0) byteOutput.write(bytesToWrite); //.write(bytesToWrite);
 			trace("SI");
 			trace(byteOutput.getBytes());
+
 		}
 		trace("Audio recorded!");
 
@@ -153,7 +175,83 @@ class Main {
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, HaxeAL.NONE);
 
 		HaxeAL.deleteBuffer(buf);
-		HaxeAL.deleteSource(src);
+		HaxeAL.deleteSource(src);*/
+
+		var str:String = "record.wav";
+		var deviceName:String = null;
+		var recorder:Recorder = {device: null, fileBytes: null, dataSizeOffset: 0, dataSize: 0, rectime: 4.0, channels: 1, bits: 16, sampleRate: 44100, frameSize: 2, buffer: null, bufferSize: 0};
+		var totalSize:Int = 0;
+		var format:Int = 0x1101;
+		
+		recorder.device = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, format, 32768);
+		trace("open device");
+		recorder.fileBytes = sys.io.File.write("demonizeme.wav", true);
+		recorder.fileBytes.writeString("RIFF");
+		recorder.fileBytes.writeInt32(0xFFFFFFFF);
+		recorder.fileBytes.writeString("WAVE");
+		recorder.fileBytes.writeString("fmt ");
+		recorder.fileBytes.writeInt32(18);
+		recorder.fileBytes.writeUInt16(0x0001);
+		recorder.fileBytes.writeUInt16(1);
+		recorder.fileBytes.writeInt32(44100);
+		recorder.fileBytes.writeInt32(recorder.sampleRate*recorder.frameSize);
+		recorder.fileBytes.writeUInt16(recorder.frameSize);
+		recorder.fileBytes.writeUInt16(recorder.bits);
+		recorder.fileBytes.writeUInt16(0);
+		recorder.fileBytes.writeString("data");
+		recorder.fileBytes.writeInt32(0xFFFFFFFF);
+		trace("starting capture rn");
+		recorder.dataSizeOffset = recorder.fileBytes.tell() - 4;
+		HaxeALC.startCapture(recorder.device);
+		while(recorder.dataSize/recorder.sampleRate < recorder.rectime){
+			final count = HaxeALC.getIntegers(recorder.device, HaxeALC.CAPTURE_SAMPLES, 1)[0];
+			trace(count);
+			/*if (count > recorder.bufferSize){
+				@:privateAccess
+				final bytes:haxe.io.Bytes = new haxe.io.Bytes(count, recorder.frameSize);
+				recorder.buffer = null;
+				recorder.buffer = cast(bytes.getData());
+				recorder.bufferSize = count;
+			}*/
+			if (count > recorder.bufferSize){
+				recorder.buffer = null;
+				trace("got rid of you");
+				recorder.buffer = HaxeALC.captureSamples(recorder.device, count);
+				trace("new");
+				recorder.bufferSize = count;
+				trace("b");
+				
+				for (i in 0...count*recorder.channels){
+					trace(recorder.buffer.length);
+					trace(i*2);
+					var b:cpp.UInt8 = recorder.buffer[i*2 + 0];
+					recorder.buffer[i*2 + 0] = recorder.buffer[i*2] + 1;
+					recorder.buffer[i*2 + 1] = b;
+				}
+				trace("trying to make of data");
+				final data:Bytes = Bytes.ofData(recorder.buffer);
+				trace("done");
+				recorder.dataSize += recorder.buffer.length;
+				//it crashes on 236
+				//the writing is what crashes for whatever reason not the data itself
+				recorder.fileBytes.write(data);
+				trace("done again");
+			}
+		}
+
+		HaxeALC.stopCapture(recorder.device);
+
+		HaxeALC.closeCaptureDevice(recorder.device);
+		
+		recorder.fileBytes.seek(recorder.dataSizeOffset, SeekBegin);
+
+		recorder.fileBytes.writeInt32(recorder.dataSize * recorder.frameSize);
+
+		recorder.fileBytes.seek(4, SeekBegin);
+		recorder.fileBytes.writeInt32(recorder.fileBytes.tell() - 8);
+		
+		recorder.fileBytes.flush();
+		recorder.fileBytes.close();
 
 		trace("ENDED!");
 

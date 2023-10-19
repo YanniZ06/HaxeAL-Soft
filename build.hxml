@@ -4,4 +4,6 @@
 --macro TestCompile.importAssets()
 --dce no
 
+-D HXCPP_M64
+
 --cpp output
