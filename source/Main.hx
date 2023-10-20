@@ -88,7 +88,7 @@ class Main {
 
 		trace("effects have been initialized");
 
-		var effect = HaxeEFX.createEffect();
+		/*var effect = HaxeEFX.createEffect();
 		HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_REVERB);
 		HaxeEFX.effectf(effect, HaxeEFX.REVERB_DECAY_TIME, 10); // 10 second decay time reverb is a good idea - nobody ever
 		trace(effect);
@@ -96,7 +96,7 @@ class Main {
 		var aux = HaxeEFX.createAuxiliaryEffectSlot();
 		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect); // Apply effect to the aux
 		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
-		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 1, HaxeEFX.FILTER_NULL);
+		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 1, HaxeEFX.FILTER_NULL);*/
 
 		// Sound Playback
 		/* sound_test.DataLoader.parseWAV('assets/testMono.wav', buf);
@@ -106,10 +106,35 @@ class Main {
 		HaxeAL.sourcefv(src, HaxeAL.POSITION, [8, 0, 0]);
 		HaxeAL.sourcePlay(src);
 		*/
+		/*var bytes = sound_test.DataLoader.wavBytes('assets/testMono.wav');
+		var byte_arr = bytes.getData();
+		var byteArrays:Array<Array<cpp.UInt8>> = [];
+		var lengthPerArr = Math.ceil(byte_arr.length / 10);
+		trace(lengthPerArr);
+		for(i in 0...10) {
+			byteArrays.push(byte_arr.slice(lengthPerArr * i, lengthPerArr * (i+1)));
+			trace(i);
+		}
+
+		var byteOutput:haxe.io.BytesOutput = new haxe.io.BytesOutput();
+		for(i in 0...10) {
+			byteOutput.write(haxe.io.Bytes.ofData(byteArrays[i]));
+			//trace(byteOutput.getBytes());
+
+			trace(i);
+		}
+
+		var bytey = byteOutput.getBytes();
+		HaxeAL.bufferData(buf, HaxeAL.FORMAT_STEREO16, bytey, bytey.length, 44100);
+		HaxeAL.getErrorString(HaxeAL.getError());
+
+		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
+		HaxeAL.sourcefv(src, HaxeAL.POSITION, [8, 0, 0]);
+		HaxeAL.sourcePlay(src);*/
 
 
 		// Audio Recording
-		/*var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 32768);
+		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 32768);
 		trace("Setup Mic: " + HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
 		HaxeALC.startCapture(mic);
 		var byteData:BytesData;
@@ -129,14 +154,12 @@ class Main {
 			trace('Sample sum is $sampleSum');
 
 			var samples = HaxeALC.captureSamples(mic, samplesNum);
-			samples.resize(100);
-			trace(samples);
+			//trace(samples);
 			var bytesToWrite = haxe.io.Bytes.ofData(samples);
 			trace("SI?");
-			trace(bytesToWrite);
 			if(samplesNum > 0) byteOutput.write(bytesToWrite); //.write(bytesToWrite);
 			trace("SI");
-			trace(byteOutput.getBytes());
+			//trace(byteOutput.getBytes());
 
 		}
 		trace("Audio recorded!");
@@ -175,8 +198,10 @@ class Main {
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, HaxeAL.NONE);
 
 		HaxeAL.deleteBuffer(buf);
-		HaxeAL.deleteSource(src);*/
+		HaxeAL.deleteSource(src);
 
+		//? Ziads Code
+		/*
 		var str:String = "record.wav";
 		var deviceName:String = null;
 		var recorder:Recorder = {device: null, fileBytes: null, dataSizeOffset: 0, dataSize: 0, rectime: 4.0, channels: 1, bits: 16, sampleRate: 44100, frameSize: 2, buffer: null, bufferSize: 0};
@@ -206,13 +231,13 @@ class Main {
 		while(recorder.dataSize/recorder.sampleRate < recorder.rectime){
 			final count = HaxeALC.getIntegers(recorder.device, HaxeALC.CAPTURE_SAMPLES, 1)[0];
 			trace(count);
-			/*if (count > recorder.bufferSize){
-				@:privateAccess
-				final bytes:haxe.io.Bytes = new haxe.io.Bytes(count, recorder.frameSize);
-				recorder.buffer = null;
-				recorder.buffer = cast(bytes.getData());
-				recorder.bufferSize = count;
-			}*/
+			//if (count > recorder.bufferSize){
+			//	@:privateAccess
+			//	final bytes:haxe.io.Bytes = new haxe.io.Bytes(count, recorder.frameSize);
+			//	recorder.buffer = null;
+			//	recorder.buffer = cast(bytes.getData());
+			//	recorder.bufferSize = count;
+			//}
 			if (count > recorder.bufferSize){
 				recorder.buffer = null;
 				trace("got rid of you");
@@ -251,7 +276,7 @@ class Main {
 		recorder.fileBytes.writeInt32(recorder.fileBytes.tell() - 8);
 		
 		recorder.fileBytes.flush();
-		recorder.fileBytes.close();
+		recorder.fileBytes.close();*/
 
 		trace("ENDED!");
 
