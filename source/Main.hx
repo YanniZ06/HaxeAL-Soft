@@ -88,7 +88,8 @@ class Main {
 
 		trace("effects have been initialized");
 
-		/*var effect = HaxeEFX.createEffect();
+		/*
+		var effect = HaxeEFX.createEffect();
 		HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_REVERB);
 		HaxeEFX.effectf(effect, HaxeEFX.REVERB_DECAY_TIME, 10); // 10 second decay time reverb is a good idea - nobody ever
 		trace(effect);
@@ -134,10 +135,10 @@ class Main {
 
 
 		// Audio Recording
-		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 32768);
+		
+		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, HaxeAL.FORMAT_STEREO16, 44100);
 		trace("Setup Mic: " + HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
 		HaxeALC.startCapture(mic);
-		var byteData:BytesData;
 
 		//sys.thread.Thread.create(() -> {
 		var sampleSum:Int = 0;
@@ -147,8 +148,11 @@ class Main {
 
 		trace("Recording audio for 5 seconds..");
 		while(sampleSum < reqData) {
+			trace("loop start");
 			final samplesNum = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
-			trace(samplesNum);
+			if(samplesNum < 1) continue;
+			//if(rowLoops > 0) trace('WOAH $rowLoops LOOPS IN A ROW??');
+			//rowLoops++;
 			trace("Captured samples!");
 			sampleSum += samplesNum;
 			trace('Sample sum is $sampleSum');
@@ -156,9 +160,10 @@ class Main {
 			var samples = HaxeALC.captureSamples(mic, samplesNum);
 			//trace(samples);
 			var bytesToWrite = haxe.io.Bytes.ofData(samples);
-			trace("SI?");
-			if(samplesNum > 0) byteOutput.write(bytesToWrite); //.write(bytesToWrite);
-			trace("SI");
+			byteOutput.write(bytesToWrite); //.write(bytesToWrite);
+
+			trace("written");
+			//Sys.sleep(0.025);
 			//trace(byteOutput.getBytes());
 
 		}
@@ -170,7 +175,7 @@ class Main {
 
 		// Mic Audio Playback
 		var bytes = byteOutput.getBytes();
-		HaxeAL.bufferData(buf, HaxeAL.FORMAT_STEREO16, bytes, bytes.length, 44100);
+		HaxeAL.bufferData(buf, HaxeAL.FORMAT_STEREO16, bytes, bytes.length, 22500);
 		HaxeAL.getErrorString(HaxeAL.getError());
 
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, buf);
@@ -199,6 +204,7 @@ class Main {
 
 		HaxeAL.deleteBuffer(buf);
 		HaxeAL.deleteSource(src);
+		
 
 		//? Ziads Code
 		/*
@@ -210,7 +216,7 @@ class Main {
 		
 		recorder.device = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER), 44100, format, 32768);
 		trace("open device");
-		recorder.fileBytes = sys.io.File.write("demonizeme.wav", true);
+		recorder.fileBytes = sys.io.File.write(str, true);
 		recorder.fileBytes.writeString("RIFF");
 		recorder.fileBytes.writeInt32(0xFFFFFFFF);
 		recorder.fileBytes.writeString("WAVE");
@@ -247,16 +253,18 @@ class Main {
 				trace("b");
 				
 				for (i in 0...count*recorder.channels){
-					trace(recorder.buffer.length);
-					trace(i*2);
+					//trace(recorder.buffer.length);
+					//trace(i*2);
 					var b:cpp.UInt8 = recorder.buffer[i*2 + 0];
-					recorder.buffer[i*2 + 0] = recorder.buffer[i*2] + 1;
+					recorder.buffer[i*2 + 0] = recorder.buffer[i*2 + 1];
 					recorder.buffer[i*2 + 1] = b;
 				}
 				trace("trying to make of data");
+				trace(recorder.buffer);
 				final data:Bytes = Bytes.ofData(recorder.buffer);
 				trace("done");
 				recorder.dataSize += recorder.buffer.length;
+				trace(recorder.dataSize);
 				//it crashes on 236
 				//the writing is what crashes for whatever reason not the data itself
 				recorder.fileBytes.write(data);

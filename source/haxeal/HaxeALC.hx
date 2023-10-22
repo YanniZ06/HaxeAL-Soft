@@ -147,15 +147,15 @@ class HaxeALC {
 	 * Returns a buffer with `samples` amount of samples in the form of `haxe.io.BytesData`, which using `haxe.io.Bytes.ofData()` can be turned to listenable data.
 	 * 
 	 * @param device The device that is capturing the samples (must be specific capture device).
-	 * @param samples Samples to load into the given buffer, check the CAPTURE_SAMPLES property of your capture device to check how many samples are up for capture. Max Amount is 1024
+	 * @param samples Samples to load into the given buffer, check the CAPTURE_SAMPLES property of your capture device to check how many samples are up for capture.
 	 */
 	public static function captureSamples(device:ALCaptureDevice, samples:Int):haxe.io.BytesData {
-		final realsamples = Std.int(Math.min(1024, samples));
+		//final realsamples = Std.int(Math.min(1024, samples));
 
 		var n:cpp.UInt8 = 123456789;
         var istr:Pointer<cpp.UInt8> = Pointer.addressOf(n);
-        ALC.captureSamples(device, istr.ptr, realsamples);
-        return star_ToArrayUInt8(istr.ptr, realsamples); //! Mess with sample length
+        ALC.captureSamples(device, istr.ptr, samples);
+        return star_ToArrayUInt8(istr.ptr, samples);
 	}
 
 	
