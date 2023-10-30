@@ -110,65 +110,7 @@ class HaxeALC {
      */
 	public static function getEnumValue(?device:ALDevice, enumName:String):Int return ALC.getEnumValue(device, enumName);
 
-	// Audio Record Extension
-
-	/**
-	 * Opens a device for OpenAL Audio Capture by name and returns the created device.
-	 * @param deviceName Name of the device you want to open (default device name can be gotten using `getString`)
-	 * @param captureFrequency Frequency you want your captured audio to be in. (44100 is recommended)
-	 * @param captureFormat Format you want your captured audio to be in. (AL.FORMAT_MONO/STEREO8/16)
-	 * @param bufferSize The size the capture buffer should have (1024 is recommended)
-	 */
-	public static function openCaptureDevice(deviceName:String, captureFrequency:Int, captureFormat:Int, bufferSize:Int):ALCaptureDevice {
-		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
-	}
-
-	/**
-	 * Closes an OpenAL Audio Capture device and returns true if the action was successful.
-	 * @param device The device to close.
-	 */
-	public static function closeCaptureDevice(device:ALCaptureDevice):Bool { return al_bool(ALC.closeCaptureDevice(device)); }
-
-	/**
-	 * Starts a capture operation on the given device.
-	 * @param device Device to start capturing audio on.
-	 */
-	public static function startCapture(device:ALCaptureDevice):Void { ALC.startCapture(device); }
-
-	/**
-	 * Stops a capture operation on the given device.
-	 * @param device Device to stop capturing audio on.
-	 */
-	public static function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
-
-	/**
-	 * This function completes a capture operation started by `startCapture`, and does not block.
-	 * 
-	 * Returns a buffer with `samples` amount of samples in the form of `haxe.io.BytesData`, which using `haxe.io.Bytes.ofData()` can be turned to listenable data.
-	 * 
-	 * @param device The device that is capturing the samples (must be specific capture device).
-	 * @param samples Samples to load into the given buffer, check the CAPTURE_SAMPLES property of your capture device to check how many samples are up for capture.
-	 */
-	public static function captureSamples(device:ALCaptureDevice, samples:Int):haxe.io.BytesData {
-		//final realsamples = Std.int(Math.min(1024, samples));
-
-		var n:cpp.UInt8 = 123456789;
-        var istr:Pointer<cpp.UInt8> = Pointer.addressOf(n);
-        ALC.captureSamples(device, istr.ptr, samples);
-        return star_ToArrayUInt8(istr.ptr, samples);
-	}
-
-	
-	/*@:functionCode('
-		ALubyte* buf;
-		alcCaptureSamples(dev, buf, samples);
-		arr->setData(buf, samples);
-
-		return arr;
-	')
-	private static function captureSampleExec(dev:ALCaptureDevice, samples:Int, arr:Array<cpp.UInt8>):haxe.io.BytesData {
-		throw 'INVALID FUNCTIONCODE?';
-	}*/
+	// Audio Record Extension (Use ALC.hx if you want to use it, as I haven't found a good way to port it)
 
 	// Other
 	/**
