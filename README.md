@@ -3,11 +3,20 @@
 # About HaxeAL-Soft
 HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.
 
-It is planned to incorporate every feature OpenAL Soft offers, from EFX-Extension handlers and their pre-defined presets to full 3D environmental audio support and even audio recording!
+It is planned to incorporate every feature OpenAL Soft offers, from EFX-Extension handlers and their pre-defined presets to full 3D environmental audio support (and theoretically, audio recording)!
 
 As its a native c++ library it will also naturally **only** work on **c++ targets** (sorry webdevs).
 
 Once it is ready it will be released as a haxelib, until then you can easily build it by cloning the repo and following the below given instructions.
+
+# Implemented Features
+- Full ALC and AL Integration
+- Full EFX Integration
+- Extension support (albeit only properly accessible using untyped `__cpp__` expressions, refer to `haxeal.bindings.EFXBuilder.hx` for example usage)
+
+# Left-out Features
+- Audio Recording: Simply didn't work properly no matter what I tried, you can still access the bindings over the `haxeal.bindings.ALC.hx` file. (If you get a way to make it work PROPERLY, send a pull request PLEASE!!)
+- Soft/ALEXT Functions: Didn't find any use for them, if some people really want them added I can add them in, otherwise I'm sparing myself the effort
 
 # Building HaxeAL-Soft
 Building HaxeAL Soft is just as simple as building any other haxe application.
@@ -18,6 +27,18 @@ Building HaxeAL Soft is just as simple as building any other haxe application.
 4. To run the HaxeAL Soft build, move into the generated output directory (by doing `cd output` for example) and run `./Main.exe`
 
 Congrats, you have built and ran HaxeAL-Soft!!
+
+# Regarding Issues
+If you happen to find any issues while compiling builds, please set up an Issue under the Issues tab.
+
+The information the issue should contain is given in the setup issue template.
+
+# Regarding Pull Requests
+Pull requests are *greatly* appreciated, so long as they follow a similar structure to the rest of the project (however suggestions for different structuring are also welcome).
+
+Please mark your PR's appropiately to keep management easy.
+
+In short its only really important to differentiate between issue/bugfixes, improvement suggestions and the adding of new features.
 
 # The Code Structure
 This segment will define the intended code structure for this library.
@@ -184,24 +205,3 @@ All Regular Std-Type Hx Files and their functions should be documented as seen i
 ![image](https://github.com/YanniZ06/HaxeAL-Soft/assets/102467588/7e8569b2-722f-49ec-b652-892a211b38eb)
 
 That is about all the rules set up for documentation, you're not *forced* to document functions you implement because I'll gladly take care of it, but it could of course be helpful!
-
-# Regarding Issues
-If you happen to find any issues while compiling builds, please set up an Issue under the Issues tab.
-
-The information the issue should contain is given in the setup issue template.
-
-# Regarding Pull Requests
-Pull requests are *greatly* appreciated, so long as they follow a similar structure to the rest of the project (however suggestions for different structuring are also welcome).
-
-Please mark your PR's appropiately to keep management easy.
-
-In short its only really important to differentiate between issue/bugfixes, improvement suggestions and the adding of new features.
-
-# Current Progress
-Current estimated progress will be tracked here, [on the Haxe Discord](https://discord.gg/Pfx78swKzz)'s projects tab post for HaxeAL Soft, and on [my twitter](https://twitter.com/YanniZ06) (occasionally).
-
-## Finished Features
-* The binding of AL.h and ALC.h is completely done.
-* Proper File structure.
-* Windows support on x86 (32 Bit) AND x64 (64 Bit) processors (compiles different libraries
-* A bunch of the Hx Std-type files are being worked on (HaxeAL, HaxeALC)
