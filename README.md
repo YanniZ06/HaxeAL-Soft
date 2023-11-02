@@ -7,7 +7,7 @@ It is planned to incorporate every feature OpenAL Soft offers, from EFX-Extensio
 
 As its a native c++ library it will also naturally **only** work on **c++ targets** (sorry webdevs).
 
-Once it is ready it will be released as a haxelib, until then you can easily build it by cloning the repo and following the below given instructions.
+You can easily build HaxeAL Soft by cloning the repo and following the given instructions.
 
 # Implemented Features
 - Full ALC and AL Integration

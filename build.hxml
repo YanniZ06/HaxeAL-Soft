@@ -1,9 +1,0 @@
--cp source
---main Main
--D HAXEAL_DEBUG
---macro TestCompile.importAssets()
---dce no
-
--D HXCPP_M64
-
---cpp output
