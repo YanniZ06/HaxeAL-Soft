@@ -3,8 +3,6 @@ package haxeal;
 import haxeal.bindings.ALC;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALDevice;
-import haxeal.ALObjects.ALBuffer;
-import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.FunctionAddress;
 
@@ -51,14 +49,35 @@ class HaxeALC {
 		return ALC.createContext(device, attributes != null ? arrayInt_ToPtr(attributes) : null);
 	}
 
+	/**
+	 * Sets the given context as the current OpenAL context.
+	 * 
+	 * Returns whether this operation was successful or not.
+	 * @param context Context to set as "current".
+	 */
 	public static function makeContextCurrent(context:ALContext):Bool { return al_bool(ALC.makeContextCurrent(context)); }
 
+	/**
+	 * Returns the current OpenAL context.
+	 */
 	public static function getCurrentContext():ALContext { return ALC.getCurrentContext(); }
 
+	/**
+	 * Tells the given context to begin processing. 
+	 * @param context Context to start processing on.
+	 */
 	public static function processContext(context:ALContext):Void { ALC.processContext(context); }
 
+	/**
+	 * Suspends processing on the given context.
+	 * @param context Context to suspend processing on.
+	 */
 	public static function suspendContext(context:ALContext):Void { ALC.suspendContext(context); }
 
+	/**
+	 * Destroys the given context.
+	 * @param context Context to destroy.
+	 */
 	public static function destroyContext(context:ALContext):Void { ALC.destroyContext(context); }
 
 	// Device creation and configuration
@@ -110,7 +129,7 @@ class HaxeALC {
      */
 	public static function getEnumValue(?device:ALDevice, enumName:String):Int return ALC.getEnumValue(device, enumName);
 
-	// Audio Record Extension (Use ALC.hx if you want to use it, as I haven't found a good way to port it)
+	// Use ALC.hx if you want to use the Audio Record Extension, as I haven't found a good way to port it
 
 	// Other
 	/**
@@ -118,13 +137,22 @@ class HaxeALC {
 	 * 
 	 * If `device` isnt null, a device parameter can be obtained.
 	 * @param device The device to receive the parameter of, if the parameter is tied to a device. Leave null otherwise.
-	 * @param param Integer parameter to get
+	 * @param param Parameter to get
 	 */
 	public static function getString(?device:ALDevice, param:Int):String { return ALC.getString(device, param); }
 
-	// ? Probably works, requires further testing
-    public static function getError(?device:ALDevice):Int { return ALC.getError(device); }
+	/**
+	 * Returns a device-specific error code, if there is any error.
+	 * @param device Device to check on for errors.
+	 */
+	public static function getError(?device:ALDevice):Int { return ALC.getError(device); }
 
+	/**
+	 * Returns integers related to the given parameter of the current context for the `device` (or none if its not device specific).
+	 * @param device Device for device specific integer values
+	 * @param param Parameter to get values of
+	 * @param argumentCount Amount of array objects you expect to return
+	 */
 	public static function getIntegers(device:ALDevice, param:Int, argumentCount:Int):Array<Int> {
         var n = 123456789;
 		var istr:Pointer<Int> = Pointer.addressOf(n);

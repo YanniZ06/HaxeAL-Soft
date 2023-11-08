@@ -3,7 +3,7 @@ package haxeal.bindings;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
-//@:buildXml('<include name="../builder.xml" />')
+@:buildXml('<include name="../builder.xml" />')
 @:unreflective @:keep
 @:include("al.h")
 extern class AL {
@@ -106,7 +106,7 @@ extern class AL {
     @:native("alGetListeneriv")
     static function getListeneriv(param:Int, values:Star<Int>):Void;
 
-    // Todo: Source Handling (In Progress)
+    // Source Handling (Ported!)
     @:native("alGenSources")
     static function createSources(num:Int, sources:Star<ALSource>):Void;
 

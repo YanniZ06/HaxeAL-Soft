@@ -1,5 +1,6 @@
 package haxeal.bindings;
 
+@:buildXml('<include name="../builder.xml" />')
 @:unreflective @:keep
 @:include("alc.h")
 extern class ALC {
@@ -35,7 +36,7 @@ extern class ALC {
 	@:native("alcCloseDevice")
 	static function closeDevice(device:Star<ALCdevice>):Char;
 
-	// Capture Device (Audio Recording) (Ported!)
+	// Capture Device (Wouldnt work, try it yourself)
 	@:native("alcCaptureOpenDevice")
 	static function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:cpp.UInt32, captureFormat:Int, bufferSize:Int):Star<ALCdevice>;
 

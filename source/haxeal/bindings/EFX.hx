@@ -1,10 +1,12 @@
 package haxeal.bindings;
 
+#if !macro
 import haxeal.ALObjects.ALAuxSlot;
 import haxeal.ALObjects.ALEffect;
 import haxeal.ALObjects.ALFilter;
+#end
 
-
+@:buildXml('<include name="../builder.xml" />')
 @:build(haxeal.bindings.EFXBuilder.buildFunctions())
 @:headerCode('
     #include <efx.h>
@@ -114,37 +116,35 @@ class EFX {
 
     // AuxSlot Management
     @efxFunc("alGenAuxiliaryEffectSlots")
-    static function createAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxiliaryEffectSlot>):Void {}
+    static function createAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxSlot>):Void {}
 
     @efxFunc("alDeleteAuxiliaryEffectSlots")
-    static function deleteAuxiliaryEffectSlots(n:Int, effectslots:Pointer<ALAuxiliaryEffectSlot>):Void {}
+    static function deleteAuxiliaryEffectSlots(n:Int, effectslots:Pointer<ALAuxSlot>):Void {}
 
     @efxFunc("alIsAuxiliaryEffectSlot")
-    static function isAuxiliaryEffectSlot(effectslot:ALAuxiliaryEffectSlot):Char { throw 'INVALID'; }
+    static function isAuxiliaryEffectSlot(effectslot:ALAuxSlot):Char { throw 'INVALID'; }
 
     @efxFunc("alAuxiliaryEffectSloti")
-    static function auxiliaryEffectSloti(effectslot:ALAuxiliaryEffectSlot, param:Int, value:Int):Void {}
+    static function auxiliaryEffectSloti(effectslot:ALAuxSlot, param:Int, value:Int):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotiv")
-    static function auxiliaryEffectSlotiv(effectslot:ALAuxiliaryEffectSlot, param:Int, values:Pointer<Int>):Void {}
+    static function auxiliaryEffectSlotiv(effectslot:ALAuxSlot, param:Int, values:Pointer<Int>):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotf")
-    static function auxiliaryEffectSlotf(effectslot:ALAuxiliaryEffectSlot, param:Int, value:cpp.Float32):Void {}
+    static function auxiliaryEffectSlotf(effectslot:ALAuxSlot, param:Int, value:cpp.Float32):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotfv")
-    static function auxiliaryEffectSlotfv(effectslot:ALAuxiliaryEffectSlot, param:Int, values:Pointer<cpp.Float32>):Void {}
+    static function auxiliaryEffectSlotfv(effectslot:ALAuxSlot, param:Int, values:Pointer<cpp.Float32>):Void {}
     
     @efxFunc("alGetAuxiliaryEffectSloti")
-    static function getAuxiliaryEffectSloti(effectslot:ALAuxiliaryEffectSlot, param:Int, value:Star<Int>):Void {}
+    static function getAuxiliaryEffectSloti(effectslot:ALAuxSlot, param:Int, value:Star<Int>):Void {}
     
     @efxFunc("alGetAuxiliaryEffectSlotiv")
-    static function getAuxiliaryEffectSlotiv(effectslot:ALAuxiliaryEffectSlot, param:Int, values:Star<Int>):Void {}
+    static function getAuxiliaryEffectSlotiv(effectslot:ALAuxSlot, param:Int, values:Star<Int>):Void {}
     
     @efxFunc("alGetAuxiliaryEffectSlotf")
-    static function getAuxiliaryEffectSlotf(effectslot:ALAuxiliaryEffectSlot, param:Int, value:Star<cpp.Float32>):Void {}
+    static function getAuxiliaryEffectSlotf(effectslot:ALAuxSlot, param:Int, value:Star<cpp.Float32>):Void {}
     
     @efxFunc("alGetAuxiliaryEffectSlotfv")
-    static function getAuxiliaryEffectSlotfv(effectslot:ALAuxiliaryEffectSlot, param:Int, values:Star<cpp.Float32>):Void {}
+    static function getAuxiliaryEffectSlotfv(effectslot:ALAuxSlot, param:Int, values:Star<cpp.Float32>):Void {}
 }
-
-typedef ALAuxiliaryEffectSlot = ALAuxSlot;

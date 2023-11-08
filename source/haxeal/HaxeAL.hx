@@ -2,7 +2,6 @@ package haxeal;
 
 import haxeal.bindings.AL;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
-import haxeal.ALObjects.FunctionAddress;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
@@ -230,7 +229,7 @@ class HaxeAL {
 	 * This function hasn't been tested and might not work as expected.
 	 * @param funcName Name of the function you want to get. The function might be context specific.
 	 */
-	public static function getProcAddress(funcName:String):FunctionAddress { 
+	public static function getProcAddress(funcName:String):Dynamic { 
         return untyped __cpp__('alGetProcAddress ({0})', funcName);
         //return fromVoidPtr(AL.getProcAddress(funcName)); 
     }
@@ -519,7 +518,7 @@ class HaxeAL {
      * @param param Param to set value of.
      * @param value New integer value of the param.
      */
-    public static function sourcei(source:ALSource, param:Int, value:Int):Void {AL.sourcei(source, param, value); }
+    public static function sourcei(source:ALSource, param:Int, value:Null<Int>):Void {AL.sourcei(source, param, value); }
 
     /**
      * Sets three integer values for the target parameter of the given source.

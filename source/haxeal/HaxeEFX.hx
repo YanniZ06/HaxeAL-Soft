@@ -442,7 +442,7 @@ class HaxeEFX {
      * @param param Param to set value of.
      * @param value New integer value of the param.
      */
-    public static function filteri(filter:ALFilter, param:Int, value:Int):Void { EFX.filteri(filter, param, value); }
+    public static function filteri(filter:ALFilter, param:Int, value:Null<Int>):Void { EFX.filteri(filter, param, value); }
 
     /**
      * Sets an array of integer values for the target parameter of the given filter.
@@ -572,7 +572,7 @@ class HaxeEFX {
      * @param param Param to set value of.
      * @param value New integer value of the param.
      */
-    public static function auxiliaryEffectSloti(auxslot:ALAuxSlot, param:Int, value:Int):Void { EFX.auxiliaryEffectSloti(auxslot, param, value); }
+    public static function auxiliaryEffectSloti(auxslot:ALAuxSlot, param:Int, value:Null<Int>):Void { EFX.auxiliaryEffectSloti(auxslot, param, value); }
 
     /**
      * Sets an array of integer values for the target parameter of the given Auxiliary Effect Slot.

@@ -5,7 +5,9 @@ import haxe.macro.Context;
 import haxe.macro.Expr;
 
 using haxe.macro.Tools;
+#if !macro
 using StringTools;
+#end
 
 class EFXBuilder {
     public static macro function buildFunctions():Array<Field> {
