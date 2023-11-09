@@ -1,9 +1,12 @@
 <xml>
-    <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32" />
-    <set name="PROCESSOR_TYPE" value="x64" if="HXCPP_M64" />
+    <!-- <pragma once="true" /> -->
+
+    <!-- <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32" /> -->
+    <set name="PROCESSOR_TYPE" value="x64"/> <!-- if="HXCPP_M64" -->
     <set name="openal_dir" value="source/openal/libs/${PROCESSOR_TYPE}" />
     
-    <copy to="output" from="${openal_dir}/OpenAL32.dll"/> <!-- Move the compiled openal to the output folder when we're done -->
+    <copyFile name="OpenAL32.dll" from="${this_dir}/${openal_dir}" toolId="exe"
+		overwrite="true"/>
 
     <!--copy to="output" from="assets/testMono.wav" --> <!-- Properly compile test assets-->
 
@@ -15,7 +18,6 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
-	<!-- Nevermind it still uses linker oops, might go back to this again as its less messy shrug-->
     <!-- if="HXCPP_M32" || USE TO CHECK IF PC IS 32 BIT TO COMPILE TO 32BIT, OTHERWISE COMPILE CURRENT 64 BIT -->
     <target id='haxe' tool='linker' toolid='exe'>
         <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>

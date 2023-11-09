@@ -6,7 +6,7 @@ import haxeal.ALObjects.ALEffect;
 import haxeal.ALObjects.ALFilter;
 #end
 
-@:buildXml('<include name="../builder.xml" />')
+@:buildXml('<include name="${haxelib:HaxeAL-Soft}/builder.xml" />')
 @:build(haxeal.bindings.EFXBuilder.buildFunctions())
 @:headerCode('
     #include <efx.h>

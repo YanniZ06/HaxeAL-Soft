@@ -9,6 +9,7 @@ using haxe.macro.Tools;
 using StringTools;
 #end
 
+@:noDoc
 class EFXBuilder {
     public static macro function buildFunctions():Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();

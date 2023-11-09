@@ -1,6 +1,6 @@
 package haxeal.bindings;
 
-@:buildXml('<include name="../builder.xml" />')
+@:buildXml('<include name="${haxelib:HaxeAL-Soft}/builder.xml" />')
 @:unreflective @:keep
 @:include("alc.h")
 extern class ALC {

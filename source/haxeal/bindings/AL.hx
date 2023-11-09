@@ -3,7 +3,7 @@ package haxeal.bindings;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
-@:buildXml('<include name="../builder.xml" />')
+@:buildXml('<include name="${haxelib:HaxeAL-Soft}/builder.xml" />')
 @:unreflective @:keep
 @:include("al.h")
 extern class AL {
