@@ -3,11 +3,14 @@
 # About HaxeAL-Soft
 HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.
 
-It is planned to incorporate every feature OpenAL Soft offers, from EFX-Extension handlers and their pre-defined presets to full 3D environmental audio support (and theoretically, audio recording)!
+It incorporates nearly every feature OpenAL Soft offers, from EFX-Extension handlers and their pre-defined presets to full 3D environmental audio support (and theoretically, audio recording)!
 
 As its a native c++ library it will also naturally **only** work on **c++ targets** (sorry webdevs).
 
-You can easily build HaxeAL Soft by cloning the repo and following the given instructions.
+You can download it as a haxelib here: https://lib.haxe.org/p/HaxeAL-Soft/
+Alternatively, you can easily build HaxeAL Soft yourself by cloning the repo and following the given instructions.
+
+Documentation on the library can be found here: (LINK COMING SOON)
 
 # Implemented Features
 - Full ALC and AL Integration
