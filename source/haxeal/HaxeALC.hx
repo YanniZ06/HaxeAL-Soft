@@ -6,6 +6,9 @@ import haxeal.ALObjects.ALDevice;
 import haxeal.ALObjects.ALContext;
 import haxeal.ALObjects.FunctionAddress;
 
+/**
+ * Class for handling the HaxeAL Context. 
+ */
 @:headerCode('
     #include <al.h>
 	#include <hxcpp.h>

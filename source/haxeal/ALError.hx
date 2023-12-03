@@ -21,5 +21,11 @@ class ALError {
         0xA005 => OUT_OF_MEMORY
     ];
 
+    /**
+     * Gets the error definition assigned to the given ID.
+     * 
+     * Returns null if theres no assigned definition
+     * @param id ID to get definition for.
+     */
     public static function get(id:Int):ALErrorDef return errorMap[id];
 }

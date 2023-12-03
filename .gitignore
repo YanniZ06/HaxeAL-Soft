@@ -1,2 +1,4 @@
 output/*
 lastBuild.txt
+doc/*
+docGen.hxml

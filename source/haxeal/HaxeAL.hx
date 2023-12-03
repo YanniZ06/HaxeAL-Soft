@@ -5,6 +5,9 @@ import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
+/**
+ * Main class for handling HaxeAL Soft operations such as playback.
+ */
 class HaxeAL {
     public static inline final NONE:Int = 0;
 	public static inline final FALSE:Int = 0;
@@ -68,7 +71,7 @@ class HaxeAL {
 	public static inline final EXPONENT_DISTANCE:Int = 0xD005;
 	public static inline final EXPONENT_DISTANCE_CLAMPED:Int = 0xD006;
 
-    public static var arrayVConstMappings:Map<Null<Int>, Int> = [
+    @:noDoc public static var arrayVConstMappings:Map<Null<Int>, Int> = [
         null => 1,
         POSITION => 3,
         VELOCITY => 3,
@@ -229,7 +232,7 @@ class HaxeAL {
 	 * This function hasn't been tested and might not work as expected.
 	 * @param funcName Name of the function you want to get. The function might be context specific.
 	 */
-	public static function getProcAddress(funcName:String):Dynamic { 
+	@:deprecated public static function getProcAddress(funcName:String):Dynamic { 
         return untyped __cpp__('alGetProcAddress ({0})', funcName);
         //return fromVoidPtr(AL.getProcAddress(funcName)); 
     }
@@ -869,7 +872,7 @@ class HaxeAL {
     public static inline function getErrorDefinition(error:Int):ALError.ALErrorDef { return ALError.get(error); }
 }
 
-enum abstract DistanceModel(Int) from Int to Int {
+@:noDoc enum abstract DistanceModel(Int) from Int to Int {
     public static inline final NONE:DistanceModel = 0;
     public static inline final INVERSE_DISTANCE:DistanceModel = 0xD001;
 	public static inline final INVERSE_DISTANCE_CLAMPED:DistanceModel = 0xD002;

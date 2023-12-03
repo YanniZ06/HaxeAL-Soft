@@ -3,7 +3,6 @@ package haxeal;
 /**
  * Represents a device that allows audio playback.
  */
-
 typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
 
 /**

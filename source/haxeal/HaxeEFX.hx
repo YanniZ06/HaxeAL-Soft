@@ -6,6 +6,9 @@ import haxeal.ALObjects.ALAuxSlot;
 import haxeal.ALObjects.ALEffect;
 import haxeal.ALObjects.ALFilter;
 
+/**
+ * Class for handling the HaxeAL EFX extension.
+ */
 class HaxeEFX {
     // Constants
 
