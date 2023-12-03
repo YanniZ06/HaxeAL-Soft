@@ -8,6 +8,7 @@ It incorporates nearly every feature OpenAL Soft offers, from EFX-Extension hand
 As its a native c++ library it will also naturally **only** work on **c++ targets** (sorry webdevs).
 
 You can download it as a haxelib here: https://lib.haxe.org/p/HaxeAL-Soft/
+
 Alternatively, you can easily build HaxeAL Soft yourself by cloning the repo and following the given instructions.
 
 Documentation on the library can be found here: (LINK COMING SOON)
