@@ -7,3 +7,13 @@ The format of this changelog is based on [Keep a Changelog](https://keepachangel
 ### Added
 
 - Everything, basically (check the github pages' features list)
+
+## [1.0.1] - 30.12.2023
+
+### Added
+
+- Link to documentation
+
+### Removed
+
+- Unnecessary files for the haxelib release (.gitignore and such)
