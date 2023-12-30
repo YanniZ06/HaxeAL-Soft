@@ -11,7 +11,7 @@ You can download it as a haxelib here: https://lib.haxe.org/p/HaxeAL-Soft/
 
 Alternatively, you can easily build HaxeAL Soft yourself by cloning the repo and following the given instructions.
 
-Documentation on the library can be found here: (LINK COMING SOON)
+Documentation on the library can be found here: yanniz06.github.io/HaxeAL-Soft/
 
 # Implemented Features
 - Full ALC and AL Integration
