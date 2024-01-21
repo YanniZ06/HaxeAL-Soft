@@ -4,5 +4,8 @@
 --dce no
 
 -D HXCPP_M64
+-D HAXEAL_INLINE_OPT_BIG=true
+-D HAXEAL_APP_PATH=output/
+--macro source.haxeal.bindings.FlagChecker.checkFlags()
 
 --cpp output

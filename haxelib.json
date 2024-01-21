@@ -4,9 +4,9 @@
     "license": "Apache",
     "tags": ["openal", "cpp", "audio", "native", "bindings", "port", "externs"],
     "description": "HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "classPath": "source/",
-    "releasenote": "Link to documentation added.",
+    "releasenote": "Updated README and added more control over the library via flags.",
     "contributors": ["YanniZ06", "Zoardedz"],
     "dependencies": {}
 }

@@ -11,8 +11,8 @@ class Main {
 	static var context:ALContext;
 
     static function main() {
-        trace(HaxeAL.getString(HaxeAL.VERSION));
-		HaxeAL.getErrorString(HaxeAL.getError());
+        // trace(HaxeAL.getString(HaxeAL.VERSION));
+		// HaxeAL.getErrorString(HaxeAL.getError());
 
         var name:String = HaxeALC.getString(null, HaxeALC.DEVICE_SPECIFIER);
 		trace(name);
