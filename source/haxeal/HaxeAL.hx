@@ -306,20 +306,10 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListener3f(param:Int):Array<Float> {
-        var n1:cpp.Float32; // I am so sorry
-        var n2:cpp.Float32;
-        var n3:cpp.Float32;
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        untyped __cpp__('alGetListener3f(param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getListener3f(param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
     /**
@@ -352,18 +342,10 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListener3i(param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getListener3i(param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetListener3i(param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
@@ -559,20 +541,10 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3f(source:ALSource, param:Int):Array<Float> {
-        var n1:cpp.Float32;
-        var n2:cpp.Float32;
-        var n3:cpp.Float32; // The sludge consumes all
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        untyped __cpp__('alGetSource3f(source, param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getSource3f(source, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
      /**
@@ -608,18 +580,10 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3i(source:ALSource, param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getSource3i(source, param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetSource3i(source, param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
@@ -766,20 +730,10 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
-        var n1:cpp.Float32;
-        var n2:cpp.Float32;
-        var n3:cpp.Float32;
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        untyped __cpp__('alGetBuffer3f(buffer, param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getBuffer3f(buffer, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
      /**
@@ -815,18 +769,10 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBuffer3i(buffer:ALBuffer, param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getBuffer3i(buffer, param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetBuffer3i(buffer, param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
