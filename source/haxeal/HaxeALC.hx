@@ -1,5 +1,6 @@
 package haxeal;
 
+import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.bindings.ALC;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALDevice;
@@ -132,7 +133,53 @@ class HaxeALC {
      */
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getEnumValue(?device:ALDevice, enumName:String):Int return ALC.getEnumValue(device, enumName);
 
-	// Use ALC.hx if you want to use the Audio Record Extension, as I haven't found a good way to port it
+	// Audio Record Extension
+	/**
+	 * Opens a device dedicated to audio recording by name with the given recording properties and returns it.
+	 * @param deviceName Name of the recording device you want to open (default device name can be gotten using `getString` with argument `CAPTURE_DEFAULT_DEVICE_SPECIFIER`).
+	 * @param captureFrequency The frequency at which to capture audio, standard is 44100.
+	 * @param captureFormat The format at which to capture audio, standard is 16 bit mono.
+	 * @param bufferSize The size of the recording buffer, in which recorded data will be stored (until retrieved via `captureSamples`).
+	 * The default is 22050, half of the standard frequency, so in this case half a second.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end 
+	function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:Int = 44100, captureFormat:Int = HaxeAL.FORMAT_MONO16, bufferSize:Int = 22050):ALCaptureDevice {
+		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
+	}
+
+	/**
+	 * Closes the given audio recording device and returns whether the operation was successful/valid or not.
+	 * @param device Device you want to close.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function closeCaptureDevice(device:ALCaptureDevice):Bool {
+		return al_bool(ALC.closeCaptureDevice(device));
+	}
+
+	/**
+	 * Starts capturing audio samples on the given device.
+	 * @param device Device to start capturing on.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function startCapture(device:ALCaptureDevice):Void { ALC.startCapture(device); }
+
+	/**
+	 * Stops capturing audio samples on the given device.
+	 * @param device Device to stop capturing on.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
+
+	/**
+	 * Collects captured data from a devices' capture buffer and returns it as a raw cpp pointer (use `HaxeAL.bufferData_PCM` with this data).
+	 * 
+	 * The underlying type of the raw cpp pointer is dependant on the devices' captureFormat (UInt8 if MONO8 or STEREO8, otherwise Int16)
+	 * @param device Device to retrieve audio from.
+	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
+	 * The amount of time that a block of samples represents is relatives to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function captureSamples(device:ALCaptureDevice, samples:Int):Star<cpp.Void> {
+		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples);
+		ALC.captureSamples(device, data, samples);
+		return data;
+	}
 
 	// Other
 	/**

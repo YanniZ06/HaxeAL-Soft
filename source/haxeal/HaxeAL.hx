@@ -655,7 +655,19 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
         final bytesData:haxe.io.BytesData = data.getData();
-        AL.bufferData(buffer, format, cpp.Pointer.arrayElem(bytesData, 0).ptr, size, sampleRate);
+        AL.bufferData(buffer, format, cast(cpp.Pointer.arrayElem(bytesData, 0).ptr, Star<cpp.Void>), size, sampleRate);
+    }
+
+    /**
+     * Fills the given buffer with all information necessary for playback, used to handle raw PCM data.
+     * @param buffer The ALBuffer to fill with information.
+     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
+     * @param data The data to be fed as raw pcm data in the form a raw cpp Void pointer.
+     * @param size Size of the data to be fed.
+     * @param sampleRate The samplerate the data should be played back at.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData_PCM(buffer:ALBuffer, format:Int, data:Star<cpp.Void>, size:Int, sampleRate:Int):Void {
+        AL.bufferData(buffer, format, data, size, sampleRate);
     }
 
     // Buffer Parameter Setting

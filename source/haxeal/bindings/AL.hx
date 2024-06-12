@@ -195,7 +195,7 @@ extern class AL {
     static function isBuffer(buffer:ALBuffer):Char;
 
     @:native("alBufferData")
-    static function bufferData(buffer:ALBuffer, format:Int, data:Star<cpp.UInt8>, size:Int, sampleRate:Int):Void;
+    static function bufferData(buffer:ALBuffer, format:Int, data:Star<cpp.Void>, size:Int, sampleRate:Int):Void;
 
     // Buffer Parameter Setting (Ported!)
     @:native("alBufferf")

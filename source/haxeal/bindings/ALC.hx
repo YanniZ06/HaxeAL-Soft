@@ -36,7 +36,7 @@ extern class ALC {
 	@:native("alcCloseDevice")
 	static function closeDevice(device:Star<ALCdevice>):Char;
 
-	// Capture Device (Wouldnt work, try it yourself)
+	// Capture Device (WIP)
 	@:native("alcCaptureOpenDevice")
 	static function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:cpp.UInt32, captureFormat:Int, bufferSize:Int):Star<ALCdevice>;
 
@@ -50,7 +50,7 @@ extern class ALC {
 	static function stopCapture(device:Star<ALCdevice>):Void;
 
 	@:native("alcCaptureSamples")
-	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.UInt8>, samples:Int):Void;
+	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.Void>, samples:Int):Void;
 
 	// Extensions (Ported!)
 	@:native("alcIsExtensionPresent")

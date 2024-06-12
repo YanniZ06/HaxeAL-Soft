@@ -6,7 +6,7 @@ package haxeal;
 typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
 
 /**
- * Unused, audio capture specific device.
+ * Audio capture specific device.
  */
 typedef ALCaptureDevice = ALDevice;
 
