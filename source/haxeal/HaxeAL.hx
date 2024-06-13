@@ -456,18 +456,26 @@ class HaxeAL {
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePausev(sources:Array<ALSource>):Void { AL.sourcePausev(sources.length, Pointer.ofArray(sources)); }
 
     /**
-     * Queues the buffers' data to be played chronologically once the data for the current buffer has finished playing back.
+     * Queues the buffers' data to be played chronologically 
+     * once the data for the current buffer has finished playing back on the source.
      * @param source Source to queue buffers for.
      * @param buffers Buffers to be played back chronologically.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceQueueBuffers(source, buffers.length, Pointer.ofArray(buffers)); }
 
     /**
-     * Unqueues the given buffers and removes them from the sources buffer queue.
+     * Unqueues the given number of processed buffers and returns the now available (unqueued) buffers.
+     * 
+     * If numBuffers is larger than the amount of processed buffers (the ones already played back) on the source 
+     * (aquired using `getSourcei` with `BUFFERS_PROCESSED`) the operation will fail!
      * @param source Source to unqueue buffers of.
-     * @param buffers Buffers to be unqueued.
+     * @param numBuffers The amount of buffers to unqueue.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceUnqueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceUnqueueBuffers(source, buffers.length, arrayBuffer_ToStar(buffers)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceUnqueueBuffers(source:ALSource, numBuffers:Int):Array<ALBuffer> { 
+        var freeBuffers:Array<ALBuffer> = [];
+        AL.sourceUnqueueBuffers(source, numBuffers, arrayBuffer_ToStar(freeBuffers));
+        return freeBuffers;
+    }
 
     // Source Parameter Setting
     /**

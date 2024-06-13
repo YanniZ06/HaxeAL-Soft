@@ -136,7 +136,8 @@ class HaxeALC {
 	// Audio Record Extension
 	/**
 	 * Opens a device dedicated to audio recording by name with the given recording properties and returns it.
-	 * @param deviceName Name of the recording device you want to open (default device name can be gotten using `getString` with argument `CAPTURE_DEFAULT_DEVICE_SPECIFIER`).
+	 * @param deviceName Name of the recording device you want to open 
+	 * (default device name can be gotten using `getString` with argument `CAPTURE_DEFAULT_DEVICE_SPECIFIER`).
 	 * @param captureFrequency The frequency at which to capture audio, standard is 44100.
 	 * @param captureFormat The format at which to capture audio, standard is 16 bit mono.
 	 * @param bufferSize The size of the recording buffer, in which recorded data will be stored (until retrieved via `captureSamples`).
