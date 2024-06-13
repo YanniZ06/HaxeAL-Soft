@@ -49,12 +49,21 @@ class Main {
 		var src = HaxeAL.createSource();
 		trace(HaxeAL.isSource(src));
 
-		var buf = HaxeAL.createBuffer();
+		/*var buf = HaxeAL.createBuffer();
 		trace(HaxeAL.isBuffer(buf));
-		HaxeAL.getErrorString(HaxeAL.getError());
+		HaxeAL.getErrorString(HaxeAL.getError());*/
 
         trace(HaxeAL.getString(HaxeAL.VERSION));
 		HaxeAL.getErrorString(HaxeAL.getError());
+
+		// Mic Tests (Based off of example code at https://stackoverflow.com/questions/4087727/openal-how-to-create-simple-microphone-echo-programm for example!)
+		
+		// Retrieving the default capture device with default parameters
+		var mic = HaxeALC.openCaptureDevice(HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER));
+
+		var bufs:Array<ALBuffer> = HaxeAL.createBuffers(16);
+
+
 
         /*trace("testing AL base components.");
 
