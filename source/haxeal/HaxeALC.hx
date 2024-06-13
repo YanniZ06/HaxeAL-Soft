@@ -177,7 +177,7 @@ class HaxeALC {
 	 * The amount of time that a block of samples represents is relatives to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
 	 */
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function captureSamples(device:ALCaptureDevice, samples:Int):Star<cpp.Void> {
-		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples);
+		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples * 2); //todo: only get twice samples on 16 bit audio (or always force 16bit, why use 8 anyways?)
 		ALC.captureSamples(device, data, samples);
 		return data;
 	}

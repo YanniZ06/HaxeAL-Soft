@@ -49,6 +49,18 @@ class Main {
 
 		var src = HaxeAL.createSource();
 		trace(HaxeAL.isSource(src));
+		
+		var effect = HaxeEFX.createEffect();
+		HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_EAXREVERB);
+
+		var aux = HaxeEFX.createAuxiliaryEffectSlot();
+		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect);
+		HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
+
+		// Apply effect
+		HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
+
+		//HaxeAL.sourcei(src, HaxeEFX.AUXI)
 
 		/*var buf = HaxeAL.createBuffer();
 		trace(HaxeAL.isBuffer(buf));
@@ -65,38 +77,41 @@ class Main {
 		var mic = HaxeALC.openCaptureDevice(defDevice);
 		HaxeAL.getErrorString(HaxeALC.getError(mic));
 
-		var al_bufs:Array<ALBuffer> = HaxeAL.createBuffers(16);
-		final captureSize:Int = 2048; // Minimum to capture at a time
+		var al_bufs:haxe.ds.List<ALBuffer> = new haxe.ds.List<ALBuffer>();
+		for(buf in HaxeAL.createBuffers(16)) al_bufs.push(buf);
+
+		final captureSize:Int = 2048; // Samples to capture at a time
 		var micData:cpp.Star<cpp.Void>;
-		//var samplesAvail:Int = 0; // Samples Read
 		var bufsProcessed:Int = 0; // Buffers to be recovered
 		var time = haxe.Timer.stamp();
 		var finished:Bool = false;
 
 		HaxeALC.startCapture(mic);
 		trace("Starting capture!");
-		while(!finished) {
-			if(haxe.Timer.stamp() - time > 10) finished = true;
+		while(true) {
+			if(haxe.Timer.stamp() - time > 10) break;
 
 			Sys.sleep(0.01); // Prevent CPU over-usage
 			bufsProcessed = HaxeAL.getSourcei(src, HaxeAL.BUFFERS_PROCESSED);
 			if(bufsProcessed > 0) {
 				for(buf in HaxeAL.sourceUnqueueBuffers(src, bufsProcessed)) { al_bufs.push(buf); }
 			}
-			if(HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0] < captureSize) continue; // Not sufficent data available
-			trace("Lets collect data!");
+			final samples = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
+			if(samples < captureSize) continue; // Not sufficent data available
+			
 			micData = HaxeALC.captureSamples(mic, captureSize);
+			//var cMicData:cpp.Star<cpp.Int16> = cast micData;
+			// trace(cpp.Pointer.fromStar(cMicData).toUnmanagedArray(captureSize));
 			
 			if(al_bufs.length == 0) continue; // Drop data if no buffer can hold it :(
-			trace("We are gonna play back data soon!");
+			var dataBuf:ALBuffer = al_bufs.last();
+			al_bufs.remove(dataBuf);
 
-			var dataBuf:ALBuffer = al_bufs.shift();
 			HaxeAL.bufferData_PCM(dataBuf, HaxeAL.FORMAT_MONO16, micData, captureSize * 2, 44100);
 			HaxeAL.sourceQueueBuffers(src, [dataBuf]);
 
 			if(HaxeAL.getSourcei(src, HaxeAL.SOURCE_STATE) != HaxeAL.PLAYING) {
-				HaxeAL.sourcePlay(src);
-				trace("Replaying src!");
+				HaxeAL.sourcePlay(src); // Play back distorted voice
 			}
 		}
 		trace("Ending capture!");
