@@ -175,9 +175,13 @@ class HaxeALC {
 	 * @param device Device to retrieve audio from.
 	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
 	 * The amount of time that a block of samples represents is relatives to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 * @param byteLength By default this value is 1 (FORMAT_MONO8).
+     * If your format is stereo (2 channel), you should multiply this value by 2.
+     * If your format is 16 bit, you should multiply the value by 2 again.
+     * These multiplications stack, meaning with a STEREO16 format your byteLength should be `4`.
 	 */
-	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function captureSamples(device:ALCaptureDevice, samples:Int):Star<cpp.Void> {
-		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples * 2); //todo: only get twice samples on 16 bit audio (or always force 16bit, why use 8 anyways?)
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int = 1):Star<cpp.Void> {
+		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples * byteLength);
 		ALC.captureSamples(device, data, samples);
 		return data;
 	}
@@ -205,9 +209,9 @@ class HaxeALC {
 	 * @param argumentCount Amount of array objects you expect to return
 	 */
 	public static #if HAXEAL_INLINE_OPT_BIG inline #end function getIntegers(device:ALDevice, param:Int, argumentCount:Int):Array<Int> {
-        var n = 123456789;
-		var istr:Pointer<Int> = Pointer.addressOf(n);
-        ALC.getIntegers(device, param, argumentCount, istr.ptr);
-        return star_ToArrayInt(istr.ptr, argumentCount);
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argumentCount);
+        ALC.getIntegers(device, param, argumentCount, arrPtr);
+		
+        return star_ToArrayInt(arrPtr, argumentCount);
     };
 }

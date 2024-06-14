@@ -36,7 +36,7 @@ extern class ALC {
 	@:native("alcCloseDevice")
 	static function closeDevice(device:Star<ALCdevice>):Char;
 
-	// Capture Device (WIP)
+	// Capture Device (Ported!)
 	@:native("alcCaptureOpenDevice")
 	static function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:cpp.UInt32, captureFormat:Int, bufferSize:Int):Star<ALCdevice>;
 
@@ -52,7 +52,7 @@ extern class ALC {
 	@:native("alcCaptureSamples")
 	static function captureSamples(device:Star<ALCdevice>, buffer:Star<cpp.Void>, samples:Int):Void;
 
-	// Extensions (Ported!)
+	// Extensions (Ported, technically)
 	@:native("alcIsExtensionPresent")
 	static function isExtensionPresent(device:Star<ALCdevice>, extName:ConstCharStar):Bool;
 
@@ -62,7 +62,7 @@ extern class ALC {
 	@:native("alcGetEnumValue")
 	static function getEnumValue(device:Star<ALCdevice>, enumName:ConstCharStar):Int;
 
-	// Other (Ported)
+	// Other (Ported!)
 	@:native("alcGetString")
 	static function getString(device:Star<ALCdevice>, param:Int):ConstCharStar;
 

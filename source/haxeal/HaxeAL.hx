@@ -1,5 +1,6 @@
 package haxeal;
 
+import cpp.Float32;
 import haxeal.bindings.AL;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALSource;
@@ -295,10 +296,9 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerf(param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getListenerf(param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        AL.getListenerf(param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -306,7 +306,7 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListener3f(param:Int):Array<Float> {
-        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
         untyped __cpp__('alGetListener3f(param, &n1, &n2, &n3)');
 
         return [n1, n2, n3];
@@ -319,11 +319,12 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerfv(param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getListenerfv(param, fstr.ptr);
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getListenerfv(param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, getParamMapping(param));
     }
 
     /**
@@ -332,9 +333,8 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneri(param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getListeneri(param, istr.ptr);
-        return istr.ref;
+        AL.getListeneri(param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -354,12 +354,12 @@ class HaxeAL {
      * The array size depends on the given param.
      * @param param Param to get values of.
      */
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneriv(param:Int, values:Star<Int>):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getListeneriv(param, istr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneriv(param:Int):Array<Int> {
+        final argc = getParamMapping(param);
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getListeneriv(param, arrPtr);
 
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     // Source Handling
@@ -368,16 +368,16 @@ class HaxeAL {
      * @param num Amount of sources to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createSources(num:Int):Array<ALSource> {
-        var empty_sources:Array<ALSource> = [];
-        var s_str:Pointer<ALSource> = Pointer.ofArray(empty_sources);
-        AL.createSources(num, s_str.ptr);
+        var srcPtr:Star<ALSource> = Native.malloc(Native.sizeof(ALSource) * num);
+        AL.createSources(num, srcPtr);
 
-        var sources:Array<ALSource> = star_ToArraySource(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isSource(sources[0])) #end return sources;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Sources may not have generated properly, returning array of potentially disfunctional sources");
-        return sources;
+        var sources:Array<ALSource> = star_ToArraySource(srcPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>src in sources) {
+            if(!isSource(src)) trace('Source $i is not a source, returning array with disfunctional source!');
+        }
         #end
+        return sources;
     }
 
     /**
@@ -472,9 +472,9 @@ class HaxeAL {
      * @param numBuffers The amount of buffers to unqueue.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceUnqueueBuffers(source:ALSource, numBuffers:Int):Array<ALBuffer> { 
-        var freeBuffers:Array<ALBuffer> = [];
-        AL.sourceUnqueueBuffers(source, numBuffers, arrayBuffer_ToStar(freeBuffers));
-        return freeBuffers;
+        var arrPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * numBuffers);
+        AL.sourceUnqueueBuffers(source, numBuffers, arrPtr);
+        return star_ToArrayBuffer(arrPtr, numBuffers);
     }
 
     // Source Parameter Setting
@@ -537,10 +537,9 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcef(source:ALSource, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getSourcef(source, param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        AL.getSourcef(source, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -549,7 +548,7 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3f(source:ALSource, param:Int):Array<Float> {
-        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
         untyped __cpp__('alGetSource3f(source, param, &n1, &n2, &n3)');
 
         return [n1, n2, n3];
@@ -563,11 +562,12 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcefv(source:ALSource, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getSourcefv(source, param, fstr.ptr);
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getSourcefv(source, param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, argc);
     }
 
     /**
@@ -577,9 +577,8 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcei(source:ALSource, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getSourcei(source, param, istr.ptr);
-        return istr.ref;
+        AL.getSourcei(source, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -602,11 +601,12 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourceiv(source:ALSource, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getSourceiv(source, param, istr.ptr);
+        final argc = getParamMapping(param);
+
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getSourceiv(source, param, arrPtr);
     
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     // Buffer Handling
@@ -615,16 +615,16 @@ class HaxeAL {
      * @param num Amount of buffers to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createBuffers(num:Int):Array<ALBuffer> {
-        var empty_buffers:Array<ALBuffer> = [];
-        var s_str:Pointer<ALBuffer> = Pointer.ofArray(empty_buffers);
-        AL.createBuffers(num, s_str.ptr);
+        var bufPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * num);
+        AL.createBuffers(num, bufPtr);
 
-        var buffers:Array<ALBuffer> = star_ToArrayBuffer(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isBuffer(buffers[0])) #end return buffers;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Buffers may not have generated properly, returning array of potentially disfunctional buffers");
-        return buffers;
+        var buffers:Array<ALBuffer> = star_ToArrayBuffer(bufPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>buf in buffers) {
+            if(!isBuffer(buf)) trace('Buffer $i is not a buffer, returning array with disfunctional buffer!');
+        }
         #end
+        return buffers;
     }
 
     /**
@@ -658,7 +658,7 @@ class HaxeAL {
      * @param buffer The ALBuffer to fill with information.
      * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
      * @param data The data to be fed as bytes.
-     * @param size Size of the data to be fed.
+     * @param size Size of the data to be fed, here this should be `data.length`.
      * @param sampleRate The samplerate the data should be played back at.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
@@ -669,9 +669,13 @@ class HaxeAL {
     /**
      * Fills the given buffer with all information necessary for playback, used to handle raw PCM data.
      * @param buffer The ALBuffer to fill with information.
-     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
+     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_MONO16).
      * @param data The data to be fed as raw pcm data in the form a raw cpp Void pointer.
-     * @param size Size of the data to be fed.
+     * @param size Size of the data to be fed. 
+     * By default this is simply the amount of samples the `data` points to.
+     * If your format is stereo (2 channel), you should multiply the sample value by 2.
+     * If your format is 16 bit, you should multiply the value by 2 again.
+     * These multiplications stack, meaning with a STEREO16 format your size should be `samples * 2 * 2`.
      * @param sampleRate The samplerate the data should be played back at.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData_PCM(buffer:ALBuffer, format:Int, data:Star<cpp.Void>, size:Int, sampleRate:Int):Void {
@@ -738,10 +742,9 @@ class HaxeAL {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferf(buffer:ALBuffer, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getBufferf(buffer, param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        AL.getBufferf(buffer, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -750,7 +753,7 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
-        var n1:cpp.Float32 = 0.0123456789; var n2:cpp.Float32 = 0.0123456789; var n3:cpp.Float32 = 0.0123456789;
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
         untyped __cpp__('alGetBuffer3f(buffer, param, &n1, &n2, &n3)');
 
         return [n1, n2, n3];
@@ -764,11 +767,12 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferfv(buffer:ALBuffer, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getBufferfv(buffer, param, fstr.ptr);
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getBufferfv(buffer, param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, argc);
     }
 
     /**
@@ -778,9 +782,8 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferi(buffer:ALBuffer, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getBufferi(buffer, param, istr.ptr);
-        return istr.ref;
+        AL.getBufferi(buffer, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -803,11 +806,12 @@ class HaxeAL {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferiv(buffer:ALBuffer, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getBufferiv(buffer, param, istr.ptr);
+        final argc = getParamMapping(param);
+
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getBufferiv(buffer, param, arrPtr);
     
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     //Error Getting Functions

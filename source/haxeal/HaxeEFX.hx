@@ -1,5 +1,6 @@
 package haxeal;
 
+import cpp.Float32;
 import haxeal.bindings.EFX;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALAuxSlot;
@@ -270,17 +271,16 @@ class HaxeEFX {
      * @param num Amount of effects to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createEffects(num:Int):Array<ALEffect> {
-        var empty_effects:Array<ALEffect> = [];
-        var s_str:Pointer<ALEffect> = Pointer.ofArray(empty_effects);
+        var efxPtr:Star<ALEffect> = Native.malloc(Native.sizeof(ALEffect) * num);
+        EFX.createEffects(num, efxPtr);
 
-        EFX.createEffects(num, s_str.ptr);
-
-        var effects:Array<ALEffect> = star_ToArrayEffect(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isEffect(effects[0])) #end return effects;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Effects may not have generated properly, returning array of potentially disfunctional effects");
-        return effects;
+        var effects:Array<ALEffect> = star_ToArrayEffect(efxPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>efx in effects) {
+            if(!isEffect(efx)) trace('Effect $i is not a effect, returning array with disfunctional effect!');
+        }
         #end
+        return effects;
     }
 
     /**
@@ -348,9 +348,8 @@ class HaxeEFX {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffecti(effect:ALEffect, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getEffecti(param, param, istr.ptr);
-        return istr.ref;
+        EFX.getEffecti(param, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -361,11 +360,12 @@ class HaxeEFX {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectiv(effect:ALEffect, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getEffectiv(effect, param, istr.ptr);
+        final argc = getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param);
+        
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        EFX.getEffectiv(effect, param, arrPtr);
 
-        return star_ToArrayInt(istr.ptr, getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     /**
@@ -374,10 +374,9 @@ class HaxeEFX {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectf(effect:ALEffect, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getEffectf(effect, param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        EFX.getEffectf(effect, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -388,11 +387,12 @@ class HaxeEFX {
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectfv(effect:ALEffect, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getEffectfv(effect, param, fstr.ptr);
+        final argc = getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param);
 
-        return star_ToArrayFloat32(fstr.ptr, getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        EFX.getEffectfv(effect, param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, argc);
     }
 
     // Filter Management 
@@ -401,16 +401,16 @@ class HaxeEFX {
      * @param num Amount of filters to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createFilters(num:Int):Array<ALFilter> {
-        var empty_filters:Array<ALFilter> = [];
-        var s_str:Pointer<ALFilter> = Pointer.ofArray(empty_filters);
-        EFX.createFilters(num, s_str.ptr);
+        var filPtr:Star<ALFilter> = Native.malloc(Native.sizeof(ALFilter) * num);
+        EFX.createFilters(num, filPtr);
 
-        var filters:Array<ALFilter> = star_ToArrayFilter(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isFilter(filters[0])) #end return filters;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Filters may not have generated properly, returning array of potentially disfunctional filters");
-        return filters;
+        var filters:Array<ALFilter> = star_ToArrayFilter(filPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>filter in filters) {
+            if(!isFilter(filter)) trace('Filter $i is not a filter, returning array with disfunctional filter!');
+        }
         #end
+        return filters;
     }
 
     /**
@@ -478,24 +478,23 @@ class HaxeEFX {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getFilteri(filter:ALFilter, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getFilteri(param, param, istr.ptr);
-        return istr.ref;
+        EFX.getFilteri(param, param, Native.addressOf(n));
+        return n;
     }
 
+    // TODO: Remember to make theser array compatible if filters and such ever get array parameters
     /**
      * Returns an array of multiple integer values for the target parameter of the given filter.
      * 
-     * The array size depends on the given param.
+     * The array size is always 1, as there are no parameters that return an array for this object.
      * @param filter Filter to get parameter of.
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getFilteriv(filter:ALFilter, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getFilteriv(filter, param, istr.ptr);
+        var n:Int = 123456789;
+        EFX.getFilteriv(filter, param, Native.addressOf(n));
 
-        return star_ToArrayInt(istr.ptr, 1);
+        return [n];
     }
 
     /**
@@ -504,25 +503,23 @@ class HaxeEFX {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getFilterf(filter:ALFilter, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getFilterf(filter, param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        EFX.getFilterf(filter, param, Native.addressOf(n));
+        return n;
     }
 
     /**
      * Returns an array of multiple float values for the target parameter of the given filter.
      * 
-     * The array size depends on the given param.
+     * The array size is always 1, as there are no parameters that return an array for this object.
      * @param filter Filter to get parameter of.
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getFilterfv(filter:ALFilter, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getFilterfv(filter, param, fstr.ptr);
+        var n:Float32 = 0.0123456789;
+        EFX.getFilterfv(filter, param, Native.addressOf(n));
 
-        return star_ToArrayFloat32(fstr.ptr, 1);
+        return [n];
     }
 
     // AuxSlot Management 
@@ -531,16 +528,16 @@ class HaxeEFX {
      * @param num Amount of slots to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createAuxiliaryEffectSlots(num:Int):Array<ALAuxSlot> {
-        var empty_auxslots:Array<ALAuxSlot> = [];
-        var s_str:Pointer<ALAuxSlot> = Pointer.ofArray(empty_auxslots);
-        EFX.createAuxiliaryEffectSlots(num, s_str.ptr);
+        var auxPtr:Star<ALAuxSlot> = Native.malloc(Native.sizeof(ALAuxSlot) * num);
+        EFX.createAuxiliaryEffectSlots(num, auxPtr);
 
-        var auxslots:Array<ALAuxSlot> = star_ToArrayAuxiliaryEffectSlot(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isAuxiliaryEffectSlot(auxslots[0])) #end return auxslots;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Auxiliary Effect Slots may not have generated properly, returning array of potentially disfunctional slots");
-        return auxslots;
+        var auxslots:Array<ALAuxSlot> = star_ToArrayAuxiliaryEffectSlot(auxPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>aux in auxslots) {
+            if(!isAuxiliaryEffectSlot(aux)) trace('AuxSlot $i is not an auxSlot, returning array with disfunctional auxSlot!');
+        }
         #end
+        return auxslots;
     }
 
     /**
@@ -608,24 +605,22 @@ class HaxeEFX {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getAuxiliaryEffectSloti(auxslot:ALAuxSlot, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getAuxiliaryEffectSloti(param, param, istr.ptr);
-        return istr.ref;
+        EFX.getAuxiliaryEffectSloti(param, param, Native.addressOf(n));
+        return n;
     }
 
     /**
      * Returns an array of multiple integer values for the target parameter of the given Auxiliary Effect Slot.
      * 
-     * The array size depends on the given param.
+     * The array size is always 1, as there are no parameters that return an array for this object.
      * @param auxslot Auxiliary Effect Slot to get parameter of.
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getAuxiliaryEffectSlotiv(auxslot:ALAuxSlot, param:Int):Array<Int> {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        EFX.getAuxiliaryEffectSlotiv(auxslot, param, istr.ptr);
+        EFX.getAuxiliaryEffectSlotiv(auxslot, param, Native.addressOf(n));
 
-        return star_ToArrayInt(istr.ptr, 1);
+        return [n];
     }
 
     /**
@@ -634,24 +629,22 @@ class HaxeEFX {
      * @param param Param to get value of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getAuxiliaryEffectSlotf(auxslot:ALAuxSlot, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getAuxiliaryEffectSlotf(auxslot, param, fstr.ptr);
-        return fstr.ref;
+        var n:Float32 = 0.0123456789;
+        EFX.getAuxiliaryEffectSlotf(auxslot, param, Native.addressOf(n));
+        return n;
     }
 
     /**
      * Returns an array of multiple float values for the target parameter of the given Auxiliary Effect Slot.
      * 
-     * The array size depends on the given param.
+     * The array size is always 1, as there are no parameters that return an array for this object.
      * @param auxslot Auxiliary Effect Slot to get parameter of.
      * @param param Param to get values of.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getAuxiliaryEffectSlotfv(auxslot:ALAuxSlot, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        EFX.getAuxiliaryEffectSlotfv(auxslot, param, fstr.ptr);
+        var n:Float32 = 0.0123456789;
+        EFX.getAuxiliaryEffectSlotfv(auxslot, param, Native.addressOf(n));
 
-        return star_ToArrayFloat32(fstr.ptr, 1);
+        return [n];
     }
 }

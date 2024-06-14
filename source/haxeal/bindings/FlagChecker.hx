@@ -1,4 +1,4 @@
-package source.haxeal.bindings;
+package haxeal.bindings;
 
 import sys.io.File;
 import sys.FileSystem;
