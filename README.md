@@ -3,24 +3,37 @@
 # About HaxeAL-Soft
 HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.
 
-It incorporates nearly every feature OpenAL Soft offers, from EFX-Extension handlers and their pre-defined presets to full 3D environmental audio support (and theoretically, audio recording)!
+It incorporates nearly every feature OpenAL Soft offers, from EFX-Extension handlers (and soon their presets) to full 3D environmental audio support and audio recording!
 
-As its a native c++ library it will also naturally **only** work on **c++ targets** (sorry webdevs).
+As it is a native c++ library it will also naturally **only** work on **c++ targets**.
+This also means you need HXCPP, check out the Haxe website for a comprehensive explanation.
 
 You can download it as a haxelib here: https://lib.haxe.org/p/HaxeAL-Soft/
 
 Alternatively, you can easily build HaxeAL Soft yourself by cloning the repo and following the given instructions.
 
-Documentation on the library can be found here: (LINK COMING SOON)
+Documentation on the library can be found here: https://yanniz06.github.io/HaxeAL-Soft/
 
 # Implemented Features
 - Full ALC and AL Integration
+- Audio Recording
 - Full EFX Integration
 - Extension support (albeit only properly accessible using untyped `__cpp__` expressions, refer to `haxeal.bindings.EFXBuilder.hx` for example usage)
+- Flags for "customization" of the library
 
 # Left-out Features
-- Audio Recording: Simply didn't work properly no matter what I tried, you can still access the bindings over the `haxeal.bindings.ALC.hx` file. (If you get a way to make it work PROPERLY, send a pull request PLEASE!!)
 - Soft/ALEXT Functions: Didn't find any use for them, if some people really want them added I can add them in, otherwise I'm sparing myself the effort
+- Quite a few extensions: Will do on request! (There is a lot of them)
+
+# Custom Flags
+- HAXEAL_DEBUG: Enables multiple debug traces on certain functions (deletion and creation to be exact).
+- HAXEAL_INLINE_OPT_SMALL: Enables inlining for all HaxeAL operations that dont increase compiled code size, which reduces performance cost but does not allow those operations to be called at runtime using Reflect.
+- HAXEAL_INLINE_OPT_BIG: Enables inlining for ALL HaxeAL operations, which reduces performance cost but may increase compiled code size and disallows those operations from being called at runtime using Reflect.
+- HAXEAL_APP_PATH: If set, drops the OpenAL32.dll file in the defined directory, otherwise only drops it in the standard cpp output folder. This is useful/necessary if your application doesn't go into the default folder but instead a custom made one (in the case of flixel that export folder for example). This flag needs to be set with a value pointing to the folder your application executeable is located in, with the folders being seperated by a '/'. The path starts at your project root folder (the one in which your build.hxml or Project.xml resides) and should ideally end with the folder your application files are exported to. If said folder does not exist, it will be created on its own.
+
+# Requirements (both for application user and programmer)
+- Computer must work on 64-Bit (might fix?)
+- OpenAL MIGHT need to be installed on the Computer if the local app-specific OpenAL-Soft installation does not work (via the https://www.openal.org/downloads/ OpenAL 1.1 Windows Installer for example, however this should not be a problem if HAXEAL_APP_PATH is configured correctly.)
 
 # Building HaxeAL-Soft
 Building HaxeAL Soft is just as simple as building any other haxe application.
@@ -58,7 +71,7 @@ Having good folder and file management is certainly not unimportant while making
 Example: Context -> HaxeContext
 
 
-**Testing and everything else** can go into Main.hx, doesn't matter how really, go nuts!
+**Testing and everything else** goes into the tests folder. Make sure to not submit any PR's that contain output directories!
 
 ## Differentiating between Native Binding and Regular Std-Type Hx Files
 

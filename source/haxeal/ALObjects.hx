@@ -6,9 +6,21 @@ package haxeal;
 typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
 
 /**
- * Unused, audio capture specific device.
+ * Audio capture specific device.
  */
 typedef ALCaptureDevice = ALDevice;
+
+ // As the name suggests, unused. This would automatically handle some recording properties but ultimately it takes away too much from the original OpenAL library,
+ // which we do not want. We want to stay about as true to the original as we can get, that means only modifying what really needs it!
+/*@:structInit class UnusedAutoALCaptureDevice {
+    public function new(device:ALDevice, bl:cpp.Int8) {
+        alObj = device;
+        byteLength = bl;
+    }
+    public var alObj:ALDevice;
+
+    public var byteLength:cpp.Int8 = 1;
+};*/
 
 /**
  * Represents an OpenAL Context.

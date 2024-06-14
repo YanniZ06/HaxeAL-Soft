@@ -1,5 +1,6 @@
 package haxeal;
 
+import cpp.Float32;
 import haxeal.bindings.AL;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALSource;
@@ -71,8 +72,7 @@ class HaxeAL {
 	public static inline final EXPONENT_DISTANCE:Int = 0xD005;
 	public static inline final EXPONENT_DISTANCE_CLAMPED:Int = 0xD006;
 
-    @:noDoc public static var arrayVConstMappings:Map<Null<Int>, Int> = [
-        null => 1,
+    @:noDoc public static var arrayVConstMappings:Map<Int, cpp.Int8> = [
         POSITION => 3,
         VELOCITY => 3,
         DIRECTION => 3,
@@ -84,26 +84,26 @@ class HaxeAL {
      * 
      * Default is 1.
      */
-    static inline function getParamMapping(param:Int) return arrayVConstMappings[param] ?? 1;
+    static inline function getParamMapping(param:Int):cpp.Int8 return arrayVConstMappings[param] ?? 1;
 
     // Renderer State Management
     /**
      * Enables the given capability.
      * @param capability Capability to enable.
      */
-    public static function enable(capability:Int):Void { AL.enable(capability); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function enable(capability:Int):Void { AL.enable(capability); }
 
     /**
      * Disables the given capability.
      * @param capability Capability to disable.
      */
-    public static function disable(capability:Int):Void { AL.disable(capability); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function disable(capability:Int):Void { AL.disable(capability); }
 
     /**
      * Checks if the given capability is enabled and returns `true` if so.
      * @param capability Capability to check.
      */
-    public static function isEnabled(capability:Int):Bool { return al_bool(AL.isEnabled(capability)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function isEnabled(capability:Int):Bool { return al_bool(AL.isEnabled(capability)); }
 
     // Context State Setting
     /**
@@ -114,7 +114,7 @@ class HaxeAL {
      * Default: 1.0
      * @param value The value to set the doppler factor to.
      */
-    public static function dopplerFactor(value:Single):Void { AL.dopplerFactor(value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function dopplerFactor(value:Single):Void { AL.dopplerFactor(value); }
 
     /**
      * Sets the value for AL's (deprecated) doppler velocity.
@@ -122,7 +122,7 @@ class HaxeAL {
      * Acts as a multiplier applied to the Speed of Sound.
      * @param value The value to set the doppler velocity to.
      */
-    public static function dopplerVelocity(value:Single):Void { AL.dopplerVelocity(value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function dopplerVelocity(value:Single):Void { AL.dopplerVelocity(value); }
 
     /**
      * Sets AL's speed of sound value, in units per second.
@@ -132,7 +132,7 @@ class HaxeAL {
      * Default: 343.3
      * @param value The value to set the speed of sound to.
      */
-    public static function speedOfSound(value:Single):Void { AL.speedOfSound(value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function speedOfSound(value:Single):Void { AL.speedOfSound(value); }
 
     /**
      * Sets AL's distance attenuation model.
@@ -156,38 +156,38 @@ class HaxeAL {
      * Clamped variations work like the non-clamped counterparts, except the
      * distance calculated is clamped between the reference and max distances.
      */
-    public static function distanceModel(distanceModel:DistanceModel):Void { AL.distanceModel(distanceModel); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function distanceModel(distanceModel:DistanceModel):Void { AL.distanceModel(distanceModel); }
 
     // Context State Retrieval
     /**
      * Returns a string value from the given AL parameter.
      * @param param Parameter to get value of.
      */
-    public static function getString(param:Int):String { return AL.getString(param); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getString(param:Int):String { return AL.getString(param); }
 
     /**
      * Returns a boolean value from the given AL parameter.
      * @param param Parameter to get value of.
      */
-    public static function getBoolean(param:Int):Bool { return al_bool(AL.getBoolean(param)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getBoolean(param:Int):Bool { return al_bool(AL.getBoolean(param)); }
 
     /**
      * Returns an integer value from the given AL parameter.
      * @param param Parameter to get value of.
      */
-    public static function getInteger(param:Int):Int { return AL.getInteger(param); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getInteger(param:Int):Int { return AL.getInteger(param); }
 
     /**
      * Returns a single precision floating point value from the given AL parameter. (Can be used as a regular Float aswell)
      * @param param Parameter to get value of.
      */
-    public static function getFloat(param:Int):Single { return AL.getFloat(param); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getFloat(param:Int):Single { return AL.getFloat(param); }
 
     /**
      * Returns a double precision floating point value from the given AL parameter.
      * @param param Parameter to get value of.
      */
-    public static function getDouble(param:Int):Float { return AL.getDouble(param); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getDouble(param:Int):Float { return AL.getDouble(param); }
 
     // I don't think these are necessary, at all, ever, I found 0 use for them, I'm not gonna do them right now.
     // If you really need them add them yourself, I already documented them. (or someone can make a pr idrc lol)
@@ -195,32 +195,32 @@ class HaxeAL {
      * Returns an array of boolean values from the given AL parameter.
      * @param param Parameter to get values of.
      */
-    //public static function getBooleanv(param:Int, values:Star<Char>):Void { }
+    //public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getBooleanv(param:Int, values:Star<Char>):Void { }
 
     /**
      * Returns an array of integer values from the given AL parameter.
      * @param param Parameter to get values of.
      */
-    //public static function getIntegerv(param:Int, values:Star<Int>):Void;
+    //public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getIntegerv(param:Int, values:Star<Int>):Void;
 
     /**
      * Returns an array of single precision floating point values from the given AL parameter.
      * @param param Parameter to get values of.
      */
-    //public static function getFloatv(param:Int, values:Star<Float>):Void;
+    //public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getFloatv(param:Int, values:Star<Float>):Void;
 
     /**
      * Returns an array of double precision floating point values from the given AL parameter.
      * @param param Parameter to get values of.
      */
-    //public static function getDoublev(param:Int, values:Star<cpp.Float64>):Void;
+    //public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getDoublev(param:Int, values:Star<cpp.Float64>):Void;
 
     // Extensions
 	/**
 	 * Returns true if an extension by the given name is available on this context.
 	 * @param extName Name of the extension to check for.
 	 */
-	public static function isExtensionPresent(extName:String):Bool { return AL.isExtensionPresent(extName); }
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function isExtensionPresent(extName:String):Bool { return AL.isExtensionPresent(extName); }
 
 	/**
 	 * Advanced usage function, gets the pointer to a function by name and returns it.
@@ -232,7 +232,7 @@ class HaxeAL {
 	 * This function hasn't been tested and might not work as expected.
 	 * @param funcName Name of the function you want to get. The function might be context specific.
 	 */
-	@:deprecated public static function getProcAddress(funcName:String):Dynamic { 
+	@:deprecated public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getProcAddress(funcName:String):Dynamic { 
         return untyped __cpp__('alGetProcAddress ({0})', funcName);
         //return fromVoidPtr(AL.getProcAddress(funcName)); 
     }
@@ -241,7 +241,7 @@ class HaxeAL {
      * Retrieves an AL enum value (Integer) from the given name.
      * @param enumName The enum value to get.
      */
-    public static function getEnumValue(enumName:String):Int return AL.getEnumValue(enumName);
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getEnumValue(enumName:String):Int return AL.getEnumValue(enumName);
 
     // Listener Parameter Setting
     /**
@@ -249,7 +249,7 @@ class HaxeAL {
      * @param param Parameter to set value of.
      * @param value New float value for the parameter.
      */
-    public static function listenerf(param:Int, value:Float):Void { AL.listenerf(param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listenerf(param:Int, value:Float):Void { AL.listenerf(param, value); }
 
     /**
      * Sets three float values for the given parameter of the current listener object.
@@ -258,21 +258,21 @@ class HaxeAL {
      * @param value2 Second float value for the parameter.
      * @param value3 Third float value for the parameter.
      */
-    public static function listener3f(param:Int, value1:Float, value2:Float, value3:Float):Void { AL.listener3f(param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listener3f(param:Int, value1:Float, value2:Float, value3:Float):Void { AL.listener3f(param, value1, value2, value3); }
 
     /**
      * Sets an array of float values for the given parameter of the current listener object.
      * @param param Parameter to set values of.
      * @param values New float values for the parameter as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function listenerfv(param:Int, values:Array<Float>):Void { AL.listenerfv(param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listenerfv(param:Int, values:Array<Float>):Void { AL.listenerfv(param, arrayFloat32_ToPtr(values)); }
 
     /**
      * Sets an integer value for the given parameter of the current listener object.
      * @param param Parameter to set value of.
      * @param value New integer value for the parameter.
      */
-    public static function listeneri(param:Int, value:Int):Void { AL.listeneri(param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listeneri(param:Int, value:Int):Void { AL.listeneri(param, value); }
 
     /**
      * Sets three integer values for the given parameter of the current listener object.
@@ -281,46 +281,35 @@ class HaxeAL {
      * @param value2 Second integer value for the parameter.
      * @param value3 Third integer value for the parameter.
      */
-    public static function listener3i(param:Int, value1:Int, value2:Int, value3:Int):Void { AL.listener3i(param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listener3i(param:Int, value1:Int, value2:Int, value3:Int):Void { AL.listener3i(param, value1, value2, value3); }
 
     /**
      * Sets an array of integer values for the given parameter of the current listener object.
      * @param param Parameter to set values of.
      * @param values New integer values for the parameter as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function listeneriv(param:Int, values:Array<Int>):Void { AL.listeneriv(param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listeneriv(param:Int, values:Array<Int>):Void { AL.listeneriv(param, arrayInt_ToPtr(values)); }
 
     // Listener Parameter Getting
     /**
      * Returns the current float value of the given param.
      * @param param Param to get value of.
      */
-    public static function getListenerf(param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getListenerf(param, fstr.ptr);
-        return fstr.ref;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerf(param:Int):Float {
+        var n:Float32 = 0.0123456789;
+        AL.getListenerf(param, Native.addressOf(n));
+        return n;
     }
 
     /**
      * Returns an array of three float values from the given param.
      * @param param Param to get value of.
      */
-    public static function getListener3f(param:Int):Array<Float> {
-        var n1:cpp.Float32; // I am so sorry
-        var n2:cpp.Float32;
-        var n3:cpp.Float32;
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListener3f(param:Int):Array<Float> {
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
+        untyped __cpp__('alGetListener3f(param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getListener3f(param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
     /**
@@ -329,42 +318,34 @@ class HaxeAL {
      * The array size depends on the given param.
      * @param param Param to get values of.
      */
-    public static function getListenerfv(param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getListenerfv(param, fstr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerfv(param:Int):Array<Float> {
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getListenerfv(param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, getParamMapping(param));
     }
 
     /**
      * Returns the current integer value of the given param.
      * @param param Param to get value of.
      */
-    public static function getListeneri(param:Int):Int {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneri(param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getListeneri(param, istr.ptr);
-        return istr.ref;
+        AL.getListeneri(param, Native.addressOf(n));
+        return n;
     }
 
     /**
      * Returns an array of three integer values from the given param.
      * @param param Param to get value of.
      */
-    public static function getListener3i(param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getListener3i(param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListener3i(param:Int):Array<Int> {
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetListener3i(param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
@@ -373,12 +354,12 @@ class HaxeAL {
      * The array size depends on the given param.
      * @param param Param to get values of.
      */
-    public static function getListeneriv(param:Int, values:Star<Int>):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getListeneriv(param, istr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneriv(param:Int):Array<Int> {
+        final argc = getParamMapping(param);
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getListeneriv(param, arrPtr);
 
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     // Source Handling
@@ -386,29 +367,29 @@ class HaxeAL {
      * Returns an array of ALSources.
      * @param num Amount of sources to return.
      */
-    public static function createSources(num:Int):Array<ALSource> {
-        var empty_sources:Array<ALSource> = [];
-        var s_str:Pointer<ALSource> = Pointer.ofArray(empty_sources);
-        AL.createSources(num, s_str.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function createSources(num:Int):Array<ALSource> {
+        var srcPtr:Star<ALSource> = Native.malloc(Native.sizeof(ALSource) * num);
+        AL.createSources(num, srcPtr);
 
-        var sources:Array<ALSource> = star_ToArraySource(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isSource(sources[0])) #end return sources;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Sources may not have generated properly, returning array of potentially disfunctional sources");
-        return sources;
+        var sources:Array<ALSource> = star_ToArraySource(srcPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>src in sources) {
+            if(!isSource(src)) trace('Source $i is not a source, returning array with disfunctional source!');
+        }
         #end
+        return sources;
     }
 
     /**
      * Creates a source and returns it.
      */
-    public static function createSource():ALSource { return createSources(1)[0]; }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function createSource():ALSource { return createSources(1)[0]; }
 
     /**
      * Deletes an array of ALSources.
      * @param sources Sources to delete.
      */
-    public static function deleteSources(sources:Array<ALSource>):Void {
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteSources(sources:Array<ALSource>):Void {
         AL.deleteSources(sources.length, arraySource_ToPtr(sources));
         #if HAXEAL_DEBUG trace('Deleted ${sources.length} sources properly: ${!isSource(sources[0])}'); #end
     }
@@ -417,76 +398,84 @@ class HaxeAL {
      * Deletes a singular ALSource
      * @param source Source to delete.
      */
-    public static function deleteSource(source:ALSource) { deleteSources([source]); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteSource(source:ALSource) { deleteSources([source]); }
 
     /**
      * Checks if the given source is a valid ALSource object.
      * @param source Source to check validity of.
      */
-    public static function isSource(source:ALSource):Bool { return al_bool(AL.isSource(source)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function isSource(source:ALSource):Bool { return al_bool(AL.isSource(source)); }
 
     // Source Usage
     /**
      * Plays back audio from the sources buffer.
      * @param source Source to play audio from.
      */
-    public static function sourcePlay(source:ALSource):Void { AL.sourcePlay(source); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlay(source:ALSource):Void { AL.sourcePlay(source); }
 
     /**
      * Completely stops audio-playback for the source and sets the sound position back to 0.
      * @param source Source to stop playback of.
      */
-    public static function sourceStop(source:ALSource):Void { AL.sourceStop(source); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceStop(source:ALSource):Void { AL.sourceStop(source); }
     
     /**
      * Stops audio-playback for the source and sets its state to `HaxeAL.INITIAL`.
      * @param source Source to be rewound.
      */
-    public static function sourceRewind(source:ALSource):Void { AL.sourceRewind(source); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceRewind(source:ALSource):Void { AL.sourceRewind(source); }
     
     /**
      * Pauses audio-playback for the source, keeping the sound position unchanged.
      * @param source Source to pause playback of.
      */
-    public static function sourcePause(source:ALSource):Void { AL.sourcePause(source); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePause(source:ALSource):Void { AL.sourcePause(source); }
 
     /**
      * Plays back audio from the sources' buffers.
      * @param sources Sources to play audio from.
      */
-    public static function sourcePlayv(sources:Array<ALSource>):Void { AL.sourcePlayv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayv(sources:Array<ALSource>):Void { AL.sourcePlayv(sources.length, Pointer.ofArray(sources)); }
 
     /**
      * Completely stops audio-playback for the sources and sets their sound position back to 0.
      * @param sources Sources to stop playback of.
      */
-    public static function sourceStopv(sources:Array<ALSource>):Void { AL.sourceStopv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceStopv(sources:Array<ALSource>):Void { AL.sourceStopv(sources.length, Pointer.ofArray(sources)); }
     
     /**
      * Stops audio-playback for the sources and sets their state to `HaxeAL.INITIAL`.
      * @param sources Sources to be rewound.
      */
-    public static function sourceRewindv(sources:Array<ALSource>):Void { AL.sourceRewindv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceRewindv(sources:Array<ALSource>):Void { AL.sourceRewindv(sources.length, Pointer.ofArray(sources)); }
     
     /**
      * Pauses audio-playback for the sources, keeping their sound position unchanged.
      * @param sources Sources to pause playback of.
      */
-    public static function sourcePausev(sources:Array<ALSource>):Void { AL.sourcePausev(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePausev(sources:Array<ALSource>):Void { AL.sourcePausev(sources.length, Pointer.ofArray(sources)); }
 
     /**
-     * Queues the buffers' data to be played chronologically once the data for the current buffer has finished playing back.
+     * Queues the buffers' data to be played chronologically 
+     * once the data for the current buffer has finished playing back on the source.
      * @param source Source to queue buffers for.
      * @param buffers Buffers to be played back chronologically.
      */
-    public static function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceQueueBuffers(source, buffers.length, Pointer.ofArray(buffers)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceQueueBuffers(source, buffers.length, Pointer.ofArray(buffers)); }
 
     /**
-     * Unqueues the given buffers and removes them from the sources buffer queue.
+     * Unqueues the given number of processed buffers and returns the now available (unqueued) buffers.
+     * 
+     * If numBuffers is larger than the amount of processed buffers (the ones already played back) on the source 
+     * (aquired using `getSourcei` with `BUFFERS_PROCESSED`) the operation will fail!
      * @param source Source to unqueue buffers of.
-     * @param buffers Buffers to be unqueued.
+     * @param numBuffers The amount of buffers to unqueue.
      */
-    public static function sourceUnqueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceUnqueueBuffers(source, buffers.length, arrayBuffer_ToStar(buffers)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceUnqueueBuffers(source:ALSource, numBuffers:Int):Array<ALBuffer> { 
+        var arrPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * numBuffers);
+        AL.sourceUnqueueBuffers(source, numBuffers, arrPtr);
+        return star_ToArrayBuffer(arrPtr, numBuffers);
+    }
 
     // Source Parameter Setting
     /**
@@ -495,7 +484,7 @@ class HaxeAL {
      * @param param Param to set value of.
      * @param value New float value of the param.
      */
-    public static function sourcef(source:ALSource, param:Int, value:Float):Void { AL.sourcef(source, param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcef(source:ALSource, param:Int, value:Float):Void { AL.sourcef(source, param, value); }
 
     /**
      * Sets three float values for the target parameter of the given source.
@@ -505,7 +494,7 @@ class HaxeAL {
      * @param value2 Second new float value of the param.
      * @param value3 Third new float value of the param.
      */
-    public static function source3f(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.source3f(source, param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3f(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.source3f(source, param, value1, value2, value3); }
 
     /**
      * Sets an array of float values for the target parameter of the given source.
@@ -513,7 +502,7 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function sourcefv(source:ALSource, param:Int, values:Array<Float>):Void { AL.sourcefv(source, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcefv(source:ALSource, param:Int, values:Array<Float>):Void { AL.sourcefv(source, param, arrayFloat32_ToPtr(values)); }
 
     /**
      * Sets the integer value for the target parameter of the given source.
@@ -521,7 +510,7 @@ class HaxeAL {
      * @param param Param to set value of.
      * @param value New integer value of the param.
      */
-    public static function sourcei(source:ALSource, param:Int, value:Null<Int>):Void {AL.sourcei(source, param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcei(source:ALSource, param:Int, value:Null<Int>):Void {AL.sourcei(source, param, value); }
 
     /**
      * Sets three integer values for the target parameter of the given source.
@@ -531,7 +520,7 @@ class HaxeAL {
      * @param value2 Second new integer value of the param.
      * @param value3 Third new integer value of the param.
      */
-    public static function source3i(source:ALSource, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.source3i(source, param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3i(source:ALSource, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.source3i(source, param, value1, value2, value3); }
 
     /**
      * Sets an array of integer values for the target parameter of the given source.
@@ -539,7 +528,7 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
 
 
     /**
@@ -547,11 +536,10 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get value of.
      */
-    public static function getSourcef(source:ALSource, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getSourcef(source, param, fstr.ptr);
-        return fstr.ref;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcef(source:ALSource, param:Int):Float {
+        var n:Float32 = 0.0123456789;
+        AL.getSourcef(source, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -559,21 +547,11 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getSource3f(source:ALSource, param:Int):Array<Float> {
-        var n1:cpp.Float32;
-        var n2:cpp.Float32;
-        var n3:cpp.Float32; // The sludge consumes all
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3f(source:ALSource, param:Int):Array<Float> {
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
+        untyped __cpp__('alGetSource3f(source, param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getSource3f(source, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
      /**
@@ -583,12 +561,13 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getSourcefv(source:ALSource, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getSourcefv(source, param, fstr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcefv(source:ALSource, param:Int):Array<Float> {
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getSourcefv(source, param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, argc);
     }
 
     /**
@@ -596,11 +575,10 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get value of.
      */
-    public static function getSourcei(source:ALSource, param:Int):Int {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcei(source:ALSource, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getSourcei(source, param, istr.ptr);
-        return istr.ref;
+        AL.getSourcei(source, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -608,19 +586,11 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getSource3i(source:ALSource, param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getSource3i(source, param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3i(source:ALSource, param:Int):Array<Int> {
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetSource3i(source, param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
@@ -630,12 +600,13 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getSourceiv(source:ALSource, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getSourceiv(source, param, istr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourceiv(source:ALSource, param:Int):Array<Int> {
+        final argc = getParamMapping(param);
+
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getSourceiv(source, param, arrPtr);
     
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     // Buffer Handling
@@ -643,29 +614,29 @@ class HaxeAL {
      * Returns an array of ALBuffers.
      * @param num Amount of buffers to return.
      */
-    public static function createBuffers(num:Int):Array<ALBuffer> {
-        var empty_buffers:Array<ALBuffer> = [];
-        var s_str:Pointer<ALBuffer> = Pointer.ofArray(empty_buffers);
-        AL.createBuffers(num, s_str.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function createBuffers(num:Int):Array<ALBuffer> {
+        var bufPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * num);
+        AL.createBuffers(num, bufPtr);
 
-        var buffers:Array<ALBuffer> = star_ToArrayBuffer(s_str.ptr, num);
-        #if HAXEAL_DEBUG if(isBuffer(buffers[0])) #end return buffers;
-        #if HAXEAL_DEBUG 
-        trace("Warning: Buffers may not have generated properly, returning array of potentially disfunctional buffers");
-        return buffers;
+        var buffers:Array<ALBuffer> = star_ToArrayBuffer(bufPtr, num);
+        #if HAXEAL_DEBUG
+        for(i=>buf in buffers) {
+            if(!isBuffer(buf)) trace('Buffer $i is not a buffer, returning array with disfunctional buffer!');
+        }
         #end
+        return buffers;
     }
 
     /**
      * Creates a buffer and returns it.
      */
-    public static function createBuffer():ALBuffer { return createBuffers(1)[0]; }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function createBuffer():ALBuffer { return createBuffers(1)[0]; }
 
     /**
      * Deletes an array of ALBuffers.
      * @param buffers Buffers to delete.
      */
-    public static function deleteBuffers(buffers:Array<ALBuffer>):Void {
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteBuffers(buffers:Array<ALBuffer>):Void {
         AL.deleteBuffers(buffers.length, arrayBuffer_ToPtr(buffers));
         #if HAXEAL_DEBUG trace('Deleted ${buffers.length} buffers properly: ${!isBuffer(buffers[0])}'); #end
     }
@@ -674,25 +645,41 @@ class HaxeAL {
      * Deletes a singular ALBuffer
      * @param buffer Buffer to delete.
      */
-    public static function deleteBuffer(buffer:ALBuffer) { deleteBuffers([buffer]); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteBuffer(buffer:ALBuffer) { deleteBuffers([buffer]); }
 
     /**
      * Checks if the given buffer is a valid ALBuffer object.
      * @param buffer Buffer to check validity of.
      */
-    public static function isBuffer(buffer:ALBuffer):Bool { return al_bool(AL.isBuffer(buffer)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function isBuffer(buffer:ALBuffer):Bool { return al_bool(AL.isBuffer(buffer)); }
 
     /**
      * Fills the given buffer with all information necessary for playback.
      * @param buffer The ALBuffer to fill with information.
      * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
      * @param data The data to be fed as bytes.
-     * @param size Size of the data to be fed.
+     * @param size Size of the data to be fed, here this should be `data.length`.
      * @param sampleRate The samplerate the data should be played back at.
      */
-    public static function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
         final bytesData:haxe.io.BytesData = data.getData();
-        AL.bufferData(buffer, format, cpp.Pointer.arrayElem(bytesData, 0).ptr, size, sampleRate);
+        AL.bufferData(buffer, format, cast(cpp.Pointer.arrayElem(bytesData, 0).ptr, Star<cpp.Void>), size, sampleRate);
+    }
+
+    /**
+     * Fills the given buffer with all information necessary for playback, used to handle raw PCM data.
+     * @param buffer The ALBuffer to fill with information.
+     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_MONO16).
+     * @param data The data to be fed as raw pcm data in the form a raw cpp Void pointer.
+     * @param size Size of the data to be fed. 
+     * By default this is simply the amount of samples the `data` points to.
+     * If your format is stereo (2 channel), you should multiply the sample value by 2.
+     * If your format is 16 bit, you should multiply the value by 2 again.
+     * These multiplications stack, meaning with a STEREO16 format your size should be `samples * 2 * 2`.
+     * @param sampleRate The samplerate the data should be played back at.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData_PCM(buffer:ALBuffer, format:Int, data:Star<cpp.Void>, size:Int, sampleRate:Int):Void {
+        AL.bufferData(buffer, format, data, size, sampleRate);
     }
 
     // Buffer Parameter Setting
@@ -702,7 +689,7 @@ class HaxeAL {
      * @param param Param to set value of.
      * @param value New float value of the param.
      */
-    public static function bufferf(buffer:ALBuffer, param:Int, value:Float):Void {AL.bufferf(buffer, param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferf(buffer:ALBuffer, param:Int, value:Float):Void {AL.bufferf(buffer, param, value); }
     
     /**
      * Sets three float values for the target parameter of the given buffer.
@@ -712,7 +699,7 @@ class HaxeAL {
      * @param value2 Second new float value of the param.
      * @param value3 Third new float value of the param.
      */
-    public static function buffer3f(buffer:ALBuffer, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.buffer3f(buffer, param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function buffer3f(buffer:ALBuffer, param:Int, value1:Float, value2:Float, value3:Float):Void {AL.buffer3f(buffer, param, value1, value2, value3); }
     
     /**
      * Sets an array of float values for the target parameter of the given buffer.
@@ -720,7 +707,7 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function bufferfv(buffer:ALBuffer, param:Int, values:Array<Float>):Void {AL.bufferfv(buffer, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferfv(buffer:ALBuffer, param:Int, values:Array<Float>):Void {AL.bufferfv(buffer, param, arrayFloat32_ToPtr(values)); }
     
     /**
      * Sets the integer value for the target parameter of the given buffer.
@@ -728,7 +715,7 @@ class HaxeAL {
      * @param param Param to set value of.
      * @param value New integer value of the param.
      */
-    public static function bufferi(buffer:ALBuffer, param:Int, value:Int):Void {AL.bufferi(buffer, param, value); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferi(buffer:ALBuffer, param:Int, value:Int):Void {AL.bufferi(buffer, param, value); }
 
     /**
      * Sets three integer values for the target parameter of the given buffer.
@@ -738,7 +725,7 @@ class HaxeAL {
      * @param value2 Second new integer value of the param.
      * @param value3 Third new integer value of the param.
      */
-    public static function buffer3i(buffer:ALBuffer, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.buffer3i(buffer, param, value1, value2, value3); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function buffer3i(buffer:ALBuffer, param:Int, value1:Int, value2:Int, value3:Int):Void {AL.buffer3i(buffer, param, value1, value2, value3); }
 
     /**
      * Sets an array of integer values for the target parameter of the given buffer.
@@ -746,7 +733,7 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {AL.bufferiv(buffer, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {AL.bufferiv(buffer, param, arrayInt_ToPtr(values)); }
 
     // Buffer Parameter Getting
     /**
@@ -754,11 +741,10 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get value of.
      */
-    public static function getBufferf(buffer:ALBuffer, param:Int):Float {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getBufferf(buffer, param, fstr.ptr);
-        return fstr.ref;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferf(buffer:ALBuffer, param:Int):Float {
+        var n:Float32 = 0.0123456789;
+        AL.getBufferf(buffer, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -766,21 +752,11 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
-        var n1:cpp.Float32;
-        var n2:cpp.Float32;
-        var n3:cpp.Float32;
-        n1 = 0.0123456789;
-        n2 = 0.0123456789;
-        n3 = 0.0123456789;
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBuffer3f(buffer:ALBuffer, param:Int):Array<Float> {
+        var n1:Float32 = 0.0123456789; var n2:Float32 = 0.0123456789; var n3:Float32 = 0.0123456789;
+        untyped __cpp__('alGetBuffer3f(buffer, param, &n1, &n2, &n3)');
 
-        var fstr, fstr2, fstr3:Pointer<cpp.Float32>;
-        fstr = Pointer.addressOf(n1);
-        fstr2 = Pointer.addressOf(n2);
-        fstr3 = Pointer.addressOf(n3);
-
-        AL.getBuffer3f(buffer, param, fstr.ptr, fstr2.ptr, fstr3.ptr);
-        return [fstr.ref, fstr2.ref, fstr3.ref];
+        return [n1, n2, n3];
     }
 
      /**
@@ -790,12 +766,13 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getBufferfv(buffer:ALBuffer, param:Int):Array<Float> {
-        var n:cpp.Float32 = 0.0123456789;
-        var fstr:Pointer<cpp.Float32> = Pointer.addressOf(n);
-        AL.getBufferfv(buffer, param, fstr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferfv(buffer:ALBuffer, param:Int):Array<Float> {
+        final argc = getParamMapping(param);
 
-        return star_ToArrayFloat32(fstr.ptr, getParamMapping(param));
+        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
+        AL.getBufferfv(buffer, param, arrPtr);
+
+        return star_ToArrayFloat32(arrPtr, argc);
     }
 
     /**
@@ -803,11 +780,10 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get value of.
      */
-    public static function getBufferi(buffer:ALBuffer, param:Int):Int {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferi(buffer:ALBuffer, param:Int):Int {
         var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getBufferi(buffer, param, istr.ptr);
-        return istr.ref;
+        AL.getBufferi(buffer, param, Native.addressOf(n));
+        return n;
     }
 
     /**
@@ -815,19 +791,11 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getBuffer3i(buffer:ALBuffer, param:Int):Array<Int> {
-        var n1, n2, n3:Int;
-        n1 = 123456789;
-        n2 = 123456789;
-        n3 = 123456789;
-    
-        var istr, istr2, istr3:Pointer<Int>;
-        istr = Pointer.addressOf(n1);
-        istr2 = Pointer.addressOf(n2);
-        istr3 = Pointer.addressOf(n3);
-    
-        AL.getBuffer3i(buffer, param, istr.ptr, istr2.ptr, istr3.ptr);
-        return [istr.ref, istr2.ref, istr3.ref];
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBuffer3i(buffer:ALBuffer, param:Int):Array<Int> {
+        var n1:Int = 123456789; var n2:Int = 123456789; var n3:Int = 123456789;
+        untyped __cpp__('alGetBuffer3i(buffer, param, &n1, &n2, &n3)');
+
+        return [n1, n2, n3];
     }
 
     /**
@@ -837,12 +805,13 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get values of.
      */
-    public static function getBufferiv(buffer:ALBuffer, param:Int):Array<Int> {
-        var n = 123456789;
-        var istr:Pointer<Int> = Pointer.addressOf(n);
-        AL.getBufferiv(buffer, param, istr.ptr);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferiv(buffer:ALBuffer, param:Int):Array<Int> {
+        final argc = getParamMapping(param);
+
+        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
+        AL.getBufferiv(buffer, param, arrPtr);
     
-        return star_ToArrayInt(istr.ptr, getParamMapping(param));
+        return star_ToArrayInt(arrPtr, argc);
     }
 
     //Error Getting Functions
@@ -852,7 +821,7 @@ class HaxeAL {
      * 
      * The definition can be logged to the console using `getErrorString` or obtained as a variable using `getErrorDefinition`.
      */
-    public static function getError():Int { return AL.getError(); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function getError():Int { return AL.getError(); }
     
     /**
      * Logs the definition of an error code to the console.
