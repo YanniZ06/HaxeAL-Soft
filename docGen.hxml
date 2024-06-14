@@ -1,0 +1,7 @@
+-cp source
+-D doc-gen
+--macro include('haxeal')
+--no-output
+
+-xml doc/output.xml
+-cpp dummyOuput
