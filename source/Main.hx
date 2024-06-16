@@ -51,15 +51,24 @@ class Main {
 			throw 'Could not load example, context couldnt be configured properly.';
 		}
 
+		final direct_channels_available = HaxeAL.isExtensionPresent(HaxeAL.EXT_DIRECT_CHANNELS_NAME);
+		trace("Direct channels are available: " + direct_channels_available);
+
+		final audio_spatialize_available = HaxeAL.isExtensionPresent(HaxeAL.EXT_SPATIALIZE_SOURCE_NAME);
+		trace("Audio spatialization is available: " + audio_spatialize_available);
+
 		final max_efx_per_sound = efx_available ? HaxeALC.getIntegers(device, HaxeEFX.MAX_AUXILIARY_SENDS, 1)[0] : 0;
 		trace("Max amount of efx per sound: " + max_efx_per_sound);
 
 		// Setting up a basic source with a reverb effect (unless EFX is not supported)
 		var src = HaxeAL.createSource();
-
-		//HaxeAL.source3f(src, HaxeAL.POSITION, 5, 10, 5);
-		//trace(HaxeAL.getSource3f(src, HaxeAL.POSITION));
 		
+		if (audio_spatialize_available)
+			HaxeAL.sourcei(src, HaxeAL.SOURCE_SPATIALIZE_SOFT, HaxeAL.TRUE);
+
+		HaxeAL.source3f(src, HaxeAL.POSITION, 5, 10, 5);
+		trace(HaxeAL.getSource3f(src, HaxeAL.POSITION));
+
 		var effect:ALEffect = 0;
 		var aux:ALAuxSlot = 0;
 		if(efx_available) {
