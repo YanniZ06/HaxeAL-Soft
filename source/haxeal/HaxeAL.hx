@@ -79,6 +79,50 @@ class HaxeAL {
         ORIENTATION => 6 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with (pr with fix if you found out)
     ];
 
+    //AL_SOFT_direct_channels extension
+    /**
+     * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, to allow direct channels for sources
+     * 
+     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_direct_channels.txt
+     */
+    public static inline final EXT_DIRECT_CHANNELS_NAME:String = "AL_SOFT_direct_channels";
+    //Parameter of: alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+    public static inline final DIRECTCHANNELS_SOFT:Int = 0x1033;
+
+    //AL_SOFT_source_spatialize extension
+    /**
+     * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, to allow for 3D stereo channels by downmixing it to mono
+     * NOTE: DO NOT USE THIS WITH DIRECT CHANNELS BECAUSE IT'LL CANCEL THE EFFECT OF THIS OUT
+     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_source_spatialize.txt
+     */
+    public static inline final EXT_SPATIALIZE_SOURCE_NAME:String = "AL_SOFT_source_spatialize";
+    //Parameter of alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+    public static inline final SOURCE_SPATIALIZE_SOFT:Int = 0x1214; 
+
+    //AL_SOFT_loop_points extension
+    /**
+     * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, allows for specifying loop points for a buffer (offset where a buffer loops)
+     * 
+     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_loop_points.txt
+     */
+    public static inline final EXT_LOOP_POINTS_NAME:String = "AL_SOFT_loop_points";
+    //Parameter of alBufferiv and alGetBufferiv
+    public static inline final LOOP_POINTS_SOFT:Int = 0x2015;
+
+    //AL_SOFT_buffer_length_query extension
+    /**
+     * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, allows the user to query information from a buffer such as: length in bytes, samples and seconds.
+     * 
+     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_buffer_length_query.txt
+     */
+    public static inline final EXT_BUFFER_LENGTH_QUERY_NAME:String = "AL_SOFT_buffer_length_query";
+    //Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+    public static inline final BYTE_LENGTH_SOFT:Int = 0x2009;
+    //Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+    public static inline final SAMPLE_LENGTH_SOFT:Int = 0x200A;
+    //Accepted by the <paramName> parameter of alGetBufferf and alGetBufferfv
+    public static inline final SEC_LENGTH_SOFT:Int = 0x200B;
+
     /**
      * Gets the amount of elements an array needs to store the information about the given parameter.
      * 
