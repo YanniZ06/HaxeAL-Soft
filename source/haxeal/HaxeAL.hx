@@ -663,7 +663,9 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
         final bytesData:haxe.io.BytesData = data.getData();
-        AL.bufferData(buffer, format, cast(cpp.Pointer.arrayElem(bytesData, 0).ptr, Star<cpp.Void>), size, sampleRate);
+        
+        var intStr:Star<cpp.UInt8> = cpp.Pointer.arrayElem(bytesData, 0).ptr;
+        AL.bufferData(buffer, format, untyped __cpp__('static_cast<void*>({0})', intStr), size, sampleRate);
     }
 
     /**

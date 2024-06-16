@@ -6,6 +6,12 @@ Changes are usually listed by relevancy or effort (this is no guarantuee though)
 Guarantueed breaking changes are only to be expected every major version change.
 _Potentially_ breaking changes are marked with **(B)**, those usually not affecting anyone because they are internal.
 
+## [1.2.1] "Important Fixes" - 16.06.2024
+
+### Fixed
+- `bufferData` not casting correctly and always causing a crash (Haxe tried doing an odd cast, so now its done manuall!)
+- Library not compiling due to a mistake in extraParams.hxml
+
 
 ## [1.2.0] "The Input Update" - 14.06.2024
 
@@ -23,7 +29,7 @@ _Potentially_ breaking changes are marked with **(B)**, those usually not affect
 - getListeneriv having a wrong & unnecessary second argument (due to misinterpretation of the official documentation)
 
 ### Changed
-- `AL.hx bufferData()` data argument type from `cpp.Star<cpp.UInt8>` to `cpp.Star<cpp.Void>` **(B)**
+- `bufferData` data argument type from `cpp.Star<cpp.UInt8>` to `cpp.Star<cpp.Void>` **(B)**
 - Logic for HaxeAL multiple argument functions (iv, fv)
 - Debug logs for `createX` (Source, Buffer, EFX, etc.) functions to be more precise about which objects weren't created properly
 - All instances of weird pointer creation to be more memory efficient and more clearly written

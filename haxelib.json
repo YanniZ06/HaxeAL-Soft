@@ -2,11 +2,11 @@
     "name": "HaxeAL-Soft",
     "url" : "https://github.com/YanniZ06/HaxeAL-Soft",
     "license": "Apache",
-    "tags": ["openal", "cpp", "audio", "native", "bindings", "port", "externs"],
+    "tags": ["openal", "cpp", "audio", "native", "bindings", "port", "externs", "microphone", "input"],
     "description": "HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.",
-    "version": "1.1.0",
+    "version": "1.2.1",
     "classPath": "source/",
-    "releasenote": "Updated README and added more control over the library via flags.",
+    "releasenote": "Fixed compiling error and crash on buffer filling",
     "contributors": ["YanniZ06", "Zoardedz"],
     "dependencies": {}
 }
