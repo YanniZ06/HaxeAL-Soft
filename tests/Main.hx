@@ -28,6 +28,7 @@ class Main {
 		// Initialize OpenAL and check for EFX
         var name:String = HaxeALC.getString(null, HaxeALC.DEVICE_SPECIFIER);
 		var efx_available:Bool = false;
+		var efx_target_available:Bool = false;
 		
 		trace("Found Audio device: " + name);
 		device = HaxeALC.openDevice(name);
@@ -39,10 +40,12 @@ class Main {
 		HaxeEFX.initEFX();
 
 		final possibleDevices = HaxeALC.getString(HaxeALC.ALL_DEVICES_SPECIFIER);
-		trace(possibleDevices);
+		trace("Possible devices are: " + possibleDevices);
 
-		efx_available = HaxeALC.isExtensionPresent("ALC_EXT_EFX");
+		efx_available = HaxeALC.isExtensionPresent(device, "ALC_EXT_EFX");
+		HaxeAL.getErrorString(HaxeALC.getError());
 		trace("EFX is available: " + efx_available);
+
 		final attributes:Null<Array<Int>> = efx_available ? [HaxeEFX.MAX_AUXILIARY_SENDS, 15] : null; 
 
 		context = HaxeALC.createContext(device, attributes);
@@ -54,6 +57,11 @@ class Main {
 		final max_efx_per_sound = efx_available ? HaxeALC.getIntegers(device, HaxeEFX.MAX_AUXILIARY_SENDS, 1)[0] : 0;
 		trace("Max amount of efx per sound: " + max_efx_per_sound);
 
+		efx_target_available = HaxeAL.isExtensionPresent("AL_SOFT_effect_target");
+		trace("AL_SOFT_effect_target is available: " + efx_target_available);
+
+
+
 		// Setting up a basic source with a reverb effect (unless EFX is not supported)
 		var src = HaxeAL.createSource();
 
@@ -61,17 +69,35 @@ class Main {
 		//trace(HaxeAL.getSource3f(src, HaxeAL.POSITION));
 		
 		var effect:ALEffect = 0;
+		var effect2:ALEffect = 0;
 		var aux:ALAuxSlot = 0;
+		var aux2:ALAuxSlot = 0;
 		if(efx_available) {
 			effect = HaxeEFX.createEffect();
-			HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_REVERB);
+			HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_PITCH_SHIFTER);
+			//HaxeEFX.effectf(effect, HaxeEFX.PITCH_SHIFTER_COARSE_TUNE, -12);
+
+			effect2 = HaxeEFX.createEffect();
+			HaxeEFX.effecti(effect2, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_ECHO);
 
 			aux = HaxeEFX.createAuxiliaryEffectSlot();
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect);
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
 
+			aux2 = HaxeEFX.createAuxiliaryEffectSlot();
+			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_EFFECT, effect2);
+			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
+
 			// Apply effect
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
+			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux2, 1, HaxeEFX.FILTER_NULL);
+		}
+
+		final reroute:Bool = true; // Whether to use the extension or not (to test the differences)
+		if(efx_target_available && reroute) {
+			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, 0, 1, HaxeEFX.FILTER_NULL);
+
+			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_TARGET_SOFT, aux2);
 		}
 
 		//? Microphone direct playback example!
@@ -83,6 +109,7 @@ class Main {
 
 		// Setting up the capturing format
 		final format = HaxeAL.FORMAT_STEREO8;
+
 		var sizeMultiplier = 1; // Automatically set depending on the format
 		if(format > HaxeAL.FORMAT_MONO8) sizeMultiplier *= 2;
 		if(format > HaxeAL.FORMAT_STEREO8) sizeMultiplier *= 2;
@@ -175,12 +202,16 @@ class Main {
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, 0); // Unbind effect from aux slot
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, 0, 0, HaxeEFX.FILTER_NULL); // Unbind aux slot from source
 
+			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_EFFECT, 0); // Unbind effect from aux slot
+			if(!efx_target_available || !reroute) HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, 0, 1, HaxeEFX.FILTER_NULL); // Unbind aux slot from source
+			else HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_TARGET_SOFT, 0); // Unbind aux 2 from aux 1
+
 			// Delete both
-			HaxeEFX.deleteAuxiliaryEffectSlot(aux);
-			HaxeEFX.deleteEffect(effect);
+			HaxeEFX.deleteAuxiliaryEffectSlots([aux, aux2]);
+			HaxeEFX.deleteEffects([effect, effect2]);
 		}
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, 0); // We unbind the buffers so we can delete it along with the source (unbound buffers cannot be deleted!)
-		HaxeAL.deleteSources([src]);
+		HaxeAL.deleteSource(src);
 		trace(genBufs);
 		HaxeAL.deleteBuffers(genBufs);
 		HaxeAL.getErrorString(HaxeAL.getError());

@@ -14,6 +14,9 @@ class HaxeEFX {
     // Constants
 
     // EFX Settings & Info (ALC Specific)
+    /**
+     * Passed into `HaxeALC.isExtensionPresent` to check if EFX is available for use
+     */
     public static inline final EXT_EFX_NAME:String = "EXT_EFX";
     public static inline final EFX_MAJOR_VERSION:Int = 0x20001;
     public static inline final EFX_MINOR_VERSION:Int = 0x20002;
@@ -31,6 +34,15 @@ class HaxeEFX {
     public static inline final DIRECT_FILTER_GAINHF_AUTO:Int = 0x2000A;
     public static inline final AUXILIARY_SEND_FILTER_GAIN_AUTO:Int = 0x2000B;
     public static inline final AUXILIARY_SEND_FILTER_GAINHF_AUTO:Int = 0x2000C;
+    
+    // AL_SOFT_effect_target extension
+    /**
+     * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, to check if the effect slot target extension is available for use
+     * 
+     * Documentation on its usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_effect_target.txt
+     */
+    public static inline final EXT_EFFECT_TARGET_NAME:String = "AL_SOFT_effect_target";
+    public static inline final EFFECTSLOT_TARGET_SOFT:Int = 0x199C;
 
     // Effects
     public static inline final EFFECT_FIRST_PARAMETER:Int = 0x0000;
