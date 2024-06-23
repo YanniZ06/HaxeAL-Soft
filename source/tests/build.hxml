@@ -1,10 +1,11 @@
 -cp source
 --main Main
 -D HAXEAL_DEBUG
+-D HAXEAL_DEBUG_SOFT_LOGLEVEL=3
 --dce no
 
 -D HXCPP_M64
--D HAXEAL_APP_PATH=output/
+-D HAXEAL_APP_PATH=output
 --macro haxeal.bindings.FlagChecker.checkFlags()
 
 --cpp output

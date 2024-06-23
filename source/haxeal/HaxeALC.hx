@@ -144,7 +144,7 @@ class HaxeALC {
 	 * The default is 22050, half of the standard frequency, so in this case half a second.
 	 */
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end 
-	function openCaptureDevice(deviceName:ConstCharStar, captureFrequency:Int = 44100, captureFormat:Int = HaxeAL.FORMAT_MONO16, bufferSize:Int = 22050):ALCaptureDevice {
+	function openCaptureDevice(deviceName:String, captureFrequency:Int = 44100, captureFormat:Int = HaxeAL.FORMAT_MONO16, bufferSize:Int = 22050):ALCaptureDevice {
 		return ALC.openCaptureDevice(deviceName, captureFrequency, captureFormat, bufferSize);
 	}
 

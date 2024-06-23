@@ -61,7 +61,7 @@ class Main {
 		trace("Audio spatialization is available: " + audio_spatialize_available);
 
 		final max_efx_per_sound = efx_available ? HaxeALC.getIntegers(device, HaxeEFX.MAX_AUXILIARY_SENDS, 1)[0] : 0;
-		trace("Max amount of efx per sound: " + max_efx_per_sound);
+		trace("Max amount of efx/aux slots per sound: " + max_efx_per_sound);
 
 		efx_target_available = HaxeAL.isExtensionPresent("AL_SOFT_effect_target");
 		trace("AL_SOFT_effect_target is available: " + efx_target_available);
@@ -74,7 +74,7 @@ class Main {
 		if (audio_spatialize_available)
 			HaxeAL.sourcei(src, HaxeAL.SOURCE_SPATIALIZE_SOFT, HaxeAL.TRUE);
 
-		HaxeAL.source3f(src, HaxeAL.POSITION, 5, 10, 5);
+		HaxeAL.source3f(src, HaxeAL.POSITION, 0, 0, 0);
 		trace(HaxeAL.getSource3f(src, HaxeAL.POSITION));
 
 		var effect:ALEffect = 0;
@@ -91,11 +91,11 @@ class Main {
 
 			aux = HaxeEFX.createAuxiliaryEffectSlot();
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect);
-			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
+			//HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
 
 			aux2 = HaxeEFX.createAuxiliaryEffectSlot();
 			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_EFFECT, effect2);
-			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
+			//HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
 
 			// Apply effect
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
@@ -117,7 +117,7 @@ class Main {
 		trace("Default Mic: " + defDevice);
 
 		// Setting up the capturing format
-		final format = HaxeAL.FORMAT_STEREO8;
+		final format = HaxeAL.FORMAT_MONO8;
 
 		var sizeMultiplier = 1; // Automatically set depending on the format
 		if(format > HaxeAL.FORMAT_MONO8) sizeMultiplier *= 2;

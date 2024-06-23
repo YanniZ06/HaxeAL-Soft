@@ -6,10 +6,31 @@ Changes are usually listed by relevancy or effort (this is no guarantuee though)
 Guarantueed breaking changes are only to be expected every major version change.
 _Potentially_ breaking changes are marked with **(B)**, those usually not affecting anyone because they are internal.
 
+## [1.2.2] "QOL Extensions" - 22.06.2024
+
+### Added
+
+- Support for multiple extensions (their usage is in the documentation):
+* AL_SOFT_direct_channels (HaxeAL)
+* AL_SOFT_source_spatialize (HaxeAL)
+* AL_SOFT_loop_points (HaxeAL)
+* AL_SOFT_buffer_length_query (HaxeAL)
+* AL_SOFT_effect_target (HaxeEFX)
+- New flag: "HAXEAL_DEBUG_SOFT_LOGLEVEL" (TODO FINISH THIS)
+- Rough tests for most extensions in `Main.hx`
+
+### Fixed
+
+- Input device opening function using const char * as first argument type instead of string
+
+### Note
+This is presumeably the last update to this library, unless more features are explicitly requested or problems arise.
+
 ## [1.2.1] "Important Fixes" - 16.06.2024
 
 ### Fixed
-- `bufferData` not casting correctly and always causing a crash (Haxe tried doing an odd cast, so now its done manuall!)
+
+- `bufferData` not casting correctly and always causing a crash (Haxe tried doing an odd cast, so now its done manually!)
 - Library not compiling due to a mistake in extraParams.hxml
 
 
@@ -23,12 +44,14 @@ _Potentially_ breaking changes are marked with **(B)**, those usually not affect
 - Shutdown logic to the original usage example
 
 ### Fixed
+
 - `bufferData` only being able to fully account for 8 bit audio (internally, see `Changed No.1`)
 - `sourceUnqueueBuffers` implementation (old implementation was wrong due to misinterpretation of the official documentation)
 - `createX` functions (sources, buffers, effects, etc.) being capped to generating 14 objects per function call, as any objects past that would be invalid due to insufficent memory allocation
 - getListeneriv having a wrong & unnecessary second argument (due to misinterpretation of the official documentation)
 
 ### Changed
+
 - `bufferData` data argument type from `cpp.Star<cpp.UInt8>` to `cpp.Star<cpp.Void>` **(B)**
 - Logic for HaxeAL multiple argument functions (iv, fv)
 - Debug logs for `createX` (Source, Buffer, EFX, etc.) functions to be more precise about which objects weren't created properly
