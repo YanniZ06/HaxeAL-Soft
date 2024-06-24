@@ -1,5 +1,6 @@
 package;
 
+import haxeal.bindings.FlagChecker;
 import haxeal.ALObjects.ALAuxSlot;
 import haxeal.ALObjects.ALAuxSlot;
 import haxeal.ALObjects.ALEffect;
@@ -22,6 +23,16 @@ class Main {
 	static var context:ALContext;
 
     static function main() {
+		// todo: try sys.io.Process here, try setting current working directory to exact path file was started in then setting env variables, 
+		// ! done: sys command, sys put env & process on init macro (did nothing)
+		// ! done here: sys command seperate, sys command combined, env put regular
+		//Sys.putEnv('ALSOFT_LOGLEVEL', '3');
+		//Sys.putEnv('ALSOFT_LOGFILE', 'openal_log.txt');
+		Sys.command('cd');
+		Sys.command('cd output && set ALSOFT_LOGLEVEL=3 && set ALSOFT_LOGFILE=openal_log.txt');
+		Sys.command('cd');
+		Sys.command('set ALSOFT_LOGLEVEL=' + Std.string('3'));
+        Sys.command('set ALSOFT_LOGFILE=openal_log.txt');
         // trace(HaxeAL.getString(HaxeAL.VERSION));
 		// HaxeAL.getErrorString(HaxeAL.getError());
 
@@ -224,10 +235,14 @@ class Main {
 		trace(genBufs);
 		HaxeAL.deleteBuffers(genBufs);
 		HaxeAL.getErrorString(HaxeAL.getError());
+
+		trace(Sys.getEnv('ALSOFT_LOGLEVEL'));
+		trace(Sys.getEnv('ALSOFT_LOGFILE'));
 		
 		// Exit context and close audio playback device (Only necessary when we shutdown the app or do anything else)
 		HaxeALC.makeContextCurrent(null); // Also unbind context before destroying it
 		HaxeALC.destroyContext(context);
 		HaxeALC.closeDevice(device);
+		Sys.sleep(2);
     }
 }

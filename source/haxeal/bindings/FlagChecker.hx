@@ -1,5 +1,6 @@
 package haxeal.bindings;
 
+import sys.io.Process;
 import sys.io.File;
 import sys.FileSystem;
 import haxe.macro.Context;
@@ -49,14 +50,14 @@ class FlagChecker {
         var logLevel:Null<Int> = debug == null ? 0 : Std.parseInt(debug);
         if(logLevel == null || logLevel < 0 || logLevel > 3) return macro null;
 
-        final cmd = 'cd ' + appPath.substr(0, appPath.length-1);
-        trace(cmd);
-
+        final directorySwitch = 'cd ' + appPath.substr(0, appPath.length-1);
         // todo: get this to WORK damn it! currently only doing these commands in the windows cmd on the output directory works
         // ? https://github.com/kcat/openal-soft/blob/master/docs/env-vars.txt
-        Sys.command(cmd);
-        Sys.command('set ALSOFT_LOGLEVEL=' + logLevel);
+
+        Sys.command(directorySwitch);
+        Sys.command('set ALSOFT_LOGLEVEL=' + Std.string(logLevel));
         Sys.command('set ALSOFT_LOGFILE=openal_log.txt');
+
         for(i in 0...folderDepth) {
             Sys.command('cd ..');
             trace("Went back folder");
