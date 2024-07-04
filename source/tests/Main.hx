@@ -23,16 +23,7 @@ class Main {
 	static var context:ALContext;
 
     static function main() {
-		// todo: try sys.io.Process here, try setting current working directory to exact path file was started in then setting env variables, 
-		// ! done: sys command, sys put env & process on init macro (did nothing)
-		// ! done here: sys command seperate, sys command combined, env put regular
-		//Sys.putEnv('ALSOFT_LOGLEVEL', '3');
-		//Sys.putEnv('ALSOFT_LOGFILE', 'openal_log.txt');
-		Sys.command('cd');
-		Sys.command('cd output && set ALSOFT_LOGLEVEL=3 && set ALSOFT_LOGFILE=openal_log.txt');
-		Sys.command('cd');
-		Sys.command('set ALSOFT_LOGLEVEL=' + Std.string('3'));
-        Sys.command('set ALSOFT_LOGFILE=openal_log.txt');
+	
         // trace(HaxeAL.getString(HaxeAL.VERSION));
 		// HaxeAL.getErrorString(HaxeAL.getError());
 
@@ -111,6 +102,10 @@ class Main {
 			// Apply effect
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux2, 1, HaxeEFX.FILTER_NULL);
+
+			/*HaxeAL.sourcef(src, HaxeAL.GAIN, 1);
+			HaxeEFX.auxiliaryEffectSlotf(aux, HaxeEFX.EFFECTSLOT_GAIN, 1);
+			HaxeEFX.auxiliaryEffectSlotf(aux2, HaxeEFX.EFFECTSLOT_GAIN, 1);*/
 		}
 
 		final reroute:Bool = true; // Whether to use the extension or not (to test the differences)
@@ -235,9 +230,6 @@ class Main {
 		trace(genBufs);
 		HaxeAL.deleteBuffers(genBufs);
 		HaxeAL.getErrorString(HaxeAL.getError());
-
-		trace(Sys.getEnv('ALSOFT_LOGLEVEL'));
-		trace(Sys.getEnv('ALSOFT_LOGFILE'));
 		
 		// Exit context and close audio playback device (Only necessary when we shutdown the app or do anything else)
 		HaxeALC.makeContextCurrent(null); // Also unbind context before destroying it

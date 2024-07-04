@@ -8,8 +8,6 @@
     <copyFile name="OpenAL32.dll" from="${this_dir}/${openal_dir}" toolId="exe"
 		overwrite="true"/>
 
-    <!--copy to="output" from="assets/testMono.wav" --> <!-- Properly compile test assets-->
-
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
 	</files>
@@ -18,8 +16,19 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
-    <!-- if="HXCPP_M32" || USE TO CHECK IF PC IS 32 BIT TO COMPILE TO 32BIT, OTHERWISE COMPILE CURRENT 64 BIT -->
-    <target id='haxe' tool='linker' toolid='exe'>
-        <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>
+    <target id='haxe'>
+        <section if="windows">
+            <linker id='exe'>
+                <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>
+            </linker>
+        </section>
+
+        <section if="linux">
+            <lib name="-lopenal" />
+        </section>
+
+        <section if="macos || iphoneos || iphonesim">
+            <vflag name="-framework" value="OpenAL" />
+        </section>
     </target>
 </xml>

@@ -18,22 +18,26 @@ Documentation on the library can be found here: https://yanniz06.github.io/HaxeA
 - Full ALC and AL Integration
 - Audio Recording
 - Full EFX Integration
-- Extension support (albeit only properly accessible using untyped `__cpp__` expressions, refer to `haxeal.bindings.EFXBuilder.hx` for example usage)
+- Extension support
 - Flags for "customization" of the library
 
 # Left-out Features
-- Soft/ALEXT Functions: Didn't find any use for them, if some people really want them added I can add them in, otherwise I'm sparing myself the effort
-- Quite a few extensions: Will do on request! (There is a lot of them)
+- Extensions deemed not necessary enough to implement
 
 # Custom Flags
 - HAXEAL_DEBUG: Enables multiple debug traces on certain functions (deletion and creation to be exact).
 - HAXEAL_INLINE_OPT_SMALL: Enables inlining for all HaxeAL operations that dont increase compiled code size, which reduces performance cost but does not allow those operations to be called at runtime using Reflect.
 - HAXEAL_INLINE_OPT_BIG: Enables inlining for ALL HaxeAL operations, which reduces performance cost but may increase compiled code size and disallows those operations from being called at runtime using Reflect.
-- HAXEAL_APP_PATH: If set, drops the OpenAL32.dll file in the defined directory, otherwise only drops it in the standard cpp output folder. This is useful/necessary if your application doesn't go into the default folder but instead a custom made one (in the case of flixel that export folder for example). This flag needs to be set with a value pointing to the folder your application executeable is located in, with the folders being seperated by a '/'. The path starts at your project root folder (the one in which your build.hxml or Project.xml resides) and should ideally end with the folder your application files are exported to. If said folder does not exist, it will be created on its own.
+- HAXEAL_APP_PATH: The path to your executeable application, starting from the root directory of your project (typically in which your build.hxml or similar file resides in). If this flag is not set, the library will attempt to find the path, going off of the compilers default output path aswell as the default executeable name. If a custom name for the executeable has been set via the HAXE_OUTPUT_FILE flag, that one is picked, otherwise it defaults to the name of your Main class. The path SHOULD also include the name of your executeable file, an example for a path would be "export/windows/Game.exe". This flag is especially useful when working with game frameworks that set their own export folder (which the library in most cases will fail to find on its own). This flag is necessary to be set if you want to ensure the OpenAL32.dll file is put into the right folder. If you have a debug build that is not in the same folder as your release build you MUST put the OpenAL32.dll file into the debug folder aswell. The functionality of the HAXEAL_DEBUG_SOFT_LOGLEVEL also depends on this flag being set up properly.
+- HAXEAL_DEBUG_SOFT_LOGLEVEL: Enables OpenAL-Soft debug logs when set to a value from 1 to 3. 
+* 1 - Prints out errors only
+* 2 - Prints out warnings and errors
+* 3 - Prints out additional information, as well as warnings and errors
+When compiling with this flag set to one of the valid values, four files are generated to the HAXEAL_APP_PATH folder "releaseWinLogRun.bat", "debugWinLogRun.bat", "releaseUnixLogRun.sh" & "debugUnixLogRun.sh". Scripts starting with release will launch the release version of the executeable, while scripts starting with debug will launch the debug version (this only applies if the release and debug version are exported to the same folder, otherwise just set HAXEAL_APP_PATH to the folder your debug executeable is in, and if the executeable is not postfixed with "-debug" just run the regular release script in the debug folder). Unix scripts are meant for linux support, batch for windows. While running these scripts a file named "openal_log.txt" is generated, in which you will find the generated OpenAL-Soft debug logs after the program has finished executing and the script has closed. There will be no logging if you do not run the scripts.
 
 # Requirements (both for application user and programmer)
 - Computer must work on 64-Bit (might fix?)
-- OpenAL MIGHT need to be installed on the Computer if the local app-specific OpenAL-Soft installation does not work (via the https://www.openal.org/downloads/ OpenAL 1.1 Windows Installer for example, however this should not be a problem if HAXEAL_APP_PATH is configured correctly.)
+- OpenAL MIGHT need to be installed on the Computer if the local app-specific OpenAL-Soft installation does not work (via the https://www.openal.org/downloads/ OpenAL 1.1 Windows Installer for example, however this SHOULD not be a problem if HAXEAL_APP_PATH is configured correctly.)
 
 # Building HaxeAL-Soft
 Building HaxeAL Soft is just as simple as building any other haxe application.

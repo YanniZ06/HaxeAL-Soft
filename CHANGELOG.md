@@ -16,15 +16,22 @@ _Potentially_ breaking changes are marked with **(B)**, those usually not affect
 * AL_SOFT_loop_points (HaxeAL)
 * AL_SOFT_buffer_length_query (HaxeAL)
 * AL_SOFT_effect_target (HaxeEFX)
-- New flag: "HAXEAL_DEBUG_SOFT_LOGLEVEL" (TODO FINISH THIS)
+
+- New flag "HAXEAL_DEBUG_SOFT_LOGLEVEL" for debugging (its usage is in the README.md file)
+
+- Support for Linux, MacOS and Iphone (README.md for further compile instructions)
 - Rough tests for most extensions in `Main.hx`
+
+### Changed
+
+- About me usage instructions
 
 ### Fixed
 
 - Input device opening function using const char * as first argument type instead of string
 
 ### Note
-This is presumeably the last update to this library, unless more features are explicitly requested or problems arise.
+This is presumeably the last actual update to this library, unless more features are explicitly requested or problems arise.
 
 ## [1.2.1] "Important Fixes" - 16.06.2024
 
