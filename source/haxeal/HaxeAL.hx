@@ -76,7 +76,7 @@ class HaxeAL {
         POSITION => 3,
         VELOCITY => 3,
         DIRECTION => 3,
-        ORIENTATION => 6 // maybe  4???????? i really do not know, maybe this wont be used at all to begin with (pr with fix if you found out)
+        ORIENTATION => 6
     ];
 
     //AL_SOFT_direct_channels extension
@@ -86,7 +86,9 @@ class HaxeAL {
      * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_direct_channels.txt
      */
     public static inline final EXT_DIRECT_CHANNELS_NAME:String = "AL_SOFT_direct_channels";
-    //Parameter of: alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+    /**
+     * Parameter of: alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+     */
     public static inline final DIRECTCHANNELS_SOFT:Int = 0x1033;
 
     //AL_SOFT_source_spatialize extension
@@ -96,7 +98,9 @@ class HaxeAL {
      * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_source_spatialize.txt
      */
     public static inline final EXT_SPATIALIZE_SOURCE_NAME:String = "AL_SOFT_source_spatialize";
-    //Parameter of alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+    /**
+     * Parameter of alSourcei, alSourceiv, alGetSourcei and alGetSourceiv
+     */
     public static inline final SOURCE_SPATIALIZE_SOFT:Int = 0x1214; 
 
     //AL_SOFT_loop_points extension
@@ -106,7 +110,9 @@ class HaxeAL {
      * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_loop_points.txt
      */
     public static inline final EXT_LOOP_POINTS_NAME:String = "AL_SOFT_loop_points";
-    //Parameter of alBufferiv and alGetBufferiv
+    /**
+     * Parameter of alBufferiv and alGetBufferiv
+     */
     public static inline final LOOP_POINTS_SOFT:Int = 0x2015;
 
     //AL_SOFT_buffer_length_query extension
@@ -116,11 +122,17 @@ class HaxeAL {
      * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_buffer_length_query.txt
      */
     public static inline final EXT_BUFFER_LENGTH_QUERY_NAME:String = "AL_SOFT_buffer_length_query";
-    //Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+    /**
+     * Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+     */
     public static inline final BYTE_LENGTH_SOFT:Int = 0x2009;
-    //Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+    /**
+     * Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
+     */
     public static inline final SAMPLE_LENGTH_SOFT:Int = 0x200A;
-    //Accepted by the <paramName> parameter of alGetBufferf and alGetBufferfv
+    /**
+     * Accepted by the <paramName> parameter of alGetBufferf and alGetBufferfv
+     */
     public static inline final SEC_LENGTH_SOFT:Int = 0x200B;
 
     /**
@@ -309,7 +321,9 @@ class HaxeAL {
      * @param param Parameter to set values of.
      * @param values New float values for the parameter as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listenerfv(param:Int, values:Array<Float>):Void { AL.listenerfv(param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listenerfv(param:Int, values:Array<cpp.Float32>):Void { 
+        AL.listenerfv(param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
 
     /**
      * Sets an integer value for the given parameter of the current listener object.
@@ -332,7 +346,9 @@ class HaxeAL {
      * @param param Parameter to set values of.
      * @param values New integer values for the parameter as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listeneriv(param:Int, values:Array<Int>):Void { AL.listeneriv(param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function listeneriv(param:Int, values:Array<Int>):Void { 
+        AL.listeneriv(param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values)); 
+    }
 
     // Listener Parameter Getting
     /**
@@ -362,13 +378,13 @@ class HaxeAL {
      * The array size depends on the given param.
      * @param param Param to get values of.
      */
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerfv(param:Int):Array<Float> {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListenerfv(param:Int):Array<cpp.Float32> {
         final argc = getParamMapping(param);
 
-        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
-        AL.getListenerfv(param, arrPtr);
+        var arr:Array<cpp.Float32> = untyped __cpp__('::Array<float>({0}, {0})', argc);
+        AL.getListenerfv(param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', arr));
 
-        return star_ToArrayFloat32(arrPtr, getParamMapping(param));
+        return arr;
     }
 
     /**
@@ -400,10 +416,11 @@ class HaxeAL {
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getListeneriv(param:Int):Array<Int> {
         final argc = getParamMapping(param);
-        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
-        AL.getListeneriv(param, arrPtr);
 
-        return star_ToArrayInt(arrPtr, argc);
+        var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argc);
+        AL.getListeneriv(param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
+
+        return arr;
     }
 
     // Source Handling
@@ -412,10 +429,9 @@ class HaxeAL {
      * @param num Amount of sources to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createSources(num:Int):Array<ALSource> {
-        var srcPtr:Star<ALSource> = Native.malloc(Native.sizeof(ALSource) * num);
-        AL.createSources(num, srcPtr);
+        var sources:Array<ALSource> = untyped __cpp__('::Array<unsigned int>({0}, {0})', num);        
+        AL.createSources(num, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources));
 
-        var sources:Array<ALSource> = star_ToArraySource(srcPtr, num);
         #if HAXEAL_DEBUG
         for(i=>src in sources) {
             if(!isSource(src)) trace('Source $i is not a source, returning array with disfunctional source!');
@@ -434,7 +450,7 @@ class HaxeAL {
      * @param sources Sources to delete.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteSources(sources:Array<ALSource>):Void {
-        AL.deleteSources(sources.length, arraySource_ToPtr(sources));
+        AL.deleteSources(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources));
         #if HAXEAL_DEBUG trace('Deleted ${sources.length} sources properly: ${!isSource(sources[0])}'); #end
     }
 
@@ -479,25 +495,33 @@ class HaxeAL {
      * Plays back audio from the sources' buffers.
      * @param sources Sources to play audio from.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayv(sources:Array<ALSource>):Void { AL.sourcePlayv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayv(sources:Array<ALSource>):Void { 
+        AL.sourcePlayv(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources)); 
+    }
 
     /**
      * Completely stops audio-playback for the sources and sets their sound position back to 0.
      * @param sources Sources to stop playback of.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceStopv(sources:Array<ALSource>):Void { AL.sourceStopv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceStopv(sources:Array<ALSource>):Void { 
+        AL.sourceStopv(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources)); 
+    }
     
     /**
      * Stops audio-playback for the sources and sets their state to `HaxeAL.INITIAL`.
      * @param sources Sources to be rewound.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceRewindv(sources:Array<ALSource>):Void { AL.sourceRewindv(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceRewindv(sources:Array<ALSource>):Void { 
+        AL.sourceRewindv(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources)); 
+    }
     
     /**
      * Pauses audio-playback for the sources, keeping their sound position unchanged.
      * @param sources Sources to pause playback of.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePausev(sources:Array<ALSource>):Void { AL.sourcePausev(sources.length, Pointer.ofArray(sources)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePausev(sources:Array<ALSource>):Void { 
+        AL.sourcePausev(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources)); 
+    }
 
     /**
      * Queues the buffers' data to be played chronologically 
@@ -505,7 +529,9 @@ class HaxeAL {
      * @param source Source to queue buffers for.
      * @param buffers Buffers to be played back chronologically.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { AL.sourceQueueBuffers(source, buffers.length, Pointer.ofArray(buffers)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceQueueBuffers(source:ALSource, buffers:Array<ALBuffer>):Void { 
+        AL.sourceQueueBuffers(source, buffers.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', buffers)); 
+    }
 
     /**
      * Unqueues the given number of processed buffers and returns the now available (unqueued) buffers.
@@ -515,10 +541,10 @@ class HaxeAL {
      * @param source Source to unqueue buffers of.
      * @param numBuffers The amount of buffers to unqueue.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceUnqueueBuffers(source:ALSource, numBuffers:Int):Array<ALBuffer> { 
-        var arrPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * numBuffers);
-        AL.sourceUnqueueBuffers(source, numBuffers, arrPtr);
-        return star_ToArrayBuffer(arrPtr, numBuffers);
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function sourceUnqueueBuffers(source:ALSource, numBuffers:Int):Array<ALBuffer> { 
+        var buffers:Array<ALBuffer> = untyped __cpp__('::Array<unsigned int>({0}, {0})', numBuffers);        
+        AL.sourceUnqueueBuffers(source, numBuffers, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', buffers));
+        return buffers;
     }
 
     // Source Parameter Setting
@@ -546,7 +572,9 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcefv(source:ALSource, param:Int, values:Array<Float>):Void { AL.sourcefv(source, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcefv(source:ALSource, param:Int, values:Array<cpp.Float32>):Void { 
+        AL.sourcefv(source, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
 
     /**
      * Sets the integer value for the target parameter of the given source.
@@ -572,8 +600,9 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {AL.sourceiv(source, param, arrayInt_ToPtr(values)); }
-
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourceiv(source:ALSource, param:Int, values:Array<Int>):Void {
+        AL.sourceiv(source, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values)); 
+    }
 
     /**
      * Gets the float value for the target parameter of the given source.
@@ -605,13 +634,13 @@ class HaxeAL {
      * @param source Source to get parameter of.
      * @param param Param to get values of.
      */
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcefv(source:ALSource, param:Int):Array<Float> {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcefv(source:ALSource, param:Int):Array<cpp.Float32> {
         final argc = getParamMapping(param);
 
-        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
-        AL.getSourcefv(source, param, arrPtr);
+        var arr:Array<cpp.Float32> = untyped __cpp__('::Array<float>({0}, {0})', argc);
+        AL.getSourcefv(source, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', arr));
 
-        return star_ToArrayFloat32(arrPtr, argc);
+        return arr;
     }
 
     /**
@@ -647,10 +676,10 @@ class HaxeAL {
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourceiv(source:ALSource, param:Int):Array<Int> {
         final argc = getParamMapping(param);
 
-        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
-        AL.getSourceiv(source, param, arrPtr);
+        var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argc);
+        AL.getSourceiv(source, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
     
-        return star_ToArrayInt(arrPtr, argc);
+        return arr;
     }
 
     // Buffer Handling
@@ -659,10 +688,9 @@ class HaxeAL {
      * @param num Amount of buffers to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createBuffers(num:Int):Array<ALBuffer> {
-        var bufPtr:Star<ALBuffer> = Native.malloc(Native.sizeof(ALBuffer) * num);
-        AL.createBuffers(num, bufPtr);
+        var buffers:Array<ALBuffer> = untyped __cpp__('::Array<unsigned int>({0}, {0})', num);        
+        AL.createBuffers(num, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', buffers));
 
-        var buffers:Array<ALBuffer> = star_ToArrayBuffer(bufPtr, num);
         #if HAXEAL_DEBUG
         for(i=>buf in buffers) {
             if(!isBuffer(buf)) trace('Buffer $i is not a buffer, returning array with disfunctional buffer!');
@@ -681,7 +709,7 @@ class HaxeAL {
      * @param buffers Buffers to delete.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteBuffers(buffers:Array<ALBuffer>):Void {
-        AL.deleteBuffers(buffers.length, arrayBuffer_ToPtr(buffers));
+        AL.deleteBuffers(buffers.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', buffers));
         #if HAXEAL_DEBUG trace('Deleted ${buffers.length} buffers properly: ${!isBuffer(buffers[0])}'); #end
     }
 
@@ -702,30 +730,26 @@ class HaxeAL {
      * @param buffer The ALBuffer to fill with information.
      * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
      * @param data The data to be fed as bytes.
-     * @param size Size of the data to be fed, here this should be `data.length`.
+     * @param size Size of the data to be fed, here this should be `data.length`. Only exists to stay true to the OpenAL spec.
      * @param sampleRate The samplerate the data should be played back at.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function bufferData(buffer:ALBuffer, format:Int, data:haxe.io.Bytes, size:Int, sampleRate:Int):Void {
         final bytesData:haxe.io.BytesData = data.getData();
         
-        var intStr:Star<cpp.UInt8> = cpp.Pointer.arrayElem(bytesData, 0).ptr;
-        AL.bufferData(buffer, format, untyped __cpp__('static_cast<void*>({0})', intStr), size, sampleRate);
+        var rawData:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>(bytesData->getBase())'); // If we ever do a HL Impl, change this!!!!!!
+        AL.bufferData(buffer, format, rawData, size, sampleRate);
     }
 
     /**
-     * Fills the given buffer with all information necessary for playback, used to handle raw PCM data.
+     * Fills the given buffer with all information necessary for playback, using an array of unsigned 8bit integers.
      * @param buffer The ALBuffer to fill with information.
-     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_MONO16).
-     * @param data The data to be fed as raw pcm data in the form a raw cpp Void pointer.
-     * @param size Size of the data to be fed. 
-     * By default this is simply the amount of samples the `data` points to.
-     * If your format is stereo (2 channel), you should multiply the sample value by 2.
-     * If your format is 16 bit, you should multiply the value by 2 again.
-     * These multiplications stack, meaning with a STEREO16 format your size should be `samples * 2 * 2`.
+     * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
+     * @param data The data to be fed as an Array<cpp.UInt8> (or haxe.io.BytesData).
      * @param sampleRate The samplerate the data should be played back at.
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferData_PCM(buffer:ALBuffer, format:Int, data:Star<cpp.Void>, size:Int, sampleRate:Int):Void {
-        AL.bufferData(buffer, format, data, size, sampleRate);
+    public static function bufferDataArray(buffer:ALBuffer, format:Int, data:Array<cpp.UInt8>, sampleRate:Int):Void {
+        var rawData:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>(data->getBase())');
+        AL.bufferData(buffer, format, rawData, data.length, sampleRate);
     }
 
     // Buffer Parameter Setting
@@ -753,7 +777,9 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferfv(buffer:ALBuffer, param:Int, values:Array<Float>):Void {AL.bufferfv(buffer, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferfv(buffer:ALBuffer, param:Int, values:Array<cpp.Float32>):Void {
+        AL.bufferfv(buffer, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
     
     /**
      * Sets the integer value for the target parameter of the given buffer.
@@ -779,7 +805,9 @@ class HaxeAL {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {AL.bufferiv(buffer, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function bufferiv(buffer:ALBuffer, param:Int, values:Array<Int>):Void {
+        AL.bufferiv(buffer, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values)); 
+    }
 
     // Buffer Parameter Getting
     /**
@@ -812,13 +840,13 @@ class HaxeAL {
      * @param buffer Buffer to get parameter of.
      * @param param Param to get values of.
      */
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferfv(buffer:ALBuffer, param:Int):Array<Float> {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferfv(buffer:ALBuffer, param:Int):Array<cpp.Float32> {
         final argc = getParamMapping(param);
 
-        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
-        AL.getBufferfv(buffer, param, arrPtr);
+        var arr:Array<cpp.Float32> = untyped __cpp__('::Array<float>({0}, {0})', argc);
+        AL.getBufferfv(buffer, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', arr));
 
-        return star_ToArrayFloat32(arrPtr, argc);
+        return arr;
     }
 
     /**
@@ -854,10 +882,10 @@ class HaxeAL {
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getBufferiv(buffer:ALBuffer, param:Int):Array<Int> {
         final argc = getParamMapping(param);
 
-        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
-        AL.getBufferiv(buffer, param, arrPtr);
+        var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argc);
+        AL.getBufferiv(buffer, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
     
-        return star_ToArrayInt(arrPtr, argc);
+        return arr;
     }
 
     //Error Getting Functions
@@ -886,6 +914,8 @@ class HaxeAL {
      */
     public static inline function getErrorDefinition(error:Int):ALError.ALErrorDef { return ALError.get(error); }
 }
+
+// Why do you have to be so different?
 
 @:noDoc enum abstract DistanceModel(Int) from Int to Int {
     public static inline final NONE:DistanceModel = 0;

@@ -6,10 +6,22 @@ Changes are usually listed by relevancy or effort (this is no guarantuee though)
 Guarantueed breaking changes are only to be expected every major version change.
 _Potentially_ breaking changes are marked with **(B)**, those usually not affecting anyone because they are internal.
 
-## [1.2.2] "QOL Extensions" - 22.06.2024
+## [1.2.2] "QOL Extensions & Even more important fixes" - 22.10.2024
+
+### Warning
+Despite being a patch, there are a few potentially breaking changes, specifically with `Array<Float>` type values.
+Some functions expecting an `Array<Float>` or returning such may now expect or return an `Array<cpp.Float32>`.
+The values of these arrays can be handled like regular `Float` values and passed in anywhere a value of type `Float` is expected.
+The arrays themselves however are not cross compatible, meaning you cannot pass an `Array<Float>` where an `Array<cpp.Float32>` is expected.
+In 99% of cases, this will not affect anyone, because you usually directly define the arrays inside the function call (`sourcefv(src, HaxeAL.POSITION, [2,3,2])`),
+which forces them to be defined in the correct type. However, in the 1% of cases where this is not done you must loop over each element of your `Array<Float>`,
+and place them into your `Array<cpp.Float32>` individually to be able to pass that new array into function calls.
+
+Please understand that this was not avoidable, as even the lowest level conversion from an Array of 32-bit floats to 64-bit floats or vice versa only results in garbage output.
 
 ### Added
 
+- 32bit support (on windows only?) (It suddenly started working, please report any issues you may get on 32bit builds, refer to `Building an application with HaxeAL-Soft` in README.md)
 - Support for multiple extensions (their usage is in the documentation):
 * AL_SOFT_direct_channels (HaxeAL)
 * AL_SOFT_source_spatialize (HaxeAL)
@@ -19,19 +31,31 @@ _Potentially_ breaking changes are marked with **(B)**, those usually not affect
 
 - New flag "HAXEAL_DEBUG_SOFT_LOGLEVEL" for debugging (its usage is in the README.md file)
 
-- Support for Linux, MacOS and Iphone (README.md for further compile instructions)
+- `HaxeAL.bufferDataArray`, replacing `HaxeAL.bufferData_PCM` as a function to take in an array of unsigned 8bit integers
+
+- Theoretical support for compiling on Linux, MacOS and Iphone (README.md for further compile instructions)
 - Rough tests for most extensions in `Main.hx`
 
 ### Changed
 
-- About me usage instructions
+- A few mentions of `Array<Float>` to `Array<cpp.Float32>` (**(B)** -> see warning)
+- ReadMe usage instructions
+- `cpp.Star<T>` to `Array<T>` conversions being stupidly costly, for ..iv and ..fv operations (internally)
 
 ### Fixed
 
+- Giant memory leak when using `captureSamples` due to allocating buffers and never freeing them
+- Various memory leaks when calling ..iv and ..fv functions due to not freeing pointers
 - Input device opening function using const char * as first argument type instead of string
+- tests/Main.hx example not filtering out the regular output mix (https://github.com/kcat/openal-soft/issues/1011)
+
+### Removed
+- `HaxeAL.bufferData_PCM`, replaced by `HaxeAL.bufferDataArray` (**(B)** -> you can still get the same effect by using `haxeal.bindings.AL.bufferData`)
 
 ### Note
-This is presumeably the last actual update to this library, unless more features are explicitly requested or problems arise.
+This is presumeably the last actual update of sorts to this library, unless more features are explicitly requested or problems arise.
+The only other update would be EFX presets and properly tested cross-platform compatibility (if requested).
+Expect a potential patch for any found issues to still come if necessary ofc.
 
 ## [1.2.1] "Important Fixes" - 16.06.2024
 

@@ -283,10 +283,9 @@ class HaxeEFX {
      * @param num Amount of effects to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createEffects(num:Int):Array<ALEffect> {
-        var efxPtr:Star<ALEffect> = Native.malloc(Native.sizeof(ALEffect) * num);
-        EFX.createEffects(num, efxPtr);
+        var effects:Array<ALEffect> = untyped __cpp__('::Array<unsigned int>({0}, {0})', num);        
+        EFX.createEffects(num, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', effects));
 
-        var effects:Array<ALEffect> = star_ToArrayEffect(efxPtr, num);
         #if HAXEAL_DEBUG
         for(i=>efx in effects) {
             if(!isEffect(efx)) trace('Effect $i is not a effect, returning array with disfunctional effect!');
@@ -305,7 +304,7 @@ class HaxeEFX {
      * @param effects Effects to delete.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteEffects(effects:Array<ALEffect>):Void {
-        EFX.deleteEffects(effects.length, arrayEffect_ToPtr(effects));
+        EFX.deleteEffects(effects.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', effects));
         #if HAXEAL_DEBUG trace('Deleted ${effects.length} effects properly: ${!isEffect(effects[0])}'); #end
     }
 
@@ -335,7 +334,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function effectiv(effect:ALEffect, param:Int, values:Array<Int>):Void { EFX.effectiv(effect, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function effectiv(effect:ALEffect, param:Int, values:Array<Int>):Void { 
+        EFX.effectiv(effect, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values)); 
+    }
 
     /**
      * Sets the float value for the target parameter of the given effect.
@@ -351,7 +352,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function effectfv(effect:ALEffect, param:Int, values:Array<Float>):Void { EFX.effectfv(effect, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function effectfv(effect:ALEffect, param:Int, values:Array<cpp.Float32>):Void { 
+        EFX.effectfv(effect, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
 
     /**
      * Gets the integer value for the target parameter of the given effect.
@@ -374,10 +377,10 @@ class HaxeEFX {
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectiv(effect:ALEffect, param:Int):Array<Int> {
         final argc = getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param);
         
-        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argc);
-        EFX.getEffectiv(effect, param, arrPtr);
+        var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argc);
+        EFX.getEffectiv(effect, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
 
-        return star_ToArrayInt(arrPtr, argc);
+        return arr;
     }
 
     /**
@@ -398,13 +401,13 @@ class HaxeEFX {
      * @param effect Effect to get parameter of.
      * @param param Param to get values of.
      */
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectfv(effect:ALEffect, param:Int):Array<Float> {
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getEffectfv(effect:ALEffect, param:Int):Array<cpp.Float32> {
         final argc = getFXParamMapping(getEffecti(effect, EFFECT_TYPE), param);
 
-        var arrPtr:Star<Float32> = Native.malloc(Native.sizeof(Float32) * argc);
-        EFX.getEffectfv(effect, param, arrPtr);
+        var arr:Array<cpp.Float32> = untyped __cpp__('::Array<float>({0}, {0})', argc);
+        EFX.getEffectfv(effect, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', arr));
 
-        return star_ToArrayFloat32(arrPtr, argc);
+        return arr;
     }
 
     // Filter Management 
@@ -413,10 +416,9 @@ class HaxeEFX {
      * @param num Amount of filters to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createFilters(num:Int):Array<ALFilter> {
-        var filPtr:Star<ALFilter> = Native.malloc(Native.sizeof(ALFilter) * num);
-        EFX.createFilters(num, filPtr);
+        var filters:Array<ALFilter> = untyped __cpp__('::Array<unsigned int>({0}, {0})', num);
+        EFX.createFilters(num, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', filters));
 
-        var filters:Array<ALFilter> = star_ToArrayFilter(filPtr, num);
         #if HAXEAL_DEBUG
         for(i=>filter in filters) {
             if(!isFilter(filter)) trace('Filter $i is not a filter, returning array with disfunctional filter!');
@@ -435,7 +437,7 @@ class HaxeEFX {
      * @param filters Filters to delete.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteFilters(filters:Array<ALFilter>):Void {
-        EFX.deleteFilters(filters.length, arrayFilter_ToPtr(filters));
+        EFX.deleteFilters(filters.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', filters));
         #if HAXEAL_DEBUG trace('Deleted ${filters.length} filters properly: ${!isFilter(filters[0])}'); #end
     }
 
@@ -465,7 +467,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function filteriv(filter:ALFilter, param:Int, values:Array<Int>):Void { EFX.filteriv(filter, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function filteriv(filter:ALFilter, param:Int, values:Array<Int>):Void { 
+        EFX.filteriv(filter, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values));
+    }
 
     /**
      * Sets the float value for the target parameter of the given filter.
@@ -481,7 +485,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function filterfv(filter:ALFilter, param:Int, values:Array<Float>):Void { EFX.filterfv(filter, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function filterfv(filter:ALFilter, param:Int, values:Array<cpp.Float32>):Void { 
+        EFX.filterfv(filter, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
 
     /**
      * Gets the integer value for the target parameter of the given filter.
@@ -540,10 +546,9 @@ class HaxeEFX {
      * @param num Amount of slots to return.
      */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function createAuxiliaryEffectSlots(num:Int):Array<ALAuxSlot> {
-        var auxPtr:Star<ALAuxSlot> = Native.malloc(Native.sizeof(ALAuxSlot) * num);
-        EFX.createAuxiliaryEffectSlots(num, auxPtr);
+        var auxslots:Array<ALFilter> = untyped __cpp__('::Array<unsigned int>({0}, {0})', num);
+        EFX.createAuxiliaryEffectSlots(num, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', auxslots));
 
-        var auxslots:Array<ALAuxSlot> = star_ToArrayAuxiliaryEffectSlot(auxPtr, num);
         #if HAXEAL_DEBUG
         for(i=>aux in auxslots) {
             if(!isAuxiliaryEffectSlot(aux)) trace('AuxSlot $i is not an auxSlot, returning array with disfunctional auxSlot!');
@@ -562,7 +567,7 @@ class HaxeEFX {
      * @param auxslots Auxiliary Effect Slots to delete.
      */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deleteAuxiliaryEffectSlots(auxslots:Array<ALAuxSlot>):Void {
-        EFX.deleteAuxiliaryEffectSlots(auxslots.length, arrayAuxiliaryEffectSlot_ToPtr(auxslots));
+        EFX.deleteAuxiliaryEffectSlots(auxslots.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', auxslots));
         #if HAXEAL_DEBUG trace('Deleted ${auxslots.length} slots properly: ${!isAuxiliaryEffectSlot(auxslots[0])}'); #end
     }
 
@@ -592,7 +597,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New integer values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function auxiliaryEffectSlotiv(auxslot:ALAuxSlot, param:Int, values:Array<Int>):Void { EFX.auxiliaryEffectSlotiv(auxslot, param, arrayInt_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function auxiliaryEffectSlotiv(auxslot:ALAuxSlot, param:Int, values:Array<Int>):Void { 
+        EFX.auxiliaryEffectSlotiv(auxslot, param, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', values)); 
+    }
 
     /**
      * Sets the float value for the target parameter of the given Auxiliary Effect Slot.
@@ -608,7 +615,9 @@ class HaxeEFX {
      * @param param Param to set values of.
      * @param value New float values of the param as an array (array length should be the same as amount of values the parameter takes).
      */
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function auxiliaryEffectSlotfv(auxslot:ALAuxSlot, param:Int, values:Array<Float>):Void { EFX.auxiliaryEffectSlotfv(auxslot, param, arrayFloat32_ToPtr(values)); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function auxiliaryEffectSlotfv(auxslot:ALAuxSlot, param:Int, values:Array<cpp.Float32>):Void { 
+        EFX.auxiliaryEffectSlotfv(auxslot, param, untyped __cpp__('reinterpret_cast<float*>({0}->getBase())', values)); 
+    }
 
     /**
      * Gets the integer value for the target parameter of the given Auxiliary Effect Slot.

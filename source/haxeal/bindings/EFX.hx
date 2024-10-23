@@ -51,7 +51,7 @@ class EFX {
     static inline function createEffects(n:Int, effects:Star<ALEffect>):Void {}
 
     @efxFunc("alDeleteEffects")
-    static inline function deleteEffects(n:Int, effects:Pointer<ALEffect>):Void {}
+    static inline function deleteEffects(n:Int, effects:Star<ALEffect>):Void {}
 
     @efxFunc("alIsEffect")
     static inline function isEffect(effect:ALEffect):Char { throw 'INVALID'; }
@@ -60,13 +60,13 @@ class EFX {
     static inline function effecti(effect:ALEffect, param:Int, value:Int):Void {}
     
     @efxFunc("alEffectiv")
-    static inline function effectiv(effect:ALEffect, param:Int, values:Pointer<Int>):Void {}
+    static inline function effectiv(effect:ALEffect, param:Int, values:Star<Int>):Void {}
     
     @efxFunc("alEffectf")
     static inline function effectf(effect:ALEffect, param:Int, value:cpp.Float32):Void {}
     
     @efxFunc("alEffectfv")
-    static inline function effectfv(effect:ALEffect, param:Int, values:Pointer<cpp.Float32>):Void {}
+    static inline function effectfv(effect:ALEffect, param:Int, values:Star<cpp.Float32>):Void {}
     
     @efxFunc("alGetEffecti")
     static inline function getEffecti(effect:ALEffect, param:Int, value:Star<Int>):Void {}
@@ -85,7 +85,7 @@ class EFX {
     static inline function createFilters(n:Int, filters:Star<ALFilter>):Void {}
 
     @efxFunc("alDeleteFilters")
-    static inline function deleteFilters(n:Int, filters:Pointer<ALFilter>):Void {}
+    static inline function deleteFilters(n:Int, filters:Star<ALFilter>):Void {}
 
     @efxFunc("alIsFilter")
     static inline function isFilter(filter:ALFilter):Char { throw 'INVALID'; }
@@ -94,13 +94,13 @@ class EFX {
     static inline function filteri(filter:ALFilter, param:Int, value:Int):Void {}
     
     @efxFunc("alFilteriv")
-    static inline function filteriv(filter:ALFilter, param:Int, values:Pointer<Int>):Void {}
+    static inline function filteriv(filter:ALFilter, param:Int, values:Star<Int>):Void {}
     
     @efxFunc("alFilterf")
     static inline function filterf(filter:ALFilter, param:Int, value:cpp.Float32):Void {}
     
     @efxFunc("alFilterfv")
-    static inline function filterfv(filter:ALFilter, param:Int, values:Pointer<cpp.Float32>):Void {}
+    static inline function filterfv(filter:ALFilter, param:Int, values:Star<cpp.Float32>):Void {}
     
     @efxFunc("alGetFilteri")
     static inline function getFilteri(filter:ALFilter, param:Int, value:Star<Int>):Void {}
@@ -119,7 +119,7 @@ class EFX {
     static inline function createAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxSlot>):Void {}
 
     @efxFunc("alDeleteAuxiliaryEffectSlots")
-    static inline function deleteAuxiliaryEffectSlots(n:Int, effectslots:Pointer<ALAuxSlot>):Void {}
+    static inline function deleteAuxiliaryEffectSlots(n:Int, effectslots:Star<ALAuxSlot>):Void {}
 
     @efxFunc("alIsAuxiliaryEffectSlot")
     static inline function isAuxiliaryEffectSlot(effectslot:ALAuxSlot):Char { throw 'INVALID'; }
@@ -128,13 +128,13 @@ class EFX {
     static inline function auxiliaryEffectSloti(effectslot:ALAuxSlot, param:Int, value:Int):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotiv")
-    static inline function auxiliaryEffectSlotiv(effectslot:ALAuxSlot, param:Int, values:Pointer<Int>):Void {}
+    static inline function auxiliaryEffectSlotiv(effectslot:ALAuxSlot, param:Int, values:Star<Int>):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotf")
     static inline function auxiliaryEffectSlotf(effectslot:ALAuxSlot, param:Int, value:cpp.Float32):Void {}
     
     @efxFunc("alAuxiliaryEffectSlotfv")
-    static inline function auxiliaryEffectSlotfv(effectslot:ALAuxSlot, param:Int, values:Pointer<cpp.Float32>):Void {}
+    static inline function auxiliaryEffectSlotfv(effectslot:ALAuxSlot, param:Int, values:Star<cpp.Float32>):Void {}
     
     @efxFunc("alGetAuxiliaryEffectSloti")
     static inline function getAuxiliaryEffectSloti(effectslot:ALAuxSlot, param:Int, value:Star<Int>):Void {}

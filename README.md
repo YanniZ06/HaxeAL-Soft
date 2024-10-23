@@ -1,18 +1,27 @@
 ![](https://github.com/YanniZ06/HaxeAL-Soft/blob/main/git_images/HaxeAL_Logo.png)
+# Disclaimer (Please read!)
+This document covers important details about working with the library, as there are some special compilation instructions. 
+
+To properly setup the library please read the sections "Custom Flags", "Requirements" & "Building an application with HaxeAL-Soft" carefully.
+Don't worry, it's nothing complicated!
+
+Should you have any questions don't be afraid to ask me on Discord (yanniz06).
 
 # About HaxeAL-Soft
 HaxeAL Soft is a haxe 4.3.0 library including native c++ bindings for openal-soft 1.23.1.
 
 It incorporates nearly every feature OpenAL Soft offers, from EFX-Extension handlers (and soon their presets) to full 3D environmental audio support and audio recording!
 
-As it is a native c++ library it will also naturally **only** work on **c++ targets**.
+As it is a native c++ library it will also **only** work on **c++ targets**.
 This also means you need HXCPP, check out the Haxe website for a comprehensive explanation.
 
 You can download it as a haxelib here: https://lib.haxe.org/p/HaxeAL-Soft/
 
-Alternatively, you can easily build HaxeAL Soft yourself by cloning the repo and following the given instructions.
+Alternatively, you can easily build HaxeAL-Soft yourself by cloning the repo and following the given instructions (Building HaxeAL-Soft locally).
 
 Documentation on the library can be found here: https://yanniz06.github.io/HaxeAL-Soft/
+
+How to properly use the library is explained in the following sections.
 
 # Implemented Features
 - Full ALC and AL Integration
@@ -37,16 +46,17 @@ Enables inlining for ALL HaxeAL operations, which reduces performance cost but m
 ### HAXEAL_APP_PATH: 
 The path to your executeable application, starting from the root directory of your project (typically in which your build.hxml or similar file resides in).
   
-  If this flag is not set, the library will attempt to find the path, going off of the compilers default output path aswell as the default executeable name.
-  If a custom name for the executeable has been set via the HAXE_OUTPUT_FILE flag, that one is picked, otherwise it defaults to the name of your Main class.
-  
-  The path SHOULD also include the name of your executeable file, an example for a path would be "export/windows/Game.exe".
-  This flag is especially useful when working with game frameworks that set their own export folder (which the library in most cases will fail to find on its own).
-  
-  It is necessary to be set if you want to ensure the OpenAL32.dll file is put into the right folder.
-  If you have a debug build that is not in the same folder as your release build you MUST put the OpenAL32.dll file into the debug folder aswell.
-  
-  The functionality of the HAXEAL_DEBUG_SOFT_LOGLEVEL also depends on this flag being set up properly.
+If this flag is not set, the library will attempt to find the path, going off of the compilers default output path aswell as the default executeable name.
+If a custom name for the executeable has been set via the HAXE_OUTPUT_FILE flag, that one is picked, otherwise it defaults to the name of your Main class.
+
+The path SHOULD also include the name of your executeable file, an example for a path would be "export/windows/Game.exe".
+This flag is especially useful when working with game frameworks that set their own export folder (which the library in most cases will fail to find on its own).
+
+It is necessary to be set if you want to ensure the OpenAL32.dll file is put into the right folder.
+If you have a debug build that is not in the same folder as your release build you MUST put the OpenAL32.dll file into the debug folder aswell.
+
+The functionality of the HAXEAL_DEBUG_SOFT_LOGLEVEL also depends on this flag being set up properly.
+
 ### HAXEAL_DEBUG_SOFT_LOGLEVEL: 
 Enables OpenAL-Soft debug logs when set to a value from 1 to 3. 
 - 1 - Prints out errors only
@@ -60,19 +70,64 @@ Scripts starting with release will launch the release version of the executeable
 Unix scripts are meant for linux support, batch for windows.
 While running these scripts a file named "openal_log.txt" is generated, in which you will find the generated OpenAL-Soft debug logs after the program has finished executing and the script has closed.
 
-There will be no logging if you do not run the scripts.
+There will be no logging if you do not run the scripts. HAXEAL_DEBUG is **not** required for this flag to work!
 
 # Requirements (both for application user and programmer)
-- Computer must work on 64-Bit (might fix?)
-- OpenAL MIGHT need to be installed on the Computer if the local app-specific OpenAL-Soft installation does not work (via the https://www.openal.org/downloads/ OpenAL 1.1 Windows Installer for example, however this SHOULD not be a problem if HAXEAL_APP_PATH is configured correctly.)
+- OpenAL MIGHT need to be installed on the Computer if the local app-specific OpenAL-Soft installation does not work (via the https://www.openal.org/downloads/ OpenAL 1.1 Windows Installer for example, HOWEVER this SHOULD not be a problem if HAXEAL_APP_PATH is configured CORRECTLY.)
 
-# Building HaxeAL-Soft
+# Building an application with HaxeAL-Soft
+Install HaxeAL-Soft as a haxelib from https://lib.haxe.org/p/HaxeAL-Soft/ and add it as a haxelib to your project.
+
+Make sure to set the necessary flags as described in the "Custom Flags" section.
+
+### Compiling
+During your initial compilation (the one that creates the output folder), HaxeAL-Soft will not properly initialize as it depends on some files to already exist when building.
+Once your initial compilation is done **you must recompile for all the flags to be set and the library to properly initialize.**
+
+### Compile Platforms (New)
+HaxeAL-Soft can be compiled to and on a variety of platforms in theory, in practice it's a bit more complicated (because I do not know much about cross platform development).
+Usually the platform you're compiling on should be picked automatically, if that is not the case however please follow the steps of the compiler error message that is generated.
+
+#### Windows
+Windows is the easiest platform to compile to/on.
+
+Setting the HXCPP_M32 flag (using -D HXCPP_M32 on the commandline or your build.hxml) will build a 32-bit version of the library.
+The 32-bit version might come with some faults and restrictions, feel free to report any issues.
+If the HXCPP_M64 flag (or neither of these two flags) has been set, the 64-bit version will compile instead.
+
+If you compile 32- and 64-bit in the same output folder, its best to delete the output folder if you're switching from one variant to the other to avoid linking errors.
+
+#### Linux, Mac & Iphone
+Linux comes with a downloadable OpenAL package, there seem to be various ones so if you are compiling on linux install one of those (https://stackoverflow.com/questions/11195372/how-to-install-openal-sdk-on-ubuntu).
+Possible 32bit compiling on Linux could be achieved via (https://archlinux.org/packages/multilib/x86_64/lib32-openal/).
+
+Mac & Iphone already have OpenAL installed, so if you are compiling on one of those you should not need to do anything else.
+
+Please keep in mind none of these 3 were able to be tested, and when it comes to compiling *to* these platforms I could not find much of anything online.
+Feel free to contribute if necessary, and I will update apropiately.
+
+**IMPORTANT NOTE: As some flags being set change how the Haxe language server extension (for Visual Studio Code) acts you should make sure to compile projects using HaxeAL-Soft twice as early as you can into development.**
+
+### Usage of extensions
+If you want to use the EFX extension make sure to run `HaxeEFX.initEFX` after context initialization!
+
+All other extensions that have been pre-implemented do not require being initialized, however you should check if they're available first (the documentation assists you in how to do that).
+
+### Workflow
+As Haxe does not really require working with pointers, functions you would pass pointers into in OpenAL-Soft to retrieve data from objects, now instead just return the value.
+Generally the library has been built to contain as little cpp types as possible.
+
+Apart from these quirks working with the library is about the same as working with OpenAL-Soft.
+
+# Building HaxeAL-Soft locally
 Building HaxeAL Soft is just as simple as building any other haxe application.
 
 1. Open the folder you cloned the repo to in any shell or commandline
-2. Run `haxe build.hxml` in the application you have the folder opened in
-3. If compiled with no errors, make sure the output folder has been generated
-4. To run the HaxeAL Soft build, move into the generated output directory (by doing `cd output` for example) and run `./Main.exe`
+2. Move `Main.hx` out of `tests` into `source` & `build.hxml` out of `tests` into the `project directory`
+3. Run `haxe build.hxml` in the application you have the folder opened in (twice, as instructed in the section prior)
+4. If compiled with no errors, make sure the output folder has been generated
+5. To run the HaxeAL Soft build, move into the generated output directory (by doing `cd output` for example) and run `./OpenAL_Test.exe` OR
+6. Use the LogRun scripts generated after the second compile
 
 Congrats, you have built and ran HaxeAL-Soft!!
 
@@ -89,7 +144,8 @@ Please mark your PR's appropiately to keep management easy.
 In short its only really important to differentiate between issue/bugfixes, improvement suggestions and the adding of new features.
 
 # The Code Structure
-This segment will define the intended code structure for this library.
+This segment defines the Code structure for this library pre 1.2.2.
+Please note that the new structure is a bit different and does not use cpp.Pointer for array operations.
 
 ## File Placement
 Having good folder and file management is certainly not unimportant while making a nice and easy to work with library.

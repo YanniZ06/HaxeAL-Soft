@@ -1,12 +1,12 @@
 <xml>
-    <!-- <pragma once="true" /> -->
+    <pragma once="true" />
 
-    <!-- <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32" /> -->
-    <set name="PROCESSOR_TYPE" value="x64"/> <!-- if="HXCPP_M64" -->
+    <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32"/> <!-- For some reason this is the default, I won't ask-->
+    <set name="PROCESSOR_TYPE" value="x64" unless="HXCPP_M32"/>
     <set name="openal_dir" value="source/openal/libs/${PROCESSOR_TYPE}" />
     
     <copyFile name="OpenAL32.dll" from="${this_dir}/${openal_dir}" toolId="exe"
-		overwrite="true"/>
+		overwrite="true"/> <!-- This is done by FlagChecker.hx anyways but who cares-->
 
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
@@ -16,19 +16,32 @@
         <compilervalue name="-I" value="${this_dir}/source/openal/includes/" />
     </files>
 
-    <target id='haxe'>
-        <section if="windows">
-            <linker id='exe'>
-                <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>
-            </linker>
-        </section>
+    <section if="windows">
+        <target id='haxe' tool='linker' toolid='exe'>
+            <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>
+        </target>
 
-        <section if="linux">
+        <echo value="Compiling for Windows on 1.2.2 from alleged AL directory: ${this_dir}/${openal_dir}/OpenAL32.lib"/>
+        <set name="targetReceived" value=""/>
+    </section>
+
+    <section if="linux">
+        <target id='haxe'>
             <lib name="-lopenal" />
-        </section>
+        </target>
 
-        <section if="macos || iphoneos || iphonesim">
+        <echo value="Compiling for Linux on 1.2.2 with flag: -lopenal"/>
+        <set name="targetReceived" value=""/>
+    </section>
+
+    <section if="macos || iphoneos || iphonesim">
+        <target id='haxe'>
             <vflag name="-framework" value="OpenAL" />
-        </section>
-    </target>
+        </target>
+
+        <echo value="Compiling for Mac or iphone on 1.2.1 from built in AL framework"/>
+        <set name="targetReceived" value=""/>
+    </section>
+
+    <error value="Missing Target: Need define for 'windows' 'linux' 'macos' 'iphoneos' or 'iphonesim'! If you defined a target and this error persists, please send a DM to yanniz06 on discord. " unless="targetReceived"/>
 </xml>

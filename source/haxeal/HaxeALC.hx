@@ -13,8 +13,6 @@ import haxeal.ALObjects.FunctionAddress;
 @:headerCode('
     #include <al.h>
 	#include <hxcpp.h>
-	#include <hx/CFFI.h>
-	#include <hx/CFFIPrime.h>
 	#include <Array.h>
 
 	#include <iostream>
@@ -50,7 +48,7 @@ class HaxeALC {
 	 * @param attributes Attributes to set for the context (format: [ATTRIBUTE_PARAM, VALUE, ATTRIBUTE_PARAM2, VALUE2...])
 	 */
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function createContext(device:ALDevice, ?attributes:Array<Int>):ALContext {
-		return ALC.createContext(device, attributes != null ? arrayInt_ToPtr(attributes) : null);
+		return ALC.createContext(device, attributes != null ? untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', attributes) : null);
 	}
 
 	/**
@@ -169,21 +167,26 @@ class HaxeALC {
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
 
 	/**
-	 * Collects captured data from a devices' capture buffer and returns it as a raw cpp pointer (use `HaxeAL.bufferData_PCM` with this data).
-	 * 
-	 * The underlying type of the raw cpp pointer is dependant on the devices' captureFormat (UInt8 if MONO8 or STEREO8, otherwise Int16)
+	 * Collects captured data from a devices' capture buffer and returns it as an array of bytes (use `HaxeAL.bufferDataArray` with this data).
 	 * @param device Device to retrieve audio from.
 	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
 	 * The amount of time that a block of samples represents is relatives to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
 	 * @param byteLength By default this value is 1 (FORMAT_MONO8).
      * If your format is stereo (2 channel), you should multiply this value by 2.
      * If your format is 16 bit, you should multiply the value by 2 again.
-     * These multiplications stack, meaning with a STEREO16 format your byteLength should be `4`.
+     * These multiplications stack, meaning with a `STEREO16` format your byteLength should be `4`.
 	 */
-	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int = 1):Star<cpp.Void> {
-		var data:Star<cpp.Void> = untyped __cpp__('(void*)malloc({0})', samples * byteLength);
-		ALC.captureSamples(device, data, samples);
-		return data;
+	@:functionCode('
+		int size = samples * byteLength;
+		Array<uint8_t> output = ::Array<uint8_t>(size, size);
+		void* ptr = reinterpret_cast<void*>(output->getBase());
+	
+		alcCaptureSamples(device, ptr, samples);
+	
+		return output;
+	')
+	public static function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int):Array<cpp.UInt8> {
+		return [0];
 	}
 
 	// Other
@@ -209,9 +212,9 @@ class HaxeALC {
 	 * @param argumentCount Amount of array objects you expect to return
 	 */
 	public static #if HAXEAL_INLINE_OPT_BIG inline #end function getIntegers(device:ALDevice, param:Int, argumentCount:Int):Array<Int> {
-        var arrPtr:Star<Int> = Native.malloc(Native.sizeof(Int) * argumentCount);
-        ALC.getIntegers(device, param, argumentCount, arrPtr);
+		var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argumentCount);
+        ALC.getIntegers(device, param, argumentCount, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
 		
-        return star_ToArrayInt(arrPtr, argumentCount);
+        return arr;
     };
 }

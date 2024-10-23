@@ -26,7 +26,6 @@ class FlagChecker {
 
     public static macro function checkFlags() {
         final cwd = Sys.getCwd();
-        trace("CWD: " + cwd);
         if(!FileSystem.exists(cwd + Compiler.getOutput())) {
             trace("\n(HAXEAL-SOFT NOTICE) Please rebuild after your first compilation has finished for HaxeAL-Soft to properly initialize!\n\n");
             Sys.sleep(2.5);
@@ -68,15 +67,13 @@ class FlagChecker {
             return macro null;
         }
 
-        File.copy(cwd + 'source/openal/libs/x64/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+        var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
+        trace("Processor type is: " + processorType);
+        File.copy(cwd + 'source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
 
         var debug:String = Context.definedValue('HAXEAL_DEBUG_SOFT_LOGLEVEL');
         var logLevel:Null<Int> = debug == null ? 0 : Std.parseInt(debug);
         if(logLevel == null || logLevel < 0 || logLevel > 3) return macro null;
-
-       // final directorySwitch = 'cd ' + appPath.substr(0, appPath.length-1);
-        // todo: get this to WORK damn it! currently only doing these commands in the windows cmd on the output directory works
-        // ? https://github.com/kcat/openal-soft/blob/master/docs/env-vars.txt
 
         var valOutFile = Context.definedValue('HAXE_OUTPUT_FILE');
         if(!gotFile) {

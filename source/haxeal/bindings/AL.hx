@@ -77,7 +77,7 @@ extern class AL {
     static function listener3f(param:Int, value1:cpp.Float32, value2:cpp.Float32, value3:cpp.Float32):Void;
 
     @:native("alListenerfv")
-    static function listenerfv(param:Int, values:Pointer<cpp.Float32>):Void;
+    static function listenerfv(param:Int, values:Star<cpp.Float32>):Void;
 
     @:native("alListeneri")
     static function listeneri(param:Int, value:Int):Void;
@@ -86,7 +86,7 @@ extern class AL {
     static function listener3i(param:Int, value1:Int, value2:Int, value3:Int):Void;
 
     @:native("alListeneriv")
-    static function listeneriv(param:Int, values:Pointer<Int>):Void;
+    static function listeneriv(param:Int, values:Star<Int>):Void;
     // Listener Parameter Getting (Ported!)
     @:native("alGetListenerf")
     static function getListenerf(param:Int, value:Star<cpp.Float32>):Void;
@@ -111,7 +111,7 @@ extern class AL {
     static function createSources(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alDeleteSources")
-    static function deleteSources(num:Int, sources:Pointer<ALSource>):Void;
+    static function deleteSources(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alIsSource")
     static function isSource(source:ALSource):Char;
@@ -124,7 +124,7 @@ extern class AL {
     static function source3f(source:ALSource, param:Int, value1:cpp.Float32, value2:cpp.Float32, value3:cpp.Float32):Void;
 
     @:native("alSourcefv")
-    static function sourcefv(source:ALSource, param:Int, values:Pointer<cpp.Float32>):Void;
+    static function sourcefv(source:ALSource, param:Int, values:Star<cpp.Float32>):Void;
 
     @:native("alSourcei")
     static function sourcei(source:ALSource, param:Int, value:Int):Void;
@@ -133,7 +133,7 @@ extern class AL {
     static function source3i(source:ALSource, param:Int, value1:Int, value2:Int, value3:Int):Void;
 
     @:native("alSourceiv")
-    static function sourceiv(source:ALSource, param:Int, values:Pointer<Int>):Void;
+    static function sourceiv(source:ALSource, param:Int, values:Star<Int>):Void;
     // Source Parameter Getting (Ported!)
     @:native("alGetSourcef")
     static function getSourcef(source:ALSource, param:Int, value:Star<cpp.Float32>):Void;
@@ -167,19 +167,19 @@ extern class AL {
     static function sourcePause(source:ALSource):Void;
 
     @:native("alSourcePlayv")
-    static function sourcePlayv(num:Int, sources:Pointer<ALSource>):Void;
+    static function sourcePlayv(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alSourceStopv")
-    static function sourceStopv(num:Int, sources:Pointer<ALSource>):Void;
+    static function sourceStopv(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alSourceRewindv")
-    static function sourceRewindv(num:Int, sources:Pointer<ALSource>):Void;
+    static function sourceRewindv(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alSourcePausev")
-    static function sourcePausev(num:Int, sources:Pointer<ALSource>):Void;
+    static function sourcePausev(num:Int, sources:Star<ALSource>):Void;
 
     @:native("alSourceQueueBuffers")
-    static function sourceQueueBuffers(source:ALSource, numBuffers:Int, buffers:Pointer<ALBuffer>):Void;
+    static function sourceQueueBuffers(source:ALSource, numBuffers:Int, buffers:Star<ALBuffer>):Void;
 
     @:native("alSourceUnqueueBuffers")
     static function sourceUnqueueBuffers(source:ALSource, numBuffers:Int, buffers:Star<ALBuffer>):Void;
@@ -189,7 +189,7 @@ extern class AL {
     static function createBuffers(num:Int, buffers:Star<ALBuffer>):Void;
 
     @:native("alDeleteBuffers")
-    static function deleteBuffers(num:Int, buffers:Pointer<ALBuffer>):Void;
+    static function deleteBuffers(num:Int, buffers:Star<ALBuffer>):Void;
 
     @:native("alIsBuffer")
     static function isBuffer(buffer:ALBuffer):Char;
@@ -205,7 +205,7 @@ extern class AL {
     static function buffer3f(buffer:ALBuffer, param:Int, value1:cpp.Float32, value2:cpp.Float32, value3:cpp.Float32):Void;
 
     @:native("alBufferfv")
-    static function bufferfv(buffer:ALBuffer, param:Int, values:Pointer<cpp.Float32>):Void;
+    static function bufferfv(buffer:ALBuffer, param:Int, values:Star<cpp.Float32>):Void;
 
     @:native("alBufferi")
     static function bufferi(buffer:ALBuffer, param:Int, value:Int):Void;
@@ -214,7 +214,7 @@ extern class AL {
     static function buffer3i(buffer:ALBuffer, param:Int, value1:Int, value2:Int, value3:Int):Void;
 
     @:native("alBufferiv")
-    static function bufferiv(buffer:ALBuffer, param:Int, values:Pointer<Int>):Void;
+    static function bufferiv(buffer:ALBuffer, param:Int, values:Star<Int>):Void;
     // Buffer Parameter Getting (Ported!)
     @:native("alGetBufferf")
     static function getBufferf(buffer:ALBuffer, param:Int, value:Star<cpp.Float32>):Void;
