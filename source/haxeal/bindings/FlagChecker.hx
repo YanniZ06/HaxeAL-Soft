@@ -84,7 +84,7 @@ class FlagChecker {
         var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
         trace("Processor type is: " + processorType);
 
-        switch(system) {
+        switch(system) { // First, check for system gotten through platform define flag (-D windows or automatic set, etc)
             case 'windows':
                 File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
             case 'linux':
@@ -93,8 +93,9 @@ class FlagChecker {
                 trace('If errors like "hxcpp.h not found" come up, try setting the flag yourself (-D NO_PRECOMPILED_HEADERS)');
             case 'apple_sys':
                 trace('(HAXEAL-SOFT NOTICE): Apple build recognized, not copying windows binary as system pre-installed should be used.');
-            default: // Sys.systemName() or unknown 
+            default: // No platform define flag, it's either Sys.systemName() (so uppercase) or unknown 
                 var systemCheck:String = system.toLowerCase();
+                
                 switch(systemCheck) {
                     case 'windows' | 'linux' | 'mac':
                         if(systemCheck == 'mac') systemCheck = 'macos';
@@ -102,6 +103,16 @@ class FlagChecker {
                         trace('(HAXEAL-SOFT WARNING): System $systemCheck recognized by HaxeAL, missing defined flag (-D windows, -D linux, -D macos)?');
                         trace('Setting flag manually, errors might occur!');
                         Compiler.define(systemCheck);
+
+                        // Call this bad, and repetitive, but i prefer it over having each case singled out with the traces and compiler define
+                        if(systemCheck == 'linux') {
+                            Compiler.define('NO_PRECOMPILED_HEADERS', '1');
+                            trace('(HAXEAL-SOFT NOTICE): Linux build recognized, not copying windows binary and defining "NO_PRECOMPILED_HEADERS".');
+                            trace('If errors like "hxcpp.h not found" come up, try setting the flag yourself (-D NO_PRECOMPILED_HEADERS)');
+                        }
+                        else if(systemCheck == 'windows')
+                            File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+
                     case 'bsd':
                         trace('(HAXEAL-SOFT CRITICAL ERROR): BSD is not supported.');
                         trace('The library will not compile properly.');
