@@ -24,6 +24,7 @@ class FlagChecker {
         '0' => false
     ];
 
+    static inline final curHaxelibPath:String = 'C:\\HaxeToolkit\\haxe\\lib\\HaxeAL-Soft/1,2,2'; //! CHANGE THIS FOR EACH VERSION!!!!!!!!!!!
     public static macro function checkFlags() {
         final cwd = Sys.getCwd();
         if(!FileSystem.exists(cwd + Compiler.getOutput())) {
@@ -69,7 +70,7 @@ class FlagChecker {
 
         var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
         trace("Processor type is: " + processorType);
-        File.copy(cwd + 'source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+        File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
 
         var debug:String = Context.definedValue('HAXEAL_DEBUG_SOFT_LOGLEVEL');
         var logLevel:Null<Int> = debug == null ? 0 : Std.parseInt(debug);
