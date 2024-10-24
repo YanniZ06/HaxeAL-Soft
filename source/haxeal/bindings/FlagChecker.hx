@@ -94,7 +94,7 @@ class FlagChecker {
             case 'apple_sys':
                 trace('(HAXEAL-SOFT NOTICE): Apple build recognized, not copying windows binary as system pre-installed should be used.');
             default: // Sys.systemName() or unknown 
-                final systemCheck:String = system.toLowerCase();
+                var systemCheck:String = system.toLowerCase();
                 switch(systemCheck) {
                     case 'windows' | 'linux' | 'mac':
                         if(systemCheck == 'mac') systemCheck = 'macos';
