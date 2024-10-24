@@ -1,12 +1,12 @@
 <xml>
     <pragma once="true" />
 
-    <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32"/> <!-- For some reason this is the default, I won't ask-->
+    <set name="PROCESSOR_TYPE" value="x86" if="HXCPP_M32"/> <!-- This value likes to be strange!-->
     <set name="PROCESSOR_TYPE" value="x64" unless="HXCPP_M32"/>
     <set name="openal_dir" value="source/openal/libs/${PROCESSOR_TYPE}" />
     
     <copyFile name="OpenAL32.dll" from="${this_dir}/${openal_dir}" toolId="exe"
-		overwrite="true"/> <!-- This is done by FlagChecker.hx anyways but who cares-->
+		overwrite="true" if="windows"/>
 
 	<files id="__main__">
 		<compilerflag value="-I${this_dir}/source/openal/includes" />
@@ -21,7 +21,7 @@
             <lib name="${this_dir}/${openal_dir}/OpenAL32.lib"/>
         </target>
 
-        <echo value="Compiling for Windows on 1.2.2 from alleged AL directory: ${this_dir}/${openal_dir}/OpenAL32.lib"/>
+        <echo value="(HaxeAL-Soft) Compiling for Windows on 1.2.2 from alleged AL directory: ${this_dir}/${openal_dir}/OpenAL32.lib"/>
         <set name="targetReceived" value=""/>
     </section>
 
@@ -30,7 +30,7 @@
             <lib name="-lopenal" />
         </target>
 
-        <echo value="Compiling for Linux on 1.2.2 with flag: -lopenal"/>
+        <echo value="(HaxeAL-Soft) Compiling for Linux on 1.2.2 with flag: -lopenal"/>
         <set name="targetReceived" value=""/>
     </section>
 
@@ -39,7 +39,7 @@
             <vflag name="-framework" value="OpenAL" />
         </target>
 
-        <echo value="Compiling for Mac or iphone on 1.2.1 from built in AL framework"/>
+        <echo value="(HaxeAL-Soft) Compiling for Mac or Iphone on 1.2.2 from built in AL framework"/>
         <set name="targetReceived" value=""/>
     </section>
 

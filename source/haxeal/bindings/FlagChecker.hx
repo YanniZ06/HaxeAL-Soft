@@ -24,7 +24,8 @@ class FlagChecker {
         '0' => false
     ];
 
-    static inline final curHaxelibPath:String = 'C:\\HaxeToolkit\\haxe\\lib\\HaxeAL-Soft/1,2,2'; //! CHANGE THIS FOR EACH VERSION!!!!!!!!!!!
+    static var curHaxelibPath:String = '';
+
     public static macro function checkFlags() {
         final cwd = Sys.getCwd();
         if(!FileSystem.exists(cwd + Compiler.getOutput())) {
@@ -32,6 +33,18 @@ class FlagChecker {
             Sys.sleep(2.5);
             return macro null;
         }
+
+        final process = new sys.io.Process('haxelib libpath HaxeAL-Soft', null);
+        curHaxelibPath = process.stdout.readLine();
+        process.close();
+
+        // I could use Sys.systemName but id rather get the direct compiler flag that has been set
+        var system:String = 'unknown';
+        if(Context.definedValue('windows') != null) system = 'windows';
+        if(Context.definedValue('linux') != null) system = 'linux';
+        if(Context.definedValue('macos') != null || Context.definedValue('iphoneos') != null || Context.definedValue('iphonesim') != null) system = 'apple_sys';
+        if(system == 'unknown') system = Sys.systemName();
+
 
         final optBig:Bool = acceptedBools[Context.definedValue('HAXEAL_INLINE_OPT_BIG') ?? '0'];
         final optSmall:Bool = acceptedBools[Context.definedValue('HAXEAL_INLINE_OPT_SMALL') ?? '0'];
@@ -70,7 +83,33 @@ class FlagChecker {
 
         var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
         trace("Processor type is: " + processorType);
-        File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+
+        switch(system) {
+            case 'windows':
+                File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+            case 'linux':
+                Compiler.define('NO_PRECOMPILED_HEADERS', '1');
+                trace('(HAXEAL-SOFT NOTICE): Linux build recognized, not copying windows binary and defining "NO_PRECOMPILED_HEADERS".');
+                trace('If errors like "hxcpp.h not found" come up, try setting the flag yourself (-D NO_PRECOMPILED_HEADERS)');
+            case 'apple_sys':
+                trace('(HAXEAL-SOFT NOTICE): Apple build recognized, not copying windows binary as system pre-installed should be used.');
+            default: // Sys.systemName() or unknown 
+                final systemCheck:String = system.toLowerCase();
+                switch(systemCheck) {
+                    case 'windows' | 'linux' | 'mac':
+                        if(systemCheck == 'mac') systemCheck = 'macos';
+
+                        trace('(HAXEAL-SOFT WARNING): System $systemCheck recognized by HaxeAL, missing defined flag (-D windows, -D linux, -D macos)?');
+                        trace('Setting flag manually, errors might occur!');
+                        Compiler.define(systemCheck);
+                    case 'bsd':
+                        trace('(HAXEAL-SOFT CRITICAL ERROR): BSD is not supported.');
+                        trace('The library will not compile properly.');
+                    case 'unknown':
+                        trace('(HAXEAL-SOFT CRITICAL ERROR): Could not find compiling system, missing defined flag (-D windows, -D linux, -D macos)?');
+                        trace('The library will not compile properly.');
+                }
+        }
 
         var debug:String = Context.definedValue('HAXEAL_DEBUG_SOFT_LOGLEVEL');
         var logLevel:Null<Int> = debug == null ? 0 : Std.parseInt(debug);
@@ -79,7 +118,7 @@ class FlagChecker {
         var valOutFile = Context.definedValue('HAXE_OUTPUT_FILE');
         if(!gotFile) {
             if(valOutFile != null) appFile = valOutFile;
-            trace('\n(HAXEAL-SOFT WARNING): NO EXECUTEABLE FILE FOUND IN "HAXEAL_APP_PATH", USING DEFAULT/FOUND "$appFile"\nDEBUG LOG RUN SCRIPTS MAY FUNCTION IMPROPERLY.\nDEFINE YOUR PATH LIKE "output/ExecName.exe"!\n');
+            trace('(HAXEAL-SOFT WARNING): NO EXECUTEABLE FILE FOUND IN "HAXEAL_APP_PATH", USING DEFAULT/FOUND "$appFile"\nDEBUG LOG RUN SCRIPTS MAY FUNCTION IMPROPERLY.\nDEFINE YOUR PATH LIKE "output/ExecName.exe"!\n');
         }
         final execExtList:Array<String> = ['.exe', '.com', '.bin', '.elf'];
         final appFileTail:String = appFile.substr(appFile.length-4, appFile.length);
@@ -94,18 +133,6 @@ class FlagChecker {
         
         File.saveContent(binaryFolder + '/releaseUnixLogRun.sh', 'export ALSOFT_LOGLEVEL="$logLevel"\nexport ALSOFT_LOGFILE="openal_log.txt"\n./$appFile');
         File.saveContent(binaryFolder + '/debugUnixLogRun.sh', 'export ALSOFT_LOGLEVEL="$logLevel"\nexport ALSOFT_LOGFILE="openal_log.txt"\n./$appFile-debug');
-
-        // todo: write bat and sh (https://ioflood.com/blog/bash-set-environment-variable/) files that open the exe after setting the two env vars for debugging
-        /*
-        Sys.command(directorySwitch);
-        Sys.command('set ALSOFT_LOGLEVEL=' + Std.string(logLevel));
-        Sys.command('set ALSOFT_LOGFILE=openal_log.txt');
-
-        for(i in 0...folderDepth) {
-            Sys.command('cd ..');
-            trace("Went back folder");
-        }
-        */
 
         return macro null;
     }
