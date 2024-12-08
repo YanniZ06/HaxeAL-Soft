@@ -3,10 +3,66 @@ package haxeal.bindings;
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
 
+// typedef ALuint = cpp.UInt32;
+// typedef ALint64SOFT = cpp.Int64;
+
 @:buildXml('<include name="${haxelib:HaxeAL-Soft}/builder.xml" />')
 @:unreflective @:keep
 @:include("al.h")
+@:include("alext.h")
 extern class AL {
+    // Soft Functions
+    // AL_SOFT_source_start_delay
+    @:native("alSourcePlayAtTimeSOFT")
+    static function sourcePlayAtTime(source:ALSource, start_time:cpp.Int64):Void;
+
+    @:native("alSourcePlayAtTimevSOFT")
+    static function sourcePlayAtTimev(size:Int, sources:Star<ALSource>, start_time:cpp.Int64):Void;
+
+    // AL_SOFT_source_latency
+
+    // Double setting
+    @:native("alSourcedSOFT")
+    static function sourced(source:ALSource, param:Int, value:cpp.Float64):Void;
+
+    @:native("alSource3dSOFT")
+    static function source3d(source:ALSource, param:Int, value1:cpp.Float64, value2:cpp.Float64, value3:cpp.Float64):Void;
+
+    @:native("alSourcedvSOFT")
+    static function sourcedv(source:ALSource, param:Int, values:Star<cpp.Float64>):Void;
+
+    // Double getting
+    @:native("alGetSourcedSOFT")
+    static function getSourced(source:ALSource, param:Int, value:Star<cpp.Float64>):Void;
+
+    @:native("alGetSource3dSOFT")
+    static function getSource3d(source:ALSource, param:Int, value1:Star<cpp.Float64>, value2:Star<cpp.Float64>, value3:Star<cpp.Float64>):Void;
+
+    @:native("alGetSourcedvSOFT")
+    static function getSourcedv(source:ALSource, param:Int, values:Star<cpp.Float64>):Void;
+
+    // Long-int setting
+    @:native("alSourcei64SOFT")
+    static function sourcei64(source:ALSource, param:Int, value:cpp.Int64):Void;
+
+    @:native("alSource3i64SOFT")
+    static function source3i64(source:ALSource, param:Int, value1:cpp.Int64, value2:cpp.Int64, value3:cpp.Int64):Void;
+
+    @:native("alSourcei64vSOFT")
+    static function sourcei64v(source:ALSource, param:Int, values:Star<cpp.Int64>):Void;
+
+    // Long-int getting
+    @:native("alGetSourcei64SOFT")
+    static function getSourcei64(source:ALSource, param:Int, value:Star<cpp.Int64>):Void;
+
+    @:native("alGetSource3i64SOFT")
+    static function getSource3i64(source:ALSource, param:Int, value1:Star<cpp.Int64>, value2:Star<cpp.Int64>, value3:Star<cpp.Int64>):Void;
+
+    @:native("alGetSourcei64vSOFT")
+    static function getSourcei64v(source:ALSource, param:Int, values:Star<cpp.Int64>):Void;
+
+
+
     // Renderer State Management (Ported!)
     @:native("alEnable")
     static function enable(capability:Int):Void;
