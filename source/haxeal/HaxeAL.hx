@@ -128,6 +128,8 @@ class HaxeAL {
      * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_buffer_length_query.txt
      */
     public static inline final EXT_BUFFER_LENGTH_QUERY_NAME:String = "AL_SOFT_buffer_length_query";
+
+    // todo: EXT_ALC_SOFT_device_clock, EXT_ALC_SOFT_pause_device , EXT_AL_SOFT_source_start_delay, EXT_AL_SOFT_source_latency
     /**
      * Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
      */

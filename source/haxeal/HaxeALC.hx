@@ -1,6 +1,7 @@
 package haxeal;
 
 import haxeal.ALObjects.ALCaptureDevice;
+import haxeal.bindings.ALSOFT;
 import haxeal.bindings.ALC;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALDevice;
@@ -19,6 +20,7 @@ import haxeal.ALObjects.FunctionAddress;
 	using namespace std;
 ')
 class HaxeALC {
+	// todo: https://openal-soft.org/openal-extensions/SOFT_device_clock.txt ; https://openal-soft.org/openal-extensions/SOFT_pause_device.txt
 	// Constants
 	public static inline final FREQUENCY:Int = 0x1007;
 	public static inline final REFRESH:Int = 0x1008;
@@ -209,7 +211,7 @@ class HaxeALC {
 	 * Returns integers related to the given parameter of the current context for the `device` (or none if its not device specific).
 	 * @param device Device for device specific integer values
 	 * @param param Parameter to get values of
-	 * @param argumentCount Amount of array objects you expect to return
+	 * @param argumentCount Amount of array objects you expect to return (amount of return values described for `param`)
 	 */
 	public static #if HAXEAL_INLINE_OPT_BIG inline #end function getIntegers(device:ALDevice, param:Int, argumentCount:Int):Array<Int> {
 		var arr:Array<Int> = untyped __cpp__('::Array<int>({0}, {0})', argumentCount);
@@ -217,4 +219,17 @@ class HaxeALC {
 		
         return arr;
     };
+
+	/**
+	 * Returns 64 bit integers related to the given parameter of the current context for the `device` (or none if its not device specific).
+	 * @param device Device for device specific integer values
+	 * @param param Parameter to get values of
+	 * @param argumentCount Amount of array objects you expect to return (amount of return values described for `param`)
+	 */
+	public static #if HAXEAL_INLINE_OPT_BIG inline #end function getIntegers64(device:ALDevice, param:Int, argumentCount:Int):Array<cpp.Int64> {
+		var arr:Array<cpp.Int64> = untyped __cpp__('::Array<cpp::Int64>({0}, {0})', argumentCount);
+		ALSOFT.getInteger64v(device, param, argumentCount, untyped __cpp__('reinterpret_cast<cpp::Int64*>({0}->getBase())', arr));
+
+		return arr;
+	}
 }

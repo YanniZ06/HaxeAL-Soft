@@ -2,6 +2,7 @@ package haxeal.bindings;
 
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
+import haxeal.ALObjects.ALDevice;
 
 @:build(haxeal.bindings.FunctionBuilder.buildFunctions())
 @:headerCode('
@@ -9,6 +10,8 @@ import haxeal.ALObjects.ALBuffer;
 
     static LPALSOURCEPLAYATTIMESOFT alSourcePlayAtTimeSOFT;
     static LPALSOURCEPLAYATTIMEVSOFT alSourcePlayAtTimevSOFT;
+
+    static LPALCGETINTEGER64VSOFT alcGetInteger64vSOFT;
 
     static LPALSOURCEDSOFT alSourcedSOFT;
     static LPALSOURCE3DSOFT alSource3dSOFT;
@@ -30,6 +33,10 @@ class ALSOFT {
 
     @lpFunc("alSourcePlayAtTimevSOFT")
     static inline function sourcePlayAtTimev(size:Int, sources:Star<ALSource>, start_time:cpp.Int64):Void {}
+
+    // ALC_SOFT_device_clock
+    @lpFunc("alcGetInteger64vSOFT")
+    static inline function getInteger64v(device:ALDevice, param:Int, size:Int, values:cpp.Star<cpp.Int64>):Void {}
 
     // AL_SOFT_source_latency
 
