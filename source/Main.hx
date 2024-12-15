@@ -1,5 +1,6 @@
 package;
 
+import sys.io.File;
 import cpp.vm.Gc;
 import haxeal.bindings.FlagChecker;
 import haxeal.ALObjects.ALAuxSlot;
@@ -62,9 +63,10 @@ class Main {
     static function main() {
 		memoryTrace(); // #1
 
-		Sys.sleep(5); // TIME TO ANALYZE MEMORY USAGE
+		Sys.sleep(2); // TIME TO ANALYZE MEMORY USAGE
 	
 		outMain(); // We do this so all the AL values go out of scope and hopefully get picked up by the GC
+		trace("Finished outMain test!");
 		
 		memoryTrace(); // # 4
 		//Sys.sleep(5); // TIME TO ANALYZE MEMORY USAGE
@@ -78,10 +80,37 @@ class Main {
 		memoryTrace(); // # 7
     }
 
+	static final formats8 = [HaxeAL.FORMAT_MONO8, HaxeAL.FORMAT_STEREO8];
+	static final formats16 = [HaxeAL.FORMAT_MONO16, HaxeAL.FORMAT_STEREO16];
+	private static inline function resolveFormat(bitsPerSample:Int, channels:Int):Int
+		return bitsPerSample <= 8 ? formats8[channels - 1] : formats16[channels - 1];
+
+	static function getAudioBuffer(bytes:haxe.io.Bytes):ALBuffer {
+		var input = new haxe.io.BytesInput(bytes);
+		// Get all our infos from the WAV file (rapper gf got me onto a good start so if you see this, thank you :) )
+		// All position skips are skipping over values we dont need, refer to this site as to what we're reading (and skipping): https://docs.fileformat.com/audio/wav/
+		input.position += 22;
+
+		final channels = input.readInt16();
+		final samplingRate = input.readInt32();
+
+		input.position += 6;
+
+		final bitsPerSample = input.readInt16();
+		input.position += 4; // should be data marker
+		final len = input.readInt32();
+		final rawData = input.read(len);
+
+		var buf = HaxeAL.createBuffer();
+		HaxeAL.bufferDataArray(buf, resolveFormat(bitsPerSample, channels), rawData.getData(), samplingRate);
+
+		return buf;
+	}
+
 	static function outMain() {
 		// trace(HaxeAL.getString(HaxeAL.VERSION));
 		// HaxeAL.getErrorString(HaxeAL.getError());
-
+		trace("CWD: " + Sys.getCwd());
 		// Initialize OpenAL and check for EFX
         var name:String = HaxeALC.getString(null, HaxeALC.DEVICE_SPECIFIER);
 		var efx_available:Bool = false;
@@ -111,6 +140,8 @@ class Main {
 			throw 'Could not load example, context couldnt be configured properly.';
 		}
 
+		HaxeAL.initSOFT(); // Initialize SOFT functions
+
 		final direct_channels_available = HaxeAL.isExtensionPresent(HaxeAL.EXT_DIRECT_CHANNELS_NAME);
 		trace("Direct channels are available: " + direct_channels_available);
 
@@ -131,7 +162,7 @@ class Main {
 		if (audio_spatialize_available)
 			HaxeAL.sourcei(src, HaxeAL.SOURCE_SPATIALIZE_SOFT, HaxeAL.TRUE);
 
-		HaxeAL.source3f(src, HaxeAL.POSITION, 0, 0, 0);
+		HaxeAL.source3d(src, HaxeAL.POSITION, 0, 0, 0); // Testing Soft setter
 		trace(HaxeAL.getSource3f(src, HaxeAL.POSITION));
 
 		var effect:ALEffect = 0;
@@ -139,7 +170,11 @@ class Main {
 		var aux:ALAuxSlot = 0;
 		var aux2:ALAuxSlot = 0;
 		var silenceFilter:ALFilter = 0;
-		if(efx_available) {
+
+		var use_efx:Bool = efx_available;
+		use_efx = false;
+		if(use_efx) {
+			trace("???");
 			effect = HaxeEFX.createEffect();
 			HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_PITCH_SHIFTER);
 			HaxeEFX.effecti(effect, HaxeEFX.PITCH_SHIFTER_COARSE_TUNE, 6);
@@ -149,11 +184,9 @@ class Main {
 
 			aux = HaxeEFX.createAuxiliaryEffectSlot();
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, effect);
-			//HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
 
 			aux2 = HaxeEFX.createAuxiliaryEffectSlot();
 			HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_EFFECT, effect2);
-			//HaxeEFX.auxiliaryEffectSloti(aux2, HaxeEFX.EFFECTSLOT_AUXILIARY_SEND_AUTO, HaxeAL.FALSE);
 
 			// Apply effect
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, aux, 0, HaxeEFX.FILTER_NULL);
@@ -166,18 +199,42 @@ class Main {
 			HaxeEFX.filterf(silenceFilter, HaxeEFX.LOWPASS_GAIN, 0);
 
 			HaxeAL.sourcei(src, HaxeEFX.DIRECT_FILTER, silenceFilter);
-
-			/*HaxeAL.sourcef(src, HaxeAL.GAIN, 1);
-			HaxeEFX.auxiliaryEffectSlotf(aux, HaxeEFX.EFFECTSLOT_GAIN, 1);
-			HaxeEFX.auxiliaryEffectSlotf(aux2, HaxeEFX.EFFECTSLOT_GAIN, 1);*/
 		}
 
 		final reroute:Bool = true; // Whether to use the extension or not (to test the differences)
-		if(efx_target_available && reroute) {
+		if(use_efx && efx_target_available && reroute) {
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, 0, 1, HaxeEFX.FILTER_NULL);
 
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_TARGET_SOFT, aux2);
 		}
+
+		//? Normal audio test
+		//final oldCwd = Sys.getCwd();
+		//Sys.setCwd(oldCwd + 'output/'); // Make sure we find our audio file
+		var buffer = getAudioBuffer(File.getBytes('testAudio.wav'));
+
+		HaxeAL.sourceQueueBuffers(src, [buffer]); // Not the ideal way but it will do for a test!
+		HaxeAL.sourcePlay(src);
+
+		trace("Started sound!");
+
+		while(HaxeAL.getSourcei(src, HaxeAL.SOURCE_STATE) == HaxeAL.PLAYING) {
+			Sys.sleep(0.01);
+
+			// Do other stuff
+		}
+		
+		trace("Finished sound!");
+
+
+
+		final testMic:Bool = true;
+
+		// If we dont wanna test the mic end early and cleanup
+		if(!testMic) {
+			return;
+		}
+
 
 		//? Microphone direct playback example!
 		// (Based off of example code at https://stackoverflow.com/questions/4087727/openal-how-to-create-simple-microphone-echo-programm)
@@ -281,7 +338,7 @@ class Main {
 		HaxeAL.sourceStop(src);
 		
 		// Bare in mind you should only clean-up what you dont need anymore!!
-		if(efx_available) {
+		if(use_efx && efx_available) {
 			HaxeEFX.auxiliaryEffectSloti(aux, HaxeEFX.EFFECTSLOT_EFFECT, 0); // Unbind effect from aux slot
 			HaxeAL.source3i(src, HaxeEFX.AUXILIARY_SEND_FILTER, 0, 0, HaxeEFX.FILTER_NULL); // Unbind aux slot from source
 
@@ -306,7 +363,7 @@ class Main {
 		// Exit context and close audio playback device (Only necessary when we shutdown the app or do anything else)
 		HaxeALC.makeContextCurrent(null); // Also unbind context before destroying it
 		HaxeALC.destroyContext(context);
-		HaxeAL.getErrorString(HaxeAL.getError());
+		// HaxeAL.getErrorString(HaxeAL.getError());
 		HaxeALC.closeDevice(device);
 	}
 }

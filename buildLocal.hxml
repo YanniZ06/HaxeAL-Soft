@@ -1,11 +1,12 @@
 --macro haxeal.bindings.FlagChecker.checkFlags()
 
+
 -cp source
 --main Main
 
 -D HAXEAL_DEBUG
 -D HAXEAL_DEBUG_SOFT_LOGLEVEL=3
--D HAXEAL_APP_PATH=output
+-D HAXEAL_APP_PATH=output/OpenAL_Test
 -D HAXE_OUTPUT_FILE=OpenAL_Test
 
 --debug

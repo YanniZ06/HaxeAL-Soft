@@ -58,7 +58,6 @@ class FlagChecker {
         if(appPath.charAt(appPath.length) != '/') appPath += '/';
 
         var oldFolderGrp = cwd.substr(0, cwd.length-1); // Make sure we dont keep the trailing "/"
-        var folderDepth:Int = 0;
         var appFile:String = 'Main.exe';
         var gotFile:Bool = false;
         for(folder in appPath.split('/')) { // Retrieve our path information
@@ -71,7 +70,6 @@ class FlagChecker {
 
             oldFolderGrp += '/$folder';
             
-            folderDepth++;
             if(!FileSystem.exists(oldFolderGrp)) FileSystem.createDirectory(oldFolderGrp);
         }
         final binaryFolder = oldFolderGrp;
@@ -82,7 +80,7 @@ class FlagChecker {
         }
 
         var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
-        trace("Processor type is: " + processorType);
+        // trace("Processor type is: " + processorType);
 
         switch(system) { // First, check for system gotten through platform define flag (-D windows or automatic set, etc)
             case 'windows':

@@ -2,6 +2,7 @@ package haxeal;
 
 import cpp.Float32;
 import haxeal.bindings.AL;
+import haxeal.bindings.ALSOFT;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
 import haxeal.ALObjects.ALSource;
 import haxeal.ALObjects.ALBuffer;
@@ -140,13 +141,20 @@ class HaxeAL {
      */
     public static inline final SEC_LENGTH_SOFT:Int = 0x200B;
 
+    /**
+     * Initializes the SOFT extensions.
+     * 
+     * Functions documented as `[SOFT]` will only work if this function was called once
+     */
+    public static inline function initSOFT() { ALSOFT.initSOFT(); }
+
     // TODO: documentation
     // Soft Functions
     // AL_SOFT_source_start_delay
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayAtTime(source:ALSource, start_time:Int):Void { AL.sourcePlayAtTime(source, start_time); }
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayAtTime(source:ALSource, start_time:Int):Void { ALSOFT.sourcePlayAtTime(source, start_time); }
 
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayAtTimev(sources:Array<ALSource>, start_time:Int):Void {
-        AL.sourcePlayAtTimev(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources), start_time);
+        ALSOFT.sourcePlayAtTimev(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources), start_time);
     }
 
     // AL_SOFT_source_latency
@@ -155,7 +163,7 @@ class HaxeAL {
      * 
      * The first value in the returned array is the sample offset, which is a 32.32 fixed-point value. 
      * The whole number is stored in the upper 32 bits and the fractional component is in the lower 32 bits. 
-     * The value is similar to that returned by AL_SAMPLE_OFFSET, just with more precision.
+     * The value is similar to that returned by SAMPLE_OFFSET, just with more precision.
      * 
      * The second value is the latency, in nanoseconds.
      * It represents the length of time it will take for the audio at the current offset to actually reach the speakers or DAC. 
@@ -170,7 +178,7 @@ class HaxeAL {
      * The playback position, along with the playback latency, both expressed in seconds.
      * 
      * The first value in the returned array is the offset in seconds.
-     * The value is similar to that returned by AL_SEC_OFFSET, just with more precision.
+     * The value is similar to that returned by SEC_OFFSET, just with more precision.
      * 
      * The second value is the latency, in seconds. 
      * It represents the length of time it will take for the audio at the current offset to actually reach the speakers or DAC.
@@ -179,67 +187,140 @@ class HaxeAL {
      * The returned latency was measured exactly when the source was at the returned offset.
      * This attribute is read-only and passed into `getSourcedv`.
      */
-    public static inline final AL_SEC_OFFSET_LATENCY_SOFT:Int = 0x1201;
-
-
+    public static inline final SEC_OFFSET_LATENCY_SOFT:Int = 0x1201;
+ 
     // Double setting
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourced(source:ALSource, param:Int, value:Float):Void { AL.sourced(source, param, value); }
+    /**
+     * Sets the double value for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set value of.
+     * @param value New double value of the param.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourced(source:ALSource, param:Int, value:Float):Void { ALSOFT.sourced(source, param, value); }
 
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3d(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void { AL.source3d(source, param, value1, value2, value3); }
+    /**
+     * Sets three double values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new double value of the param.
+     * @param value2 Second new double value of the param.
+     * @param value3 Third new double value of the param.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3d(source:ALSource, param:Int, value1:Float, value2:Float, value3:Float):Void { ALSOFT.source3d(source, param, value1, value2, value3); }
 
+    /**
+     * Sets an array of double values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value New double values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcedv(source:ALSource, param:Int, values:Array<cpp.Float64>):Void {
-        AL.sourcedv(source, param, untyped __cpp__('reinterpret_cast<double*>({0}->getBase())', values));
+        ALSOFT.sourcedv(source, param, untyped __cpp__('reinterpret_cast<double*>({0}->getBase())', values));
     }
 
     // Double getting
+    /**
+     * Returns the current double value of the given param for the input source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourced(source:ALSource, param:Int):Float {
         var v:cpp.Float64 = 0.0123456789;
-        AL.getSourced(source, param, Native.addressOf(v));
+        ALSOFT.getSourced(source, param, Native.addressOf(v));
         return v;
     }
 
+    /**
+     * Returns an array of three double values of the given param for the input source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3d(source:ALSource, param:Int):Array<Float> {
         var n1:cpp.Float64 = 0.0123456789; var n2:cpp.Float64 = 0.0123456789; var n3:cpp.Float64 = 0.0123456789;
         untyped __cpp__('alGetSource3dSOFT(source, param, &n1, &n2, &n3)');
         return [n1, n2, n3];
     }
 
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcedv(source:ALSource, param:Int, values:Star<cpp.Float64>):Array<cpp.Float64> {
+    /**
+     * Returns an array of multiple double values of the given param for the input source.
+     * 
+     * The array size depends on the given param.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcedv(source:ALSource, param:Int):Array<cpp.Float64> {
         final argc = getParamMapping(param);
 
         var arr:Array<cpp.Float64> = untyped __cpp__('::Array<double>({0}, {0})', argc);
-        AL.getSourcedv(source, param, untyped __cpp__('reinterpret_cast<double*>({0}->getBase())', arr));
+        ALSOFT.getSourcedv(source, param, untyped __cpp__('reinterpret_cast<double*>({0}->getBase())', arr));
 
         return arr;
     }
 
     // Long-int setting
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcei64(source:ALSource, param:Int, value:cpp.Int64):Void { AL.sourcei64(source, param, value); }
+    /**
+     * Sets the int64 value for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set value of.
+     * @param value New int64 value of the param.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcei64(source:ALSource, param:Int, value:cpp.Int64):Void { ALSOFT.sourcei64(source, param, value); }
 
-    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3i64(source:ALSource, param:Int, value1:cpp.Int64, value2:cpp.Int64, value3:cpp.Int64):Void { AL.source3i64(source, param, value1, value2, value3); }
+    /**
+     * Sets three int64 values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value1 First new int64 value of the param.
+     * @param value2 Second new int64 value of the param.
+     * @param value3 Third new int64 value of the param.
+     */
+    public static #if HAXEAL_INLINE_OPT_SMALL inline #end function source3i64(source:ALSource, param:Int, value1:cpp.Int64, value2:cpp.Int64, value3:cpp.Int64):Void { ALSOFT.source3i64(source, param, value1, value2, value3); }
 
+    /**
+     * Sets an array of int64 values for the target parameter of the given source.
+     * @param source Source to change parameter of.
+     * @param param Param to set values of.
+     * @param value New int64 values of the param as an array (array length should be the same as amount of values the parameter takes).
+     */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcei64v(source:ALSource, param:Int, values:Array<cpp.Int64>):Void {
-        AL.sourcei64v(source, param, untyped __cpp__('reinterpret_cast<std::int64_t>({0}->getBase())', values));
+        ALSOFT.sourcei64v(source, param, untyped __cpp__('reinterpret_cast<cpp::Int64*>({0}->getBase())', values));
     }
 
     // Long-int getting
+    /**
+     * Returns the current int64 value of the given param for the input source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
     public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcei64(source:ALSource, param:Int):cpp.Int64 {
         var v:cpp.Int64 = 123456789;
-        AL.getSourcei64(source, param, Native.addressOf(v));
+        ALSOFT.getSourcei64(source, param, Native.addressOf(v));
         return v;
     }
 
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3d(source:ALSource, param:Int):Array<cpp.Int64> {
+    /**
+     * Returns an array of three int64 values of the given param for the input source.
+     * @param source Source to get parameter of.
+     * @param param Param to get value of.
+     */
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSource3i64(source:ALSource, param:Int):Array<cpp.Int64> {
         var n1:cpp.Int64 = 123456789; var n2:cpp.Int64 = 123456789; var n3:cpp.Int64 = 123456789;
         untyped __cpp__('alGetSource3i64SOFT(source, param, &n1, &n2, &n3)');
         return [n1, n2, n3];
     }
 
-    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcei64v(source:ALSource, param:Int, values:Star<cpp.Int64>):Array<cpp.Int64> {
+    /**
+     * Returns an array of multiple int64 values of the given param for the input source.
+     * 
+     * The array size depends on the given param.
+     * @param source Source to get parameter of.
+     * @param param Param to get values of.
+     */
+    public static #if HAXEAL_INLINE_OPT_BIG inline #end function getSourcei64v(source:ALSource, param:Int):Array<cpp.Int64> {
         final argc = getParamMapping(param);
 
-        var arr:Array<cpp.Int64> = untyped __cpp__('::Array<std::int64_t>({0}, {0})', argc);
-        AL.getSourcei64v(source, param, untyped __cpp__('reinterpret_cast<std::int64_t*>({0}->getBase())', arr));
+        var arr:Array<cpp.Int64> = untyped __cpp__('::Array<cpp::Int64>({0}, {0})', argc);
+        ALSOFT.getSourcei64v(source, param, untyped __cpp__('reinterpret_cast<cpp::Int64*>({0}->getBase())', arr));
 
         return arr;
     }

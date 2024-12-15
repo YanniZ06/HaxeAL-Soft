@@ -10,27 +10,29 @@ using StringTools;
 #end
 
 @:noDoc
-class EFXBuilder {
+class FunctionBuilder {
     public static macro function buildFunctions():Array<Field> {
         var fields:Array<Field> = Context.getBuildFields();
 		var newFields:Array<Field> = [];
 
-		var initFunContent:String = ''; // This is bad but return doesnt work properly sooo!!!
+		var initFunContent:String = '';
         
         for(field in fields) {
             var ignoreField:Bool = true;
             var alFuncName:String = '';
 
-			newFields.push(field);
             for (data in field.meta) {
-				if (data.name != 'efxFunc')
+				if (data.name != 'lpFunc')
 					continue;
 
-				ignoreField = false; // Hooray, our field has the efxFunc annotation
+				ignoreField = false; // Hooray, our field has the lpFunc annotation
                 alFuncName = data.params[0].getValue();
 			}
 
-			if (ignoreField) continue;
+			if (ignoreField) {
+				newFields.push(field); // Make sure our field is still passed
+				continue;
+			}
 			
 			var argNames:Array<String> = [];
 			var retType:ComplexType;
@@ -43,8 +45,6 @@ class EFXBuilder {
 					originalFun = f;
 				default:
 			}
-
-			newFields.remove(field); // Remove old function field, now replace with a variable function
 
 			var returnKey:String = '';
 			switch(retType) {
@@ -71,7 +71,7 @@ class EFXBuilder {
 				kind: FFun(originalFun),
 				pos: Context.currentPos(),
 				access: [AStatic, APublic],
-				meta: [functionCodeMeta] // Import our metadata, this does the important shit c++ shit!
+				meta: [functionCodeMeta] // Import our metadata, this does the important c++ shit!
 			};
 			newFields.push(funcField);
 
@@ -98,9 +98,12 @@ class EFXBuilder {
 			default:
 		}
 
+		var type = Context.getLocalClass().get().name;
+		if(type == 'ALSOFT') type = 'SOFT';
+
 		// Initializer Function Declaration
-		final initField:Field = {
-			name: 'initEFX',
+		var initField:Field = {
+			name: 'init$type',
 			kind: FFun(emptyFunc),
 			pos: Context.currentPos(),
 			access: [AStatic, APublic],
