@@ -1,6 +1,7 @@
 package haxeal;
 
 import haxeal.ALObjects.ALCaptureDevice;
+import haxeal.ALObjects.ALCaptureBuffer;
 import haxeal.bindings.ALSOFT;
 import haxeal.bindings.ALC;
 import haxeal.bindings.BinderHelper.*; // Import all binder functions
@@ -20,7 +21,6 @@ import haxeal.ALObjects.FunctionAddress;
 	using namespace std;
 ')
 class HaxeALC {
-	// todo: https://openal-soft.org/openal-extensions/SOFT_device_clock.txt ; https://openal-soft.org/openal-extensions/SOFT_pause_device.txt
 	// Constants
 	public static inline final FREQUENCY:Int = 0x1007;
 	public static inline final REFRESH:Int = 0x1008;
@@ -41,6 +41,38 @@ class HaxeALC {
 	public static inline final ENUMERATE_ALL_EXT:Int = 1;
 	public static inline final DEFAULT_ALL_DEVICES_SPECIFIER:Int = 0x1012;
 	public static inline final ALL_DEVICES_SPECIFIER:Int = 0x1013;
+
+	// Extension constants
+	// ALC_SOFT_device_clock
+
+	/**
+	 * The audio device clock time, expressed in nanoseconds.
+	 * 
+	 * Passed into getIntegers64 with the argumentCount = 1.
+	 * 
+	 * NULL is an invalid device.
+	 */
+	public static inline final DEVICE_CLOCK_SOFT:Int = 0x1600;
+	/**
+	 * The current audio device latency, in nanoseconds. 
+	 * 
+	 * This is effectively the delay for the samples rendered at the the device's current clock time from reaching the physical output.
+	 * 
+	 * Passed into getIntegers64 with the argumentCount = 1.
+	 * 
+	 * NULL is an invalid device.
+	 */
+	public static inline final DEVICE_LATENCY_SOFT:Int = 0x1601;
+	/**
+	 * Provides both the audio device clock time and latency in the returned array, both in nanoseconds.
+	 * 
+	 * The two values are measured atomically with respect to one another (i.e. the latency value was measured at the same time the device clock value was retrieved).
+	 * 
+	 * Passed into getIntegers64 with the argumentCount = 2.
+	 * 
+	 * NULL is an invalid device.
+	 */
+	public static inline final DEVICE_CLOCK_LATENCY_SOFT:Int = 0x1602;
 
 
     // Context creation and configuration
@@ -103,6 +135,28 @@ class HaxeALC {
 	 * @param device Device you want to close.
 	 */
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function closeDevice(device:ALDevice):Bool { return al_bool(ALC.closeDevice(device)); }
+
+	// ALC_SOFT_pause_device
+
+	/**
+	 * Pauses the input device.
+	 * 
+	 * No contexts associated with the device will be processed or updated.
+	 * 
+	 * Playing sources will not produce sound, have their offsets incremented, or process any more buffers, until the device is resumed.
+	 * 
+	 * Pausing a device that is already paused is a legal no-op.
+	 * @param device Device to pause.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function devicePause(device:ALDevice):Void { ALSOFT.devicePause(device); }
+
+	/**
+	 * Restarts processing on the device. Sources will resume playing sound as normal.
+	 * 
+	 * Resuming playback on a device that is not paused is a legal no-op.
+	 * @param device Device to resume.
+	 */
+	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function deviceResume(device:ALDevice):Void { ALSOFT.deviceResume(device); }
 
 	// Extensions
 
@@ -169,12 +223,12 @@ class HaxeALC {
 	public static #if HAXEAL_INLINE_OPT_SMALL inline #end function stopCapture(device:ALCaptureDevice):Void { ALC.stopCapture(device); }
 
 	/**
-	 * Collects captured data from a devices' capture buffer and returns it as an array of bytes (use `HaxeAL.bufferDataArray` with this data).
+	 * Collects captured data from a devices' capture buffer and returns it as a unique array of bytes (use `HaxeAL.bufferDataArray` with this data).
 	 * @param device Device to retrieve audio from.
 	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
-	 * The amount of time that a block of samples represents is relatives to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 * The amount of time that a block of samples represents is relative to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
 	 * @param byteLength By default this value is 1 (FORMAT_MONO8).
-     * If your format is stereo (2 channel), you should multiply this value by 2.
+     * If your format is STEREO (2 channel), you should multiply this value by 2.
      * If your format is 16 bit, you should multiply the value by 2 again.
      * These multiplications stack, meaning with a `STEREO16` format your byteLength should be `4`.
 	 */
@@ -187,8 +241,49 @@ class HaxeALC {
 	
 		return output;
 	')
-	public static function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int):Array<cpp.UInt8> {
+	@:deprecated("It is recommended to use haxeal.HaxeALC.captureBufferSamples instead") public static function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int):Array<cpp.UInt8> {
 		return [0];
+	}
+
+	/**
+	 * Writes the number of samples that was set on creation of the capture buffer into it, and returns them as a non-unique array of data you can pass into an ALBuffer.
+	 * 
+	 * The amount of samples your capture buffer collects (`buffer.samples`) should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)` (the amount of available samples).
+	 * 
+	 * It is important to keep in mind that every Array returned from `the same ALCaptureBuffer` always references `the same array`, instead of creating new ones.
+	 * 
+	 * In other words, when this function is called again, all past arrays retrieved from this function, for this exact `buffer`, are overwritten to match the current data.
+	 * 
+	 * Make sure to only call this function when the old array is no longer in use, and should you still need the data make sure to copy the array contents into a different array.
+	 * 
+	 * If you want to keep copies of certain parts of recorded audio, it is recommended to use `captureSamples` directly, as that always returns a unique array.
+	 * @param device Device to retrieve audio from.
+	 * @param buffer The capture buffer to be used.
+	 */
+	public static #if HAXEAL_INLINE_OPT_BIG inline #end function captureBufferSamples(device:ALCaptureDevice, buffer:ALCaptureBuffer):Array<cpp.UInt8> {
+		untyped __cpp__('alcCaptureSamples({0}, {1}, {2})', device, buffer.ptr, buffer.samples);
+		return buffer.arr;
+	}
+
+	/**
+	 * Creates a buffer object to pass into `captureBufferSamples`.
+	 * 
+	 * It can be re-used once the data obtained from the last `captureBufferSamples` call is no longer referenced anywhere.
+	 * 
+	 * This buffer can only be used for every capture-device that shares the same input `byteLength` (number of bytes * number of channels).
+	 * @param samples The amount of samples this buffer should retrieve on a call to `captureBufferSamples`.
+	 * The amount of time that a block of samples represents is relative to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 * @param byteLength By default this value is 1 (FORMAT_MONO8).
+     * If your format is STEREO (2 channel), you should multiply this value by 2.
+     * If your format is 16 bit, you should multiply the value by 2 again.
+     * These multiplications stack, meaning with a `STEREO16` format your byteLength should be `4`.
+	 */
+	public static #if HAXEAL_INLINE_OPT_BIG inline #end function createCaptureBuffer(samples:Int, byteLength:Int):ALCaptureBuffer {
+		final size:Int = samples * byteLength;
+		var c_arr:Array<cpp.UInt8> = untyped __cpp__('::Array<uint8_t>(size, size)');
+		var c_ptr:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>({0}->getBase())', c_arr);
+
+		return {ptr: c_ptr, arr: c_arr, samples: samples};
 	}
 
 	// Other
@@ -218,7 +313,7 @@ class HaxeALC {
         ALC.getIntegers(device, param, argumentCount, untyped __cpp__('reinterpret_cast<int*>({0}->getBase())', arr));
 		
         return arr;
-    };
+    }
 
 	/**
 	 * Returns 64 bit integers related to the given parameter of the current context for the `device` (or none if its not device specific).

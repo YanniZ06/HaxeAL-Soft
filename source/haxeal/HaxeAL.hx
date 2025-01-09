@@ -79,6 +79,8 @@ class HaxeAL {
     @:noDoc public static var arrayVConstMappings:Map<Int, cpp.Int8> = [
         SAMPLE_OFFSET_LATENCY_SOFT => 2,
         SEC_OFFSET_LATENCY_SOFT => 2,
+        SAMPLE_OFFSET_CLOCK_SOFT => 2,
+        SEC_OFFSET_CLOCK_SOFT => 2,
         POSITION => 3,
         VELOCITY => 3,
         DIRECTION => 3,
@@ -101,7 +103,7 @@ class HaxeAL {
     /**
      * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, to allow for 3D stereo channels by downmixing it to mono
      * NOTE: DO NOT USE THIS WITH DIRECT CHANNELS BECAUSE IT'LL CANCEL THE EFFECT OF THIS OUT
-     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_source_spatialize.txt
+     * Documentation on its usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_source_spatialize.txt
      */
     public static inline final EXT_SPATIALIZE_SOURCE_NAME:String = "AL_SOFT_source_spatialize";
     /**
@@ -113,7 +115,7 @@ class HaxeAL {
     /**
      * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, allows for specifying loop points for a buffer (offset where a buffer loops)
      * 
-     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_loop_points.txt
+     * Documentation on its usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_loop_points.txt
      */
     public static inline final EXT_LOOP_POINTS_NAME:String = "AL_SOFT_loop_points";
     /**
@@ -125,11 +127,11 @@ class HaxeAL {
     /**
      * Passed into `HaxeAL.isExtensionPresent` AFTER a context has been created and made current, allows the user to query information from a buffer such as: length in bytes, samples and seconds.
      * 
-     * Documentation on it's usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_buffer_length_query.txt
+     * Documentation on its usage can be found here: https://github.com/Raulshc/OpenAL-EXT-Repository/blob/master/AL%20Extensions/AL_SOFT_buffer_length_query.txt
      */
     public static inline final EXT_BUFFER_LENGTH_QUERY_NAME:String = "AL_SOFT_buffer_length_query";
 
-    // todo: EXT_ALC_SOFT_device_clock, EXT_ALC_SOFT_pause_device , EXT_AL_SOFT_source_start_delay, EXT_AL_SOFT_source_latency
+    // todo:  , EXT_AL_SOFT_source_start_delay, EXT_AL_SOFT_source_latency
     /**
      * Accepted by the <paramName> parameter of alGetBufferi and alGetBufferiv
      */
@@ -143,6 +145,48 @@ class HaxeAL {
      */
     public static inline final SEC_LENGTH_SOFT:Int = 0x200B;
 
+    //EXT_ALC_SOFT_device_clock extension
+    /**
+     * Passed into `HaxeALC.isExtensionPresent` AFTER a context has been created and made current, allows applications to query the timing clock from the audio device.
+     * It is used along with `AL_SOFT_source_start_delay`.
+     * 
+     * Documentation on its usage can be found here: https://openal-soft.org/openal-extensions/SOFT_device_clock.txt
+     */
+    public static inline final EXT_ALC_SOFT_DEVICE_CLOCK_NAME:String = "EXT_ALC_SOFT_device_clock";
+
+    /**
+     * The playback position, expressed in fixed-point samples, along with the device clock, expressed in nanoseconds. 
+     * The first value in the returned array is similar to that returned by SAMPLE_OFFSET, just with more precision.
+     * 
+     * The second value is the device clock, in nanoseconds. 
+     * This updates at the same rate as the offset, and both are measured atomically with respect to one another.
+     * 
+     * This value is read-only and passed into `getSourcei64v`.
+     */
+    public static inline final SAMPLE_OFFSET_CLOCK_SOFT:Int = 0x1202;
+
+    /**
+     * The playback position, along with the device clock, both expressed in seconds.
+     * 
+     * The first value in the returned array is similar to that returned by AL_SEC_OFFSET, just with more precision.
+     * 
+     * The second value is the device clock, in seconds. 
+     * This updates at the same rate as the offset, and both are measured atomically with respect to one another. 
+     * Be aware that this value may be subtly different from the other device clock queries due to the variable precision of floating-point values.
+     * 
+     * This attribute is read-only and passed into `getSourcedv`.
+     */
+    public static inline final SEC_OFFSET_CLOCK_SOFT:Int = 0x1203;
+
+    // EXT_ALC_SOFT_pause_device
+    /**
+     * Passed into `HaxeALC.isExtensionPresent` AFTER a context has been created and made current, allows applications to query the timing clock from the audio device.
+     * It is used along with `ALC_SOFT_loopback`.
+     * 
+     * Documentation on its usage can be found here: https://openal-soft.org/openal-extensions/SOFT_pause_device.txt
+     */
+    public static inline final EXT_ALC_SOFT_PAUSE_DEVICE_NAME:String = "EXT_ALC_SOFT_pause_device";
+
     /**
      * Initializes the SOFT extensions.
      * 
@@ -150,11 +194,34 @@ class HaxeAL {
      */
     public static inline function initSOFT() { ALSOFT.initSOFT(); }
 
-    // TODO: documentation
     // Soft Functions
     // AL_SOFT_source_start_delay
+    /**
+     * Sets the sources state to PLAYING as with alSourcePlay, but actual playback waits until the context device's clock time reaches the specified start_time. 
+     * 
+     * A source that is already in a PLAYING state will reset back to the beginning immediately, but wait until the specified start time to restart. 
+     * Note that the source will be in a PLAYING state even while waiting for the start_time to be reached.
+     * 
+     * If the specified start_time has already passed, playback will start immediately (there is no attempt to "catch up" for the elapsed time). 
+     * 
+     * A negative start_time is invalid and will result in an INVALID_VALUE error.
+     * @param source Source to query playback for
+     * @param start_time Your device-clock-based timestamp in nanoseconds (1/1000000000th)
+     */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayAtTime(source:ALSource, start_time:Int):Void { ALSOFT.sourcePlayAtTime(source, start_time); }
 
+    /**
+     * Sets the sources' states to PLAYING as with alSourcePlayv, but actual playback waits until the context device's clock time reaches the specified start_time. 
+     * 
+     * A source that is already in a PLAYING state will reset back to the beginning immediately, but wait until the specified start time to restart. 
+     * Note that the sources will be in a PLAYING state even while waiting for the start_time to be reached.
+     * 
+     * If the specified start_time has already passed, playback will start immediately (there is no attempt to "catch up" for the elapsed time). 
+     * 
+     * A negative start_time is invalid and will result in an INVALID_VALUE error.
+     * @param sources Sources to query playback for
+     * @param start_time Your device-clock-based timestamp in nanoseconds (1/1000000000th)
+     */
     public static #if HAXEAL_INLINE_OPT_SMALL inline #end function sourcePlayAtTimev(sources:Array<ALSource>, start_time:Int):Void {
         ALSOFT.sourcePlayAtTimev(sources.length, untyped __cpp__('reinterpret_cast<unsigned int*>({0}->getBase())', sources), start_time);
     }
@@ -163,9 +230,7 @@ class HaxeAL {
     /**
      * The playback position, expressed in fixed-point samples, along with the playback latency, expressed in nanoseconds (1/1000000000ths of a second). 
      * 
-     * The first value in the returned array is the sample offset, which is a 32.32 fixed-point value. 
-     * The whole number is stored in the upper 32 bits and the fractional component is in the lower 32 bits. 
-     * The value is similar to that returned by SAMPLE_OFFSET, just with more precision.
+     * The first value in the returned array is similar to that returned by SAMPLE_OFFSET, just with more precision.
      * 
      * The second value is the latency, in nanoseconds.
      * It represents the length of time it will take for the audio at the current offset to actually reach the speakers or DAC. 
@@ -179,8 +244,7 @@ class HaxeAL {
     /**
      * The playback position, along with the playback latency, both expressed in seconds.
      * 
-     * The first value in the returned array is the offset in seconds.
-     * The value is similar to that returned by SEC_OFFSET, just with more precision.
+     * The first value in the returned array is similar to that returned by SEC_OFFSET, just with more precision.
      * 
      * The second value is the latency, in seconds. 
      * It represents the length of time it will take for the audio at the current offset to actually reach the speakers or DAC.

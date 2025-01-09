@@ -10,6 +10,22 @@ typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
  */
 typedef ALCaptureDevice = ALDevice;
 
+/**
+ * A buffer specifically for handling captured audio.
+ * 
+ * Created with `HaxeALC.createCaptureBuffer()`
+ */
+@:allow(haxeal.HaxeALC)
+@:structInit class ALCaptureBuffer {
+    var ptr:cpp.Star<cpp.Void>;
+    var arr:Array<cpp.UInt8>;
+    /**
+     * The amount of samples this capture buffer collects.
+     * After the capture buffer has been created this value cannot be changed and is read-only.
+     */
+    public var samples(default, null):Int;
+}
+
  // As the name suggests, unused. This would automatically handle some recording properties but ultimately it takes away too much from the original OpenAL library,
  // which we do not want. We want to stay about as true to the original as we can get, that means only modifying what really needs it!
 /*@:structInit class UnusedAutoALCaptureDevice {

@@ -11,6 +11,9 @@ import haxeal.ALObjects.ALDevice;
     static LPALSOURCEPLAYATTIMESOFT alSourcePlayAtTimeSOFT;
     static LPALSOURCEPLAYATTIMEVSOFT alSourcePlayAtTimevSOFT;
 
+    static LPALCDEVICEPAUSESOFT alcDevicePauseSOFT;
+    static LPALCDEVICERESUMESOFT alcDeviceResumeSOFT;
+
     static LPALCGETINTEGER64VSOFT alcGetInteger64vSOFT;
 
     static LPALSOURCEDSOFT alSourcedSOFT;
@@ -33,6 +36,13 @@ class ALSOFT {
 
     @lpFunc("alSourcePlayAtTimevSOFT")
     static inline function sourcePlayAtTimev(size:Int, sources:Star<ALSource>, start_time:cpp.Int64):Void {}
+
+    // ALC_SOFT_pause_device
+    @lpFunc("alcDevicePauseSOFT")
+    static inline function devicePause(device:ALDevice):Void {}
+
+    @lpFunc("alcDeviceResumeSOFT")
+    static inline function deviceResume(device:ALDevice):Void {}
 
     // ALC_SOFT_device_clock
     @lpFunc("alcGetInteger64vSOFT")
