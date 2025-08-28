@@ -8,6 +8,7 @@
 -D HAXEAL_DEBUG_SOFT_LOGLEVEL=3
 -D HAXEAL_APP_PATH=output/OpenAL_Test
 -D HAXE_OUTPUT_FILE=OpenAL_Test
+-D HXCPP_M64=1
 
 --debug
 --dce no

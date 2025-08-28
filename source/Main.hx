@@ -154,7 +154,7 @@ class Main {
 		efx_target_available = HaxeAL.isExtensionPresent("AL_SOFT_effect_target");
 		trace("AL_SOFT_effect_target is available: " + efx_target_available);
 
-		HaxeAL.listener3f(HaxeAL.POSITION, 1, 2, 1);
+		// HaxeAL.listener3f(HaxeAL.POSITION, 1, 2, 1);
 		trace(HaxeAL.getListenerfv(HaxeAL.POSITION));
 		// Setting up a basic source with a reverb effect (unless EFX is not supported)
 		var src = HaxeAL.createSource();
@@ -172,7 +172,7 @@ class Main {
 		var silenceFilter:ALFilter = 0;
 
 		var use_efx:Bool = efx_available;
-		use_efx = false;
+		use_efx = true;
 		if(use_efx) {
 			trace("???");
 			effect = HaxeEFX.createEffect();

@@ -283,7 +283,7 @@ class HaxeALC {
 		var c_arr:Array<cpp.UInt8> = untyped __cpp__('::Array<uint8_t>(size, size)');
 		var c_ptr:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>({0}->getBase())', c_arr);
 
-		return {ptr: c_ptr, arr: c_arr, samples: samples};
+		return new ALCaptureBuffer(c_arr, samples).setPtr(c_ptr);
 	}
 
 	// Other

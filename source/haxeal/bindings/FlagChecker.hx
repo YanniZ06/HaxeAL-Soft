@@ -33,6 +33,7 @@ class FlagChecker {
             Sys.sleep(2.5);
             return macro null;
         }
+        trace("CHECK FLAGS CALLED!");
 
         final process = new sys.io.Process('haxelib libpath HaxeAL-Soft', null);
         curHaxelibPath = process.stdout.readLine();
@@ -79,12 +80,14 @@ class FlagChecker {
             return macro null;
         }
 
-        var processorType:String = Context.definedValue('HXCPP_M32') != null ? 'x86' : 'x64';
+        var hxcpp_m32_flag:String = Context.definedValue('HXCPP_M32');
+
+        var processorType:String = hxcpp_m32_flag != null && (hxcpp_m32_flag == 'true' || hxcpp_m32_flag == '1') ? 'x86' : 'x64';
         // trace("Processor type is: " + processorType);
 
         switch(system) { // First, check for system gotten through platform define flag (-D windows or automatic set, etc)
             case 'windows':
-                File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
+                // File.copy('$curHaxelibPath/source/openal/libs/$processorType/OpenAL32.dll', binaryFolder + '/OpenAL32.dll');
             case 'linux':
                 Compiler.define('NO_PRECOMPILED_HEADERS', '1');
                 trace('(HAXEAL-SOFT NOTICE): Linux build recognized, not copying windows binary and defining "NO_PRECOMPILED_HEADERS".');

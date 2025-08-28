@@ -10,20 +10,31 @@ typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
  */
 typedef ALCaptureDevice = ALDevice;
 
+// TODO: maybe add support for other array types (for 16 bit for example) / use template "<T>"
 /**
  * A buffer specifically for handling captured audio.
  * 
  * Created with `HaxeALC.createCaptureBuffer()`
  */
 @:allow(haxeal.HaxeALC)
-@:structInit class ALCaptureBuffer {
-    var ptr:cpp.Star<cpp.Void>;
+class ALCaptureBuffer {
+    var ptr:cpp.Star<cpp.Void>; // Pointer to the elements of arr
     var arr:Array<cpp.UInt8>;
     /**
      * The amount of samples this capture buffer collects.
      * After the capture buffer has been created this value cannot be changed and is read-only.
      */
     public var samples(default, null):Int;
+
+    public function new(actualArray:Array<cpp.UInt8>, in_samples:Int) {
+        arr = actualArray;
+        samples = in_samples;
+    }
+
+    public function setPtr(arrayPointer:cpp.Star<cpp.Void>):ALCaptureBuffer {
+        this.ptr = arrayPointer;
+        return this;
+    }
 }
 
  // As the name suggests, unused. This would automatically handle some recording properties but ultimately it takes away too much from the original OpenAL library,
