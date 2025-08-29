@@ -1,5 +1,6 @@
 package haxeal;
 
+import haxeal.ALObjects.ALBuffer;
 import haxeal.ALObjects.ALCaptureDevice;
 import haxeal.ALObjects.ALCaptureBuffer;
 import haxeal.bindings.ALSOFT;
@@ -279,11 +280,40 @@ class HaxeALC {
      * These multiplications stack, meaning with a `STEREO16` format your byteLength should be `4`.
 	 */
 	public static #if HAXEAL_INLINE_OPT_BIG inline #end function createCaptureBuffer(samples:Int, byteLength:Int):ALCaptureBuffer {
+		return _makePureCaptureBuffer(samples, byteLength).assignBuffer(HaxeAL.createBuffer());
+	}
+
+	inline static function _makePureCaptureBuffer(samples:Int, byteLength:Int):ALCaptureBuffer {
 		final size:Int = samples * byteLength;
 		var c_arr:Array<cpp.UInt8> = untyped __cpp__('::Array<uint8_t>(size, size)');
 		var c_ptr:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>({0}->getBase())', c_arr);
 
 		return new ALCaptureBuffer(c_arr, samples).setPtr(c_ptr);
+	}
+
+	/**
+	 * Creates an array of buffer objects to pass into `captureBufferSamples`.
+	 * 
+	 * They can be re-used once the data obtained from the last `captureBufferSamples` call is no longer referenced anywhere.
+	 * 
+	 * This buffer can only be used for every capture-device that shares the same input `byteLength` (number of bytes * number of channels).
+	 * @param count The amount of buffers to generate.
+	 * @param samples The amount of samples each buffer should retrieve on a call to `captureBufferSamples`.
+	 * The amount of time that a block of samples represents is relative to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 * @param byteLength By default this value is 1 (FORMAT_MONO8).
+     * If your format is STEREO (2 channel), you should multiply this value by 2.
+     * If your format is 16 bit, you should multiply the value by 2 again.
+     * These multiplications stack, meaning with a `STEREO16` format your byteLength should be `4`.
+	 */
+	public static #if HAXEAL_INLINE_OPT_BIG inline #end function createCaptureBuffers(count:Int, samples:Int, byteLength:Int):Array<ALCaptureBuffer> {
+		var toReturn:Array<ALCaptureBuffer> = [];
+		var al_buffer_list:Array<ALBuffer> = HaxeAL.createBuffers(count);
+
+		for(i in 0...count) {
+			toReturn.push(_makePureCaptureBuffer(samples, byteLength).assignBuffer(al_buffer_list.pop()));
+		}
+
+		return toReturn;
 	}
 
 	// Other

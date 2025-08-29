@@ -1,5 +1,6 @@
 package;
 
+import haxeal.ALObjects.ALCaptureBuffer;
 import sys.io.File;
 import cpp.vm.Gc;
 import haxeal.bindings.FlagChecker;
@@ -174,7 +175,7 @@ class Main {
 		var use_efx:Bool = efx_available;
 		use_efx = true;
 		if(use_efx) {
-			trace("???");
+			trace("EFX ENABLED");
 			effect = HaxeEFX.createEffect();
 			HaxeEFX.effecti(effect, HaxeEFX.EFFECT_TYPE, HaxeEFX.EFFECT_PITCH_SHIFTER);
 			HaxeEFX.effecti(effect, HaxeEFX.PITCH_SHIFTER_COARSE_TUNE, 6);
@@ -254,20 +255,19 @@ class Main {
 		var mic = HaxeALC.openCaptureDevice(defDevice, 44100, format);
 		HaxeAL.getErrorString(HaxeALC.getError(mic));
 
-		// Making a list of reuseable buffers (we need to use a list because an array creates reference problems!)
-		var al_bufs:haxe.ds.List<ALBuffer> = new haxe.ds.List<ALBuffer>();
-		var genBufs:Array<ALBuffer> = HaxeAL.createBuffers(16); // We define this seperately so we can clean it up faster later
-		for(buf in genBufs) al_bufs.push(buf);
-
-		// Properties for our recording loop
-		var micData:Array<UInt8>; // Buffer to hold one batch of recorded samples temporarily until we feed it to one of our al buffers
-
-
 		// Samples to capture at a time. When this value becomes larger, the delay between when your voice is played back becomes too!
 		// Its recommended to keep this value relatively low in most cases like here, where we want to almost directly play back or generally handle audio.
 		// In a different example where we'd just want to record a lot of data and handle it later we can set this to a large number 
 		// (In that case we also wouldnt need to use a buffer queue)
 		final captureSize:Int = 1024;
+
+		// Making a list of reuseable buffers (we need to use a list because an array creates reference problems!)
+		var al_bufs:haxe.ds.List<ALCaptureBuffer> = new haxe.ds.List<ALCaptureBuffer>();
+		var genBufs:Array<ALCaptureBuffer> = HaxeALC.createCaptureBuffers(16, captureSize, sizeMultiplier); // We define this seperately so we can clean it up faster later
+		for(buf in genBufs) al_bufs.push(buf);
+
+		// Properties for our recording loop
+		var micData:Array<UInt8>; // Buffer to hold one batch of recorded samples temporarily until we feed it to one of our al buffers
 		var bufsProcessed:Int = 0; // The amount of buffers our source finished using so we can recover them using unqueue
 		
 		var time = haxe.Timer.stamp();
@@ -286,12 +286,23 @@ class Main {
 			// Check how many buffers the source has finished playing back so we can put them back into the reuseable buffer list
 			bufsProcessed = HaxeAL.getSourcei(src, HaxeAL.BUFFERS_PROCESSED);
 			if(bufsProcessed > 0) {
-				for(buf in HaxeAL.sourceUnqueueBuffers(src, bufsProcessed)) { al_bufs.push(buf); }
+				// trace("Pushing back bufs: " + bufsProcessed);
+
+				for(buf in HaxeAL.sourceUnqueueBuffers(src, bufsProcessed)) { 
+					var captureBuffer = ALCaptureBuffer.getCaptureBuffer_fromALBuffer(buf);
+
+					if(captureBuffer == null) continue; // It seems it unqueues the old src buffer first for no apparent reason!
+					al_bufs.push(captureBuffer); 
+				}
 			}
 			final samples = HaxeALC.getIntegers(mic, HaxeALC.CAPTURE_SAMPLES, 1)[0];
 			if(samples < captureSize) continue; // Not sufficent data available to fill a buffer, restarting the loop
+
+			if(al_bufs.length == 0) continue; // If there are no reuseable buffers available right now we skip this sample batch
+			var dataBuf:ALCaptureBuffer = al_bufs.last();
+			al_bufs.remove(dataBuf); // We want to make sure our buffer isnt reused before the source is done using it!
 			
-			micData = HaxeALC.captureSamples(mic, captureSize, sizeMultiplier);
+			micData = HaxeALC.captureBufferSamples(mic, dataBuf);
 			
 			// After 2 seconds we log back one viewable sample batch for testing
 			if(!traced && haxe.Timer.stamp() - time > 2) {
@@ -302,14 +313,11 @@ class Main {
 					trace("MicData entries: " + micData.length);
 				});
 			}
-			
-			if(al_bufs.length == 0) continue; // If there are no reuseable buffers available right now we skip this sample batch
-			var dataBuf:ALBuffer = al_bufs.last();
-			al_bufs.remove(dataBuf); // We want to make sure our buffer isnt reused before the source is done using it!
 
 			// Now we feed the raw recorded PCM data into our obtained buffer
-			HaxeAL.bufferDataArray(dataBuf, format, micData, 44100);
-			HaxeAL.sourceQueueBuffers(src, [dataBuf]);
+			var dataBuf_al = dataBuf.get_ALBuffer();
+			HaxeAL.bufferDataArray(dataBuf_al, format, micData, 44100);
+			HaxeAL.sourceQueueBuffers(src, [dataBuf_al]);
 
 			if(HaxeAL.getSourcei(src, HaxeAL.SOURCE_STATE) != HaxeAL.PLAYING) {
 				HaxeAL.sourcePlay(src); // Finally, we play back your beautiful, echoed voice :)
@@ -357,7 +365,9 @@ class Main {
 		HaxeAL.sourcei(src, HaxeAL.BUFFER, 0); // We unbind the buffers so we can delete it along with the source (unbound buffers cannot be deleted!)
 		HaxeAL.deleteSource(src);
 		trace(genBufs);
-		HaxeAL.deleteBuffers(genBufs);
+		for(buf in genBufs) {
+			buf.destroy();
+		}
 		HaxeAL.getErrorString(HaxeAL.getError());
 		
 		// Exit context and close audio playback device (Only necessary when we shutdown the app or do anything else)
