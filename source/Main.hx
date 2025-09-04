@@ -173,7 +173,7 @@ class Main {
 		var silenceFilter:ALFilter = 0;
 
 		var use_efx:Bool = efx_available;
-		use_efx = true;
+		use_efx = false;
 		if(use_efx) {
 			trace("EFX ENABLED");
 			effect = HaxeEFX.createEffect();
@@ -221,12 +221,12 @@ class Main {
 
 		while(HaxeAL.getSourcei(src, HaxeAL.SOURCE_STATE) == HaxeAL.PLAYING) {
 			Sys.sleep(0.01);
-
+			
 			// Do other stuff
 		}
 		
 		trace("Finished sound!");
-
+		HaxeAL.sourceUnqueueBuffers(src, 1); // Make sure we unqueue the buffer so it wont get mixed up with the capture buffers!!
 
 
 		final testMic:Bool = true;
@@ -244,8 +244,11 @@ class Main {
 		var defDevice = HaxeALC.getString(null, HaxeALC.CAPTURE_DEFAULT_DEVICE_SPECIFIER);
 		trace("Default Mic: " + defDevice);
 
+		trace("Fake noise level full sound: " + getNoiseLevelFromSamples([0,0,0,0,0], 1));
+
+
 		// Setting up the capturing format
-		final format = HaxeAL.FORMAT_STEREO16;
+		final format = HaxeAL.FORMAT_MONO8;
 
 		var sizeMultiplier = 1; // Automatically set depending on the format
 		if(format > HaxeAL.FORMAT_MONO8) sizeMultiplier *= 2;
@@ -259,7 +262,7 @@ class Main {
 		// Its recommended to keep this value relatively low in most cases like here, where we want to almost directly play back or generally handle audio.
 		// In a different example where we'd just want to record a lot of data and handle it later we can set this to a large number 
 		// (In that case we also wouldnt need to use a buffer queue)
-		final captureSize:Int = 1024;
+		final captureSize:Int = 1024; // 1024
 
 		// Making a list of reuseable buffers (we need to use a list because an array creates reference problems!)
 		var al_bufs:haxe.ds.List<ALCaptureBuffer> = new haxe.ds.List<ALCaptureBuffer>();
@@ -285,13 +288,12 @@ class Main {
 
 			// Check how many buffers the source has finished playing back so we can put them back into the reuseable buffer list
 			bufsProcessed = HaxeAL.getSourcei(src, HaxeAL.BUFFERS_PROCESSED);
-			if(bufsProcessed > 0) {
-				// trace("Pushing back bufs: " + bufsProcessed);
+			if(bufsProcessed > 0) 
+			{
+				for(dataBuf_al in HaxeAL.sourceUnqueueBuffers(src, bufsProcessed)) { 
+					var captureBuffer = ALCaptureBuffer.getCaptureBuffer_fromALBuffer(dataBuf_al);
 
-				for(buf in HaxeAL.sourceUnqueueBuffers(src, bufsProcessed)) { 
-					var captureBuffer = ALCaptureBuffer.getCaptureBuffer_fromALBuffer(buf);
-
-					if(captureBuffer == null) continue; // It seems it unqueues the old src buffer first for no apparent reason!
+					// if(captureBuffer == null) continue; // Optional, if you want to be 100% sure you dont unqueue a non-capture-buffer
 					al_bufs.push(captureBuffer); 
 				}
 			}
@@ -314,6 +316,18 @@ class Main {
 				});
 			}
 
+			Thread.create(() -> {
+				final micLevel = getNoiseLevelFromSamples(micData, 4);
+				trace("MicLevel: " + micLevel);
+				if (micLevel < 0.2) {
+					// al_bufs.push(dataBuf);
+					// continue;
+				}
+				else if (micLevel > 0.75) {
+					// trace("LOUD mic level recorded: " + micLevel);
+				}
+			});
+			
 			// Now we feed the raw recorded PCM data into our obtained buffer
 			var dataBuf_al = dataBuf.get_ALBuffer();
 			HaxeAL.bufferDataArray(dataBuf_al, format, micData, 44100);
@@ -375,5 +389,26 @@ class Main {
 		HaxeALC.destroyContext(context);
 		// HaxeAL.getErrorString(HaxeAL.getError());
 		HaxeALC.closeDevice(device);
+	}
+
+	// todo: DOCUMENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! see commit
+	static function getNoiseLevelFromSamples(samples:Array<cpp.UInt8>, nSamplesToCount:Int):Float {
+		final samplesToCalculate:Int = Std.int(samples.length / nSamplesToCount);
+		var samplesCalculated:Int = 0; // Keep track as a fallback
+		var sampleArrayID:Int = 0;
+		var sumSampleValues:Int = 0;
+
+		for(sampleNum in 0...samplesToCalculate) {
+			var sampleValue:Int = samples[sampleArrayID] - 128;
+
+			sumSampleValues += sampleValue * sampleValue;
+
+			samplesCalculated++;
+			sampleArrayID += nSamplesToCount;
+			if(sampleArrayID > samples.length) break;
+		}
+		final noiseLevel = Math.sqrt(sumSampleValues / samplesToCalculate) / 128 * 10; // - 1) * 10;
+
+		return noiseLevel;
 	}
 }

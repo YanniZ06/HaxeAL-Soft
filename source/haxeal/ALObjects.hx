@@ -10,12 +10,13 @@ typedef ALDevice = Star<haxeal.bindings.ALC.ALCdevice>;
  */
 typedef ALCaptureDevice = ALDevice;
 
-// TODO: maybe add support for other array types (for 16 bit for example) / use template "<T>"
 /**
  * A buffer specifically for handling captured audio.
  * 
  * Also owns an ALBuffer that is retrievable via `get_ALBuffer`.
  * Created with `HaxeALC.createCaptureBuffer()`
+ * 
+ * Not optimized for, but supports 16bit audio aswell.
  */
 @:allow(haxeal.HaxeALC)
 class ALCaptureBuffer {
@@ -29,6 +30,9 @@ class ALCaptureBuffer {
      */
     public var samples(default, null):Int;
 
+    /**
+     * Do not call, as that will create a faulty and useless buffer.
+     */
     public function new(actualArray:Array<cpp.UInt8>, in_samples:Int) {
         arr = actualArray;
         samples = in_samples;
@@ -70,7 +74,6 @@ class ALCaptureBuffer {
 
     /**
      * Returns the data collected by this buffer from the latest `HaxeALC.captureBufferSamples(recordingDevice, this)` call.
-     * @return Array<cpp.UInt8>
      */
     #if HAXEAL_INLINE_OPT_SMALL inline #end public function get_Data():Array<cpp.UInt8> {
         return arr;

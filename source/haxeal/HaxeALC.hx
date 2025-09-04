@@ -225,6 +225,8 @@ class HaxeALC {
 
 	/**
 	 * Collects captured data from a devices' capture buffer and returns it as a unique array of bytes (use `HaxeAL.bufferDataArray` with this data).
+	 * 
+	 * This function also works with, but is not optimized for, a 16bit format.
 	 * @param device Device to retrieve audio from.
 	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
 	 * The amount of time that a block of samples represents is relative to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
@@ -245,6 +247,31 @@ class HaxeALC {
 	@:deprecated("It is recommended to use haxeal.HaxeALC.captureBufferSamples instead") public static function captureSamples(device:ALCaptureDevice, samples:Int, byteLength:Int):Array<cpp.UInt8> {
 		return [0];
 	}
+
+
+	/**
+	 * Collects captured data from a devices' capture buffer and returns it as a unique array of 16bit integers (use `HaxeAL.bufferDataArray` with this data).
+	 * 
+	 * This function is soely for capturing 16 bit audio data.
+	 * @param device Device to retrieve audio from.
+	 * @param samples The amount of samples to retrieve. This amount should not be higher than `getIntegers(device, ALC_CAPTURE_SAMPLES, 1)`.
+	 * The amount of time that a block of samples represents is relative to the input devices' capturing frequency (22050 samples to retrieve at 44100hz would be 0.5 seconds)
+	 * @param numChannels 1 for MONO, 2 for Stereo.
+	 */
+	@:functionCode('
+		int size = samples * 2 * numChannels;
+		Array<uint8_t> output = ::Array<int16_t>(size, size);
+		void* ptr = reinterpret_cast<void*>(output->getBase());
+	
+		alcCaptureSamples(device, ptr, samples);
+	
+		return output;
+	')
+	public static function captureSamples_16(device:ALCaptureDevice, samples:Int, numChannels:Int):Array<cpp.Int16> {
+		return [0];
+	}
+
+	
 
 	/**
 	 * Writes the number of samples that was set on creation of the capture buffer into it, and returns them as a non-unique array of data you can pass into an ALBuffer.

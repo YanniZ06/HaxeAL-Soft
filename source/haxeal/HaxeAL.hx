@@ -997,13 +997,15 @@ class HaxeAL {
     }
 
     /**
-     * Fills the given buffer with all information necessary for playback, using an array of unsigned 8bit integers.
+     * Fills the given buffer with all information necessary for playback, using either an array of unsigned 8bit integers or signed 16bit integers.
+     * 
+     * If any other data type is handed in, the result is unspecified.
      * @param buffer The ALBuffer to fill with information.
      * @param format The AL format the data should be stored under (Ex: HaxeAL.FORMAT_STEREO16).
-     * @param data The data to be fed as an Array<cpp.UInt8> (or haxe.io.BytesData).
-     * @param sampleRate The samplerate the data should be played back at.
+     * @param data The data to be fed as an `Array<cpp.UInt8>` / `haxe.io.BytesData` or `Array<cpp.Int16>`.
+     * @param sampleRate The sampling rate the data should be played back at.
      */
-    public static function bufferDataArray(buffer:ALBuffer, format:Int, data:Array<cpp.UInt8>, sampleRate:Int):Void {
+    public static function bufferDataArray<ByteSize>(buffer:ALBuffer, format:Int, data:Array<ByteSize>, sampleRate:Int):Void {
         var rawData:cpp.Star<cpp.Void> = untyped __cpp__('reinterpret_cast<void*>(data->getBase())');
         AL.bufferData(buffer, format, rawData, data.length, sampleRate);
     }
